@@ -1,0 +1,945 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#030b29">
+<title>Exam Pilot | Practice. Learn. Excel.</title>
+
+<style>
+:root {
+  --bg: #030b29;
+  --panel: #08183d;
+  --panel2: #0c2250;
+  --green: #00ed8b;
+  --blue: #1265ff;
+  --gold: #ffd21c;
+  --white: #ffffff;
+  --muted: #a9bddc;
+  --border: rgba(100,170,255,.23);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  min-height: 100vh;
+  padding-bottom: 100px;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.app {
+  max-width: 1100px;
+  margin: auto;
+  padding: 18px;
+}
+
+/* HEADER */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  background: linear-gradient(145deg,#1559ff,#00c978);
+  display: grid;
+  place-items: center;
+  font-size: 30px;
+  box-shadow: 0 0 20px #087aff55;
+}
+
+.brand h1 {
+  font-size: 23px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.brand h1 span {
+  color: var(--green);
+}
+
+.brand small {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.notification {
+  position: relative;
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  color: white;
+  width: 43px;
+  height: 43px;
+  border-radius: 14px;
+  font-size: 21px;
+}
+
+.notification::after {
+  content: "3";
+  position: absolute;
+  top: -6px;
+  right: -5px;
+  background: #ff315c;
+  font-size: 10px;
+  border-radius: 50%;
+  padding: 4px 7px;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar {
+  width: 43px;
+  height: 43px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg,#00dca2,#1559ff);
+  border: 2px solid #62f8ff;
+  font-size: 21px;
+}
+
+.profile small {
+  display: block;
+  color: var(--muted);
+}
+
+.profile strong {
+  font-size: 13px;
+}
+
+/* HERO */
+
+.hero {
+  position: relative;
+  min-height: 320px;
+  border: 1px solid #168aff;
+  border-radius: 25px;
+  overflow: hidden;
+  padding: 28px;
+  background:
+    radial-gradient(circle at 78% 45%,#1768ff 0%,transparent 37%),
+    linear-gradient(115deg,#06113d,#092b70 70%,#051638);
+  box-shadow: 0 12px 40px #006eff22;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  right: -90px;
+  bottom: -145px;
+  border: 3px solid var(--green);
+  border-radius: 50%;
+  box-shadow: 0 0 25px var(--green);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 550px;
+}
+
+.hero-label {
+  color: var(--green);
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 2px;
+  margin-bottom: 15px;
+}
+
+.hero h2 {
+  font-size: clamp(29px,5vw,47px);
+  line-height: 1.08;
+  font-weight: 950;
+  margin-bottom: 12px;
+}
+
+.hero h2 span {
+  color: var(--gold);
+}
+
+.hero p {
+  color: #d6e5ff;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 420px;
+}
+
+.hero-art {
+  position: absolute;
+  right: 5%;
+  top: 10%;
+  height: 85%;
+  width: 38%;
+  display: grid;
+  place-items: center;
+}
+
+.aircraft {
+  font-size: clamp(65px,12vw,130px);
+  transform: rotate(-15deg);
+  filter: drop-shadow(0 0 20px #42aaff);
+  animation: fly 4s ease-in-out infinite;
+}
+
+@keyframes fly {
+  0%,100% {transform: translateY(0) rotate(-15deg)}
+  50% {transform: translateY(-13px) rotate(-10deg)}
+}
+
+.trophy {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  font-size: 65px;
+  filter: drop-shadow(0 0 15px #ffd21c);
+}
+
+.hero-student {
+  position: absolute;
+  bottom: 0;
+  left: 5%;
+  font-size: 60px;
+  opacity: .8;
+}
+
+.primary-btn {
+  margin-top: 22px;
+  background: linear-gradient(90deg,#ffda24,#ffa800);
+  color: #10172d;
+  padding: 14px 24px;
+  border-radius: 30px;
+  font-weight: 900;
+  box-shadow: 0 5px 22px #ffbc0055;
+  transition: .2s;
+}
+
+.primary-btn:hover {
+  transform: translateY(-3px);
+}
+
+/* QUICK ACCESS */
+
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(5,minmax(0,1fr));
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.quick-card {
+  min-height: 120px;
+  border-radius: 20px;
+  border: 1px solid #ffffff30;
+  color: white;
+  padding: 16px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: .25s;
+  background: linear-gradient(145deg,#1848f7,#091e76);
+}
+
+.quick-card:nth-child(2) {
+  background: linear-gradient(145deg,#00d77d,#006b42);
+}
+
+.quick-card:nth-child(3) {
+  background: linear-gradient(145deg,#ffb300,#e45c00);
+}
+
+.quick-card:nth-child(4) {
+  background: linear-gradient(145deg,#9a27ff,#4c05a4);
+}
+
+.quick-card:nth-child(5) {
+  background: linear-gradient(145deg,#00c5e9,#07568d);
+}
+
+.quick-card:hover {
+  transform: translateY(-5px);
+  filter: brightness(1.15);
+}
+
+.quick-icon {
+  font-size: 34px;
+}
+
+.quick-card strong {
+  font-size: 12px;
+  text-align: center;
+}
+
+/* SECTION HEADERS */
+
+.section {
+  margin-bottom: 23px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 13px;
+}
+
+.section-heading h3 {
+  font-size: 19px;
+}
+
+.section-heading button {
+  background: none;
+  color: var(--green);
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* SUBJECTS */
+
+.subjects {
+  display: grid;
+  grid-template-columns: repeat(4,minmax(0,1fr));
+  gap: 10px;
+}
+
+.subject {
+  border: 1px solid var(--border);
+  background: linear-gradient(145deg,#102c62,#071535);
+  border-radius: 16px;
+  color: white;
+  min-height: 95px;
+  padding: 12px 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  transition: .2s;
+}
+
+.subject:hover {
+  border-color: var(--green);
+  transform: translateY(-3px);
+}
+
+.subject span {
+  font-size: 28px;
+}
+
+.subject strong {
+  font-size: 11px;
+  text-align: center;
+}
+
+/* PERFORMANCE */
+
+.performance {
+  background: linear-gradient(130deg,#071c50,#03132e);
+  border: 1px solid #1678c9;
+  border-radius: 22px;
+  padding: 20px;
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.3fr;
+  gap: 15px;
+  align-items: center;
+}
+
+.progress-circle {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  margin: auto;
+  display: grid;
+  place-items: center;
+  background: conic-gradient(var(--green) 0% 78%,#16345e 78% 100%);
+  position: relative;
+}
+
+.progress-circle::before {
+  content: "";
+  position: absolute;
+  width: 103px;
+  height: 103px;
+  background: #07183e;
+  border-radius: 50%;
+}
+
+.progress-text {
+  z-index: 1;
+  text-align: center;
+}
+
+.progress-text strong {
+  display: block;
+  font-size: 27px;
+}
+
+.progress-text small {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.stats {
+  border-left: 1px solid var(--border);
+  padding-left: 20px;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.stat-icon {
+  font-size: 22px;
+}
+
+.stat strong {
+  display: block;
+  font-size: 20px;
+}
+
+.stat small {
+  color: var(--muted);
+}
+
+.motivation {
+  text-align: center;
+  padding: 15px;
+  background: #0b2451;
+  border-radius: 17px;
+}
+
+.motivation span {
+  font-size: 35px;
+}
+
+.motivation h3 {
+  color: var(--gold);
+  margin: 8px 0;
+}
+
+.motivation p {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* AI TUTOR */
+
+.ai-banner {
+  border: 1px solid #00e5bd;
+  background:
+    radial-gradient(circle at 0% 100%,#145aff 0%,transparent 50%),
+    linear-gradient(120deg,#061a4c,#04152b);
+  box-shadow: 0 0 20px #00e6c033;
+  border-radius: 22px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.robot {
+  font-size: 55px;
+}
+
+.ai-text {
+  flex: 1;
+}
+
+.ai-text small {
+  color: #b7d3ff;
+}
+
+.ai-text h3 {
+  color: var(--green);
+  font-size: 18px;
+  margin: 5px 0;
+}
+
+.ai-text p {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.chat-btn {
+  background: var(--green);
+  color: #002b1a;
+  font-weight: 900;
+  border-radius: 25px;
+  padding: 13px 19px;
+}
+
+/* BOTTOM NAV */
+
+.bottom-nav {
+  position: fixed;
+  z-index: 10;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(3,12,39,.96);
+  backdrop-filter: blur(18px);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 4px max(10px,env(safe-area-inset-bottom));
+}
+
+.nav-item {
+  color: #b5c9eb;
+  background: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  min-width: 48px;
+}
+
+.nav-item span {
+  font-size: 23px;
+}
+
+.nav-item.active {
+  color: var(--green);
+}
+
+.rocket-nav {
+  width: 59px;
+  height: 59px;
+  border-radius: 50%;
+  background: linear-gradient(145deg,#00f5a0,#0065ff);
+  font-size: 29px;
+  margin-top: -35px;
+  border: 4px solid var(--bg);
+  box-shadow: 0 0 20px #00e99b77;
+}
+
+/* TOAST */
+
+.toast {
+  position: fixed;
+  z-index: 30;
+  bottom: 95px;
+  left: 50%;
+  transform: translate(-50%,20px);
+  background: #102b52;
+  border: 1px solid var(--green);
+  padding: 13px 20px;
+  border-radius: 12px;
+  opacity: 0;
+  pointer-events: none;
+  transition: .3s;
+  font-size: 13px;
+  text-align: center;
+  width: max-content;
+  max-width: 90%;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translate(-50%,0);
+}
+
+/* RESPONSIVENESS */
+
+@media(min-width:800px) {
+  .app {padding: 28px}
+  .subjects {grid-template-columns: repeat(8,minmax(0,1fr))}
+  .hero {min-height: 360px}
+  .quick-card {min-height: 140px}
+}
+
+@media(max-width:520px) {
+  .app {padding: 12px}
+  .brand h1 {font-size: 19px}
+  .brand small {font-size: 9px}
+  .logo {width: 48px;height: 48px}
+  .profile small {display: none}
+  .profile strong {font-size: 11px}
+  .hero {padding: 22px 17px;min-height: 280px}
+  .hero-content {max-width: 75%}
+  .hero p {font-size: 12px}
+  .hero-art {right: -3%;width: 35%;opacity: .7}
+  .aircraft {font-size: 65px}
+  .trophy {font-size: 45px}
+  .hero-student {font-size: 42px}
+  .quick-grid {grid-template-columns: repeat(5,minmax(0,1fr));gap: 6px}
+  .quick-card {min-height: 100px;padding: 8px 3px;border-radius: 14px}
+  .quick-icon {font-size: 25px}
+  .quick-card strong {font-size: 9px}
+  .subjects {grid-template-columns: repeat(4,minmax(0,1fr));gap: 7px}
+  .subject {min-height: 85px}
+  .subject span {font-size: 23px}
+  .subject strong {font-size: 9px}
+  .performance {grid-template-columns: 1fr 1fr;padding: 13px}
+  .progress-circle {width: 110px;height: 110px}
+  .progress-circle::before {width: 88px;height: 88px}
+  .stats {padding-left: 12px}
+  .motivation {grid-column: 1/-1}
+  .ai-banner {padding: 13px;gap: 8px}
+  .robot {font-size: 38px}
+  .ai-text h3 {font-size: 14px}
+  .ai-text p {font-size: 10px}
+  .chat-btn {padding: 10px;font-size: 11px}
+}
+
+@media(max-width:350px) {
+  .quick-card strong {font-size: 8px}
+  .profile {display:none}
+  .hero-content {max-width: 85%}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="brand">
+      <div class="logo">🎓</div>
+      <div>
+        <h1>EXAM <span>PILOT</span></h1>
+        <small>PRACTICE. LEARN. EXCEL.</small>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <button class="notification" onclick="notify('You have 3 notifications')">♧</button>
+      <div class="profile">
+        <div class="avatar">👨🏽‍🎓</div>
+        <div>
+          <small>Hello,</small>
+          <strong>Student! 👋</strong>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-label">✦ YOUR JOURNEY STARTS HERE</div>
+      <h2>Your Ultimate <span>JAMB & WAEC</span> Examination Companion!</h2>
+      <p>Be ready. Be confident. Achieve more. Every question brings you closer to your academic goals.</p>
+      <button class="primary-btn" onclick="go('practice')">
+        Start Practicing &nbsp; ➜
+      </button>
+    </div>
+
+    <div class="hero-art">
+      <div class="aircraft">✈️</div>
+      <div class="trophy">🏆</div>
+      <div class="hero-student">🎓</div>
+    </div>
+  </section>
+
+  <!-- QUICK ACCESS -->
+  <section class="quick-grid">
+    <button class="quick-card" onclick="go('practice')">
+      <span class="quick-icon">📋</span>
+      <strong>Take a Quiz</strong>
+    </button>
+
+    <button class="quick-card" onclick="go('notes')">
+      <span class="quick-icon">📖</span>
+      <strong>Study Notes</strong>
+    </button>
+
+    <button class="quick-card" onclick="go('analytics')">
+      <span class="quick-icon">📈</span>
+      <strong>Track Progress</strong>
+    </button>
+
+    <button class="quick-card" onclick="go('tutor')">
+      <span class="quick-icon">🧠</span>
+      <strong>Mubarak AI Tutor</strong>
+    </button>
+
+    <button class="quick-card" onclick="go('premium')">
+      <span class="quick-icon">⭐</span>
+      <strong>Premium Features</strong>
+    </button>
+  </section>
+
+  <!-- SUBJECTS -->
+  <section class="section">
+    <div class="section-heading">
+      <h3>🟢 Explore Subjects</h3>
+      <button onclick="go('subjects')">View All →</button>
+    </div>
+
+    <div class="subjects">
+      <button class="subject" onclick="subject('English Language')">
+        <span>📘</span>
+        <strong>English Language</strong>
+      </button>
+
+      <button class="subject" onclick="subject('Mathematics')">
+        <span>🧮</span>
+        <strong>Mathematics</strong>
+      </button>
+
+      <button class="subject" onclick="subject('Physics')">
+        <span>⚛️</span>
+        <strong>Physics</strong>
+      </button>
+
+      <button class="subject" onclick="subject('Chemistry')">
+        <span>🧪</span>
+        <strong>Chemistry</strong>
+      </button>
+
+      <button class="subject" onclick="subject('Biology')">
+        <span>🌿</span>
+        <strong>Biology</strong>
+      </button>
+
+      <button class="subject" onclick="subject('Government')">
+        <span>🏛️</span>
+        <strong>Government</strong>
+      </button>
+
+      <button class="subject" onclick="subject('Economics')">
+        <span>📊</span>
+        <strong>Economics</strong>
+      </button>
+
+      <button class="subject" onclick="subject('Literature in English')">
+        <span>🪶</span>
+        <strong>Literature</strong>
+      </button>
+    </div>
+  </section>
+
+  <!-- PERFORMANCE -->
+  <section class="performance" id="performance">
+    <div class="progress-circle">
+      <div class="progress-text">
+        <strong id="progressValue">78%</strong>
+        <small>Overall<br>Progress</small>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-icon">🟢</span>
+        <div>
+          <strong id="correct">850</strong>
+          <small>Correct</small>
+        </div>
+      </div>
+
+      <div class="stat">
+        <span class="stat-icon">❌</span>
+        <div>
+          <strong id="incorrect">238</strong>
+          <small>Incorrect</small>
+        </div>
+      </div>
+
+      <div class="stat">
+        <span class="stat-icon">🏆</span>
+        <div>
+          <strong id="mock">4</strong>
+          <small>Mock Exams</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="motivation">
+      <span>🏅</span>
+      <h3>Keep Going!</h3>
+      <p>You're on the right track to success. Consistency is the key!</p>
+    </div>
+  </section>
+
+  <!-- AI TUTOR -->
+  <section class="ai-banner">
+    <div class="robot">🤖</div>
+
+    <div class="ai-text">
+      <small>Ask me anything...</small>
+      <h3>Activate Mubarak AI Tutor</h3>
+      <p>Get instant explanations, academic help and study tips.</p>
+    </div>
+
+    <button class="chat-btn" onclick="go('tutor')">
+      💬 Chat Now
+    </button>
+  </section>
+
+  <div style="text-align:center;color:#7891b7;font-size:11px;padding:10px">
+    EXAM PILOT © 2026 · Navigate Your Way to Academic Excellence.
+  </div>
+
+</div>
+
+<!-- BOTTOM NAVIGATION -->
+<nav class="bottom-nav">
+
+  <button class="nav-item active" onclick="go('home')">
+    <span>⌂</span>Home
+  </button>
+
+  <button class="nav-item" onclick="go('practice')">
+    <span>🎯</span>Practice
+  </button>
+
+  <button class="nav-item rocket-nav" onclick="go('practice')" aria-label="Start practice">
+    🚀
+  </button>
+
+  <button class="nav-item" onclick="go('notes')">
+    <span>📚</span>Learn
+  </button>
+
+  <button class="nav-item" onclick="go('analytics')">
+    <span>📊</span>Analytics
+  </button>
+
+  <button class="nav-item" onclick="go('more')">
+    <span>☰</span>More
+  </button>
+
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* NOTIFICATION */
+
+let toastTimer;
+
+function notify(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2500);
+}
+
+/* NAVIGATION */
+
+function go(page) {
+  const pages = {
+    home: "Home",
+    practice: "Practice Centre",
+    notes: "Study Notes",
+    analytics: "Performance Analytics",
+    tutor: "Mubarak AI Tutor",
+    premium: "Premium Features",
+    subjects: "All Subjects",
+    more: "More Features"
+  };
+
+  if (page === "home") {
+    window.scrollTo({top: 0, behavior: "smooth"});
+    return;
+  }
+
+  notify(pages[page] + " selected");
+
+  // Connect these destinations to your actual app pages.
+  // Example:
+  // window.location.href = "government.html";
+}
+
+/* SUBJECT SELECTION */
+
+function subject(name) {
+  notify(name + " selected. Choose your practice mode.");
+  // Connect to your question database here.
+}
+
+/* SAMPLE PERFORMANCE DATA
+   Replace these sample values with actual user data.
+*/
+
+function updatePerformance(data) {
+  document.getElementById("progressValue").textContent =
+    data.progress + "%";
+
+  document.getElementById("correct").textContent =
+    data.correct;
+
+  document.getElementById("incorrect").textContent =
+    data.incorrect;
+
+  document.getElementById("mock").textContent =
+    data.mock;
+
+  document.querySelector(".progress-circle").style.background =
+    `conic-gradient(var(--green) 0% ${data.progress}%, #16345e ${data.progress}% 100%)`;
+}
+
+// Example:
+// updatePerformance({
+//   progress: 85,
+//   correct: 920,
+//   incorrect: 160,
+//   mock: 8
+// });
+
+</script>
+
+</body>
+</html>
