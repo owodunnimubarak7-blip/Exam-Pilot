@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#030b29">
 <title>Examination | Exam Pilot</title>
+
+<!-- Separate Subject Script Files Loaded in the Head -->
+<script src="english.js"></script>
+<script src="government.js"></script>
+<script src="economics.js"></script>
+<script src="literature.js"></script>
+<script src="civic.js"></script>
 
 <style>
 :root {
@@ -484,10 +490,10 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 /* =========================================
    EXAM PILOT CBT ENGINE
    Reads configuration from practice.html
+   and pulls from separate subject script files
 ========================================= */
 
 const CONFIG_KEY = "examPilotConfig";
-const BANK_MANIFEST = "questions/manifest.json";
 
 let config = null;
 let questions = [];
@@ -584,122 +590,35 @@ function readConfiguration() {
 }
 
 /* =========================================
-   QUESTION BANK LOADING
-   Manifest example:
-   {
-     "banks": [
-       {
-         "exam":"JAMB",
-         "subject":"English Language",
-         "year":2024,
-         "file":"JAMB/Use-of-English/2024.js"
-       }
-     ]
-   }
-
-   Each bank file registers itself using:
-   ExamPilot.registerBank({...})
+   LOAD QUESTION BANKS FROM SEPARATE FILES
 ========================================= */
 
-window.ExamPilot = window.ExamPilot || {};
-
-window.ExamPilot.registerBank = function(bank) {
-  if (!bank || !Array.isArray(bank.questions)) {
-    throw new Error("Invalid question bank registration.");
-  }
-
-  window.ExamPilot.loadedBanks =
-    window.ExamPilot.loadedBanks || [];
-
-  window.ExamPilot.loadedBanks.push(bank);
-};
-
-function loadScript(src) {
-  return new Promise((resolve,reject) => {
-    const script = document.createElement("script");
-    script.src = src;
-    script.onload = resolve;
-    script.onerror = () => reject(
-      new Error("Could not load question bank: " + src)
-    );
-    document.head.appendChild(script);
-  });
-}
-
-function subjectPath(subject) {
-  const aliases = {
-    "English Language":"Use-of-English",
-    "Literature in English":"Literature-in-English",
-    "Agricultural Science":"Agricultural-Science",
-    "Civic Education":"Civic-Education",
-    "Computer Studies":"Computer-Studies",
-    "Further Mathematics":"Further-Mathematics"
-  };
-
-  return aliases[subject] ||
-    subject.trim().replace(/\s+/g,"-");
-}
-
 async function loadQuestionBanks() {
-  const response = await fetch(BANK_MANIFEST, {cache:"no-cache"});
+  const subjectName = config.subject;
+  const registry = window.ExamPilot?.subjectBanks || {};
+  
+  // Find matching subject bank (case-insensitive or normalized check if needed)
+  let bank = registry[subjectName];
+  if (!bank) {
+    // Try matching ignoring case/spaces
+    const matchedKey = Object.keys(registry).find(
+      k => normalize(k) === normalize(subjectName)
+    );
+    if (matchedKey) bank = registry[matchedKey];
+  }
 
-  if (!response.ok) {
+  if (!bank || !Array.isArray(bank.questions)) {
     throw new Error(
-      "Question bank manifest not found. Check questions/manifest.json."
+      "No question bank found for '" + subjectName + 
+      "'. Make sure the subject file is included in exam.html and properly registers its questions."
     );
   }
 
-  const manifest = await response.json();
-  const entries = manifest.banks || [];
-
-  const matching = entries.filter(bank => {
-    return normalize(bank.exam) === normalize(config.exam) &&
-      normalize(bank.subject) === normalize(config.subject) &&
-      (config.year === "all" ||
-       String(bank.year) === String(config.year));
-  });
-
-  if (!matching.length) {
-    throw new Error(
-      "No question bank is registered for " +
-      config.exam + " " + config.subject +
-      (config.year === "all" ? "" : " (" + config.year + ")") +
-      ". Add the relevant year to questions/manifest.json."
-    );
+  if (bank.passages) {
+    Object.assign(bankPassages, bank.passages);
   }
 
-  window.ExamPilot.loadedBanks = [];
-
-  for (const bank of matching) {
-    $("loadingText").textContent =
-      "Loading " + bank.year + " question bank...";
-
-    const path = bank.file.startsWith("questions/")
-      ? bank.file
-      : "questions/" + bank.file;
-
-    await loadScript(path);
-  }
-
-  const registered = window.ExamPilot.loadedBanks || [];
-
-  if (!registered.length) {
-    throw new Error(
-      "The year files loaded, but did not register any questions."
-    );
-  }
-
-  let allQuestions = [];
-
-  for (const bank of registered) {
-    allQuestions.push(...bank.questions);
-
-    if (bank.passages) {
-      Object.assign(bankPassages, bank.passages);
-    }
-  }
-
-  return allQuestions;
+  return bank.questions;
 }
 
 /* =========================================
@@ -708,18 +627,16 @@ async function loadQuestionBanks() {
 
 function filterQuestions(bankQuestions) {
   return bankQuestions.filter(q => {
-
     const examMatch = normalize(q.exam) === normalize(config.exam);
-    const subjectMatch =
-      normalize(q.subject) === normalize(config.subject);
+    const subjectMatch = normalize(q.subject) === normalize(config.subject);
 
-    const yearMatch = config.year === "all" ||
+    const yearMatch = !config.year || config.year === "all" ||
       String(q.year) === String(config.year);
 
-    const topicMatch = config.topic === "all" ||
+    const topicMatch = !config.topic || config.topic === "all" ||
       normalize(q.topic) === normalize(config.topic);
 
-    const difficultyMatch = config.difficulty === "all" ||
+    const difficultyMatch = !config.difficulty || config.difficulty === "all" ||
       normalize(q.difficulty) === normalize(config.difficulty);
 
     return examMatch && subjectMatch &&
@@ -765,7 +682,7 @@ async function initialiseExam() {
     config = readConfiguration();
 
     $("loadingText").textContent =
-      "Connecting to the question bank...";
+      "Loading questions for " + config.subject + "...";
 
     const bankQuestions = await loadQuestionBanks();
 
@@ -774,7 +691,8 @@ async function initialiseExam() {
 
     if (!filtered.length) {
       throw new Error(
-        "No valid questions match your selected settings. Try another year, topic or difficulty."
+        "No valid questions match your selected settings (" +
+        config.exam + " - " + config.subject + "). Try another year, topic or difficulty."
       );
     }
 
@@ -782,7 +700,7 @@ async function initialiseExam() {
     filtered = shuffle(filtered);
 
     // Use only the requested number of questions.
-    questions = filtered.slice(0,Number(config.questions));
+    questions = filtered.slice(0, Number(config.questions));
 
     // Prepare examination duration.
     if (config.mode === "timed") {
@@ -830,10 +748,10 @@ function configureHeader() {
     config.mode === "practice" ? "Practice Mode" : "Timed CBT";
 
   $("yearTag").textContent =
-    config.year === "all" ? "All Years" : config.year;
+    (!config.year || config.year === "all") ? "All Years" : config.year;
 
   $("topicTag").textContent =
-    config.topic === "all" ? "All Topics" : config.topic;
+    (!config.topic || config.topic === "all") ? "All Topics" : config.topic;
 }
 
 /* =========================================
@@ -1098,8 +1016,6 @@ function renderJumpBox() {
     button.addEventListener("click",() => {
       currentIndex = index;
       renderQuestion();
-
-      // Keep navigator open so the student can jump again.
     });
 
     grid.appendChild(button);
