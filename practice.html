@@ -1346,9 +1346,6 @@ function renderSubjects() {
 
   });
 
-  // Preserve the selected subject if available.
-  // Otherwise, choose the first available subject.
-
   if (!available.includes(selectedSubject)) {
     selectedSubject = available[0];
   }
@@ -1551,6 +1548,8 @@ function startExam() {
 
   const configuration = getConfiguration();
 
+  const startButton = document.getElementById("startButton");
+
   if (!configuration.exam ||
       !configuration.subject ||
       !configuration.questions) {
@@ -1561,11 +1560,7 @@ function startExam() {
 
   }
 
-  const startButton = document.getElementById("startButton");
-
   try {
-
-    // Save the configuration for the next page.
 
     sessionStorage.setItem(
       "examPilotConfig",
@@ -1575,8 +1570,6 @@ function startExam() {
     startButton.disabled = true;
 
     startButton.textContent = "PREPARING EXAMINATION...";
-
-    // Open the CBT examination engine (linked to exam.html).
 
     window.location.href = "exam.html";
 
