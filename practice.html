@@ -1,0 +1,1633 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#030b29">
+
+<title>Practice Centre | Exam Pilot</title>
+
+<style>
+:root {
+  --bg:#030b29;
+  --panel:#091a40;
+  --panel2:#102650;
+  --green:#00ed8b;
+  --blue:#1265ff;
+  --gold:#ffd21c;
+  --white:#ffffff;
+  --muted:#a9bddc;
+  --border:rgba(120,170,255,.2);
+  --red:#ff526e;
+}
+
+* {
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body {
+  background:
+    radial-gradient(circle at 80% 0%,#10285a55,transparent 35%),
+    var(--bg);
+  color:var(--white);
+  font-family:Inter,"Segoe UI",Arial,sans-serif;
+  min-height:100vh;
+  padding-bottom:35px;
+}
+
+button,select {
+  font:inherit;
+}
+
+button {
+  cursor:pointer;
+  border:none;
+}
+
+button:focus-visible,
+select:focus-visible {
+  outline:2px solid var(--gold);
+  outline-offset:3px;
+}
+
+.container {
+  max-width:900px;
+  margin:auto;
+  padding:20px;
+}
+
+/* HEADER */
+
+.header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:25px;
+}
+
+.brand {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  cursor:pointer;
+}
+
+.logo {
+  width:48px;
+  height:48px;
+  border-radius:15px;
+  display:grid;
+  place-items:center;
+  font-size:25px;
+  background:linear-gradient(135deg,#1559ff,#00c978);
+  box-shadow:0 0 20px #087aff55;
+}
+
+.brand h1 {
+  font-size:20px;
+  font-weight:950;
+}
+
+.brand h1 span {
+  color:var(--green);
+}
+
+.brand small {
+  font-size:9px;
+  color:var(--muted);
+  letter-spacing:1px;
+}
+
+.back {
+  background:var(--panel2);
+  color:var(--green);
+  border:1px solid var(--border);
+  padding:11px 15px;
+  border-radius:12px;
+}
+
+/* HERO */
+
+.intro {
+  position:relative;
+  overflow:hidden;
+  padding:27px;
+  border:1px solid #1b79ce;
+  border-radius:23px;
+  background:
+    radial-gradient(circle at 95% 10%,#1559b9,transparent 40%),
+    linear-gradient(130deg,#0d2c69,#071535);
+  margin-bottom:22px;
+}
+
+.intro-label {
+  color:var(--green);
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:2px;
+}
+
+.intro h2 {
+  font-size:clamp(27px,6vw,40px);
+  margin:12px 0;
+  line-height:1.15;
+}
+
+.intro h2 span {
+  color:var(--green);
+}
+
+.intro p {
+  color:#c4d7f5;
+  line-height:1.7;
+  font-size:13px;
+  max-width:600px;
+}
+
+.intro-art {
+  position:absolute;
+  right:25px;
+  top:20px;
+  font-size:75px;
+  opacity:.35;
+  pointer-events:none;
+}
+
+/* PROGRESS */
+
+.step-indicator {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:7px;
+  margin-bottom:23px;
+}
+
+.step {
+  height:5px;
+  border-radius:10px;
+  background:#1b3157;
+  transition:.2s;
+}
+
+.step.active {
+  background:var(--green);
+  box-shadow:0 0 10px #00ed8b55;
+}
+
+/* SECTIONS */
+
+.section {
+  background:linear-gradient(145deg,#0a1d45,#07142f);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:19px;
+  margin-bottom:16px;
+}
+
+.section-heading {
+  display:flex;
+  align-items:center;
+  gap:11px;
+  margin-bottom:17px;
+}
+
+.number {
+  width:32px;
+  height:32px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  background:#064e43;
+  color:var(--green);
+  font-weight:900;
+}
+
+.section-heading h3 {
+  font-size:16px;
+}
+
+.section-heading small {
+  display:block;
+  font-size:10px;
+  color:var(--muted);
+  margin-top:4px;
+}
+
+/* EXAM CARDS */
+
+.exam-grid {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:11px;
+}
+
+.exam-card {
+  background:#102650;
+  border:2px solid var(--border);
+  color:white;
+  border-radius:15px;
+  min-height:112px;
+  padding:14px 7px;
+  text-align:center;
+  transition:.2s;
+}
+
+.exam-card:hover {
+  transform:translateY(-3px);
+}
+
+.exam-card.selected {
+  border-color:var(--green);
+  background:linear-gradient(145deg,#074d43,#102650);
+  box-shadow:0 0 17px #00ed8b25;
+}
+
+.exam-card .icon {
+  font-size:28px;
+  display:block;
+  margin-bottom:8px;
+}
+
+.exam-card strong {
+  font-size:14px;
+}
+
+.exam-card small {
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:5px;
+}
+
+/* FORM */
+
+.field {
+  margin-bottom:18px;
+}
+
+.field:last-child {
+  margin-bottom:0;
+}
+
+.field label {
+  display:block;
+  font-size:12px;
+  color:#c6d9f8;
+  font-weight:800;
+  margin-bottom:9px;
+}
+
+select {
+  width:100%;
+  background:#102650;
+  border:1px solid var(--border);
+  color:white;
+  padding:14px;
+  border-radius:12px;
+  outline:none;
+  appearance:auto;
+}
+
+select option {
+  background:#102650;
+  color:white;
+}
+
+.help {
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.6;
+  margin-top:7px;
+}
+
+/* SUBJECTS */
+
+.subject-grid {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px;
+}
+
+.subject-option {
+  padding:13px 6px;
+  color:white;
+  background:#102650;
+  border:1px solid var(--border);
+  border-radius:11px;
+  font-size:11px;
+  transition:.2s;
+}
+
+.subject-option.selected {
+  background:#064b3b;
+  color:#75ffbf;
+  border-color:var(--green);
+  font-weight:800;
+}
+
+.subject-option:hover {
+  border-color:var(--green);
+}
+
+.subject-note {
+  color:var(--muted);
+  font-size:10px;
+  margin-top:10px;
+}
+
+/* MODE */
+
+.mode-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.mode {
+  background:#102650;
+  color:white;
+  text-align:left;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:15px;
+}
+
+.mode.selected {
+  border:2px solid var(--green);
+  background:#073d38;
+}
+
+.mode-icon {
+  font-size:25px;
+  display:block;
+  margin-bottom:9px;
+}
+
+.mode strong {
+  display:block;
+  font-size:13px;
+  margin-bottom:6px;
+}
+
+.mode small {
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.6;
+}
+
+/* OPTIONS */
+
+.options-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:13px;
+}
+
+/* SUMMARY */
+
+.summary {
+  background:linear-gradient(140deg,#061c40,#07142d);
+  border:1px solid #126b8e;
+  border-radius:18px;
+  padding:19px;
+  margin-top:20px;
+}
+
+.summary h3 {
+  color:var(--green);
+  font-size:14px;
+  margin-bottom:14px;
+}
+
+.summary-row {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  border-bottom:1px solid #ffffff0e;
+  padding:10px 0;
+  font-size:12px;
+}
+
+.summary-row:last-child {
+  border-bottom:none;
+}
+
+.summary-row span {
+  color:var(--muted);
+}
+
+.summary-row strong {
+  text-align:right;
+}
+
+.start {
+  width:100%;
+  padding:17px;
+  border-radius:14px;
+  margin-top:17px;
+  background:linear-gradient(90deg,#00ed8b,#00c5a3);
+  color:#002e22;
+  font-weight:950;
+  font-size:15px;
+  box-shadow:0 5px 20px #00ed8b30;
+  transition:.2s;
+}
+
+.start:hover {
+  transform:translateY(-2px);
+  filter:brightness(1.08);
+}
+
+.start:disabled {
+  opacity:.6;
+  cursor:not-allowed;
+}
+
+.footer {
+  text-align:center;
+  color:#7891b7;
+  font-size:10px;
+  line-height:1.8;
+  padding:15px;
+}
+
+.toast {
+  position:fixed;
+  z-index:20;
+  bottom:20px;
+  left:50%;
+  transform:translate(-50%,20px);
+  opacity:0;
+  pointer-events:none;
+  background:#102b52;
+  border:1px solid var(--green);
+  padding:13px 19px;
+  border-radius:12px;
+  font-size:12px;
+  text-align:center;
+  width:max-content;
+  max-width:90%;
+  transition:.25s;
+}
+
+.toast.show {
+  opacity:1;
+  transform:translate(-50%,0);
+}
+
+.toast.error {
+  border-color:var(--red);
+}
+
+/* RESPONSIVENESS */
+
+@media(max-width:520px) {
+  .container {
+    padding:12px;
+  }
+
+  .intro {
+    padding:20px;
+  }
+
+  .intro-art {
+    right:10px;
+    font-size:55px;
+  }
+
+  .section {
+    padding:15px;
+  }
+
+  .exam-card {
+    min-height:105px;
+  }
+
+  .exam-card strong {
+    font-size:12px;
+  }
+
+  .subject-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .subject-option {
+    font-size:11px;
+  }
+}
+
+@media(max-width:350px) {
+  .exam-grid {
+    gap:5px;
+  }
+
+  .exam-card {
+    padding:10px 3px;
+  }
+
+  .mode-grid,
+  .options-grid {
+    grid-template-columns:1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+
+  <header class="header">
+
+    <div class="brand" onclick="goHome()">
+      <div class="logo">🎓</div>
+
+      <div>
+        <h1>EXAM <span>PILOT</span></h1>
+        <small>PRACTICE. LEARN. EXCEL.</small>
+      </div>
+    </div>
+
+    <button class="back" onclick="goHome()">
+      ← Home
+    </button>
+
+  </header>
+
+  <!-- INTRO -->
+
+  <section class="intro">
+
+    <div class="intro-label">
+      ✦ YOUR EXAMINATION JOURNEY
+    </div>
+
+    <h2>
+      Welcome to the
+      <span>Practice Centre.</span>
+    </h2>
+
+    <p>
+      Prepare intelligently. Choose your examination,
+      customise your practice session and challenge
+      yourself with examination-standard questions.
+    </p>
+
+    <div class="intro-art">🚀</div>
+
+  </section>
+
+  <!-- STEP INDICATOR -->
+
+  <div class="step-indicator">
+    <div class="step active"></div>
+    <div class="step active"></div>
+    <div class="step active"></div>
+    <div class="step active"></div>
+  </div>
+
+  <!-- 01 EXAMINATION -->
+
+  <section class="section">
+
+    <div class="section-heading">
+      <div class="number">01</div>
+      <div>
+        <h3>Select Examination</h3>
+        <small>Choose your preferred examination type.</small>
+      </div>
+    </div>
+
+    <div class="exam-grid">
+
+      <button class="exam-card selected"
+        data-exam="JAMB"
+        onclick="chooseExam(this)">
+
+        <span class="icon">🎓</span>
+        <strong>JAMB / UTME</strong>
+        <small>University entrance</small>
+
+      </button>
+
+      <button class="exam-card"
+        data-exam="WAEC"
+        onclick="chooseExam(this)">
+
+        <span class="icon">📚</span>
+        <strong>WAEC</strong>
+        <small>Senior certificate</small>
+
+      </button>
+
+      <button class="exam-card"
+        data-exam="NECO"
+        onclick="chooseExam(this)">
+
+        <span class="icon">🏆</span>
+        <strong>NECO</strong>
+        <small>National examination</small>
+
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- 02 SUBJECT -->
+
+  <section class="section">
+
+    <div class="section-heading">
+      <div class="number">02</div>
+      <div>
+        <h3>Select Subject</h3>
+        <small>Choose one subject for this practice session.</small>
+      </div>
+    </div>
+
+    <div class="subject-grid" id="subjects">
+
+      <button class="subject-option selected"
+        data-subject="English Language"
+        onclick="chooseSubject(this)">
+        📘 English Language
+      </button>
+
+      <button class="subject-option"
+        data-subject="Mathematics"
+        onclick="chooseSubject(this)">
+        🧮 Mathematics
+      </button>
+
+      <button class="subject-option"
+        data-subject="Physics"
+        onclick="chooseSubject(this)">
+        ⚛️ Physics
+      </button>
+
+      <button class="subject-option"
+        data-subject="Chemistry"
+        onclick="chooseSubject(this)">
+        🧪 Chemistry
+      </button>
+
+      <button class="subject-option"
+        data-subject="Biology"
+        onclick="chooseSubject(this)">
+        🌿 Biology
+      </button>
+
+      <button class="subject-option"
+        data-subject="Government"
+        onclick="chooseSubject(this)">
+        🏛️ Government
+      </button>
+
+      <button class="subject-option"
+        data-subject="Economics"
+        onclick="chooseSubject(this)">
+        📊 Economics
+      </button>
+
+      <button class="subject-option"
+        data-subject="Literature in English"
+        onclick="chooseSubject(this)">
+        📖 Literature
+      </button>
+
+      <button class="subject-option"
+        data-subject="Geography"
+        onclick="chooseSubject(this)">
+        🌍 Geography
+      </button>
+
+      <button class="subject-option"
+        data-subject="Commerce"
+        onclick="chooseSubject(this)">
+        💼 Commerce
+      </button>
+
+      <button class="subject-option"
+        data-subject="Accounting"
+        onclick="chooseSubject(this)">
+        📈 Accounting
+      </button>
+
+      <button class="subject-option"
+        data-subject="Agricultural Science"
+        onclick="chooseSubject(this)">
+        🌱 Agricultural Science
+      </button>
+
+      <button class="subject-option"
+        data-subject="Civic Education"
+        onclick="chooseSubject(this)">
+        ⚖️ Civic Education
+      </button>
+
+      <button class="subject-option"
+        data-subject="Computer Studies"
+        onclick="chooseSubject(this)">
+        💻 Computer Studies
+      </button>
+
+      <button class="subject-option"
+        data-subject="Further Mathematics"
+        onclick="chooseSubject(this)">
+        ➗ Further Mathematics
+      </button>
+
+    </div>
+
+    <p class="subject-note">
+      Note: Subject availability depends on the selected examination.
+      This list is the initial subject catalogue and can be expanded.
+    </p>
+
+  </section>
+
+  <!-- 03 TOPIC -->
+
+  <section class="section">
+
+    <div class="section-heading">
+      <div class="number">03</div>
+      <div>
+        <h3>Choose Your Topic</h3>
+        <small>Focus on a particular area or cover the entire subject.</small>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="topic">Select Topic</label>
+
+      <select id="topic">
+        <option value="all">All Topics</option>
+      </select>
+
+      <p class="help" id="topicHelp">
+        Choose a subject to view its available topics.
+      </p>
+    </div>
+
+  </section>
+
+  <!-- 04 MODE -->
+
+  <section class="section">
+
+    <div class="section-heading">
+      <div class="number">04</div>
+      <div>
+        <h3>Choose Practice Mode</h3>
+        <small>Decide how you want to practise.</small>
+      </div>
+    </div>
+
+    <div class="mode-grid">
+
+      <button class="mode selected"
+        data-mode="practice"
+        onclick="chooseMode(this)">
+
+        <span class="mode-icon">📖</span>
+
+        <strong>Practice Mode</strong>
+
+        <small>
+          Learn at your own pace. Review answers
+          and explanations during practice.
+        </small>
+
+      </button>
+
+      <button class="mode"
+        data-mode="timed"
+        onclick="chooseMode(this)">
+
+        <span class="mode-icon">⏱️</span>
+
+        <strong>Timed CBT Mode</strong>
+
+        <small>
+          Simulate examination conditions with
+          a countdown timer.
+        </small>
+
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- 05 QUESTION SETTINGS -->
+
+  <section class="section">
+
+    <div class="section-heading">
+      <div class="number">05</div>
+      <div>
+        <h3>Examination Settings</h3>
+        <small>Customise your examination experience.</small>
+      </div>
+    </div>
+
+    <div class="options-grid">
+
+      <div class="field">
+
+        <label for="questionCount">
+          Number of Questions
+        </label>
+
+        <select id="questionCount">
+          <option value="10">10 Questions</option>
+          <option value="20">20 Questions</option>
+          <option value="30" selected>30 Questions</option>
+          <option value="40">40 Questions</option>
+          <option value="50">50 Questions</option>
+          <option value="60">60 Questions</option>
+          <option value="100">100 Questions</option>
+        </select>
+
+      </div>
+
+      <div class="field">
+
+        <label for="difficulty">
+          Difficulty Level
+        </label>
+
+        <select id="difficulty">
+          <option value="all">All Levels</option>
+          <option value="easy">Easy</option>
+          <option value="medium">Intermediate</option>
+          <option value="hard">Advanced</option>
+        </select>
+
+      </div>
+
+      <div class="field">
+
+        <label for="year">
+          Question Year
+        </label>
+
+        <select id="year">
+          <option value="all">All Available Years</option>
+          <option value="2026">2026</option>
+          <option value="2025">2025</option>
+          <option value="2024">2024</option>
+          <option value="2023">2023</option>
+          <option value="2022">2022</option>
+          <option value="2021">2021</option>
+          <option value="2020">2020</option>
+          <option value="2019">2019</option>
+          <option value="2018">2018</option>
+          <option value="2017">2017</option>
+          <option value="2016">2016</option>
+          <option value="2015">2015</option>
+          <option value="2014">2014</option>
+          <option value="2013">2013</option>
+          <option value="2012">2012</option>
+          <option value="2011">2011</option>
+          <option value="2010">2010</option>
+        </select>
+
+      </div>
+
+      <div class="field" id="durationField">
+
+        <label for="duration">
+          Examination Duration
+        </label>
+
+        <select id="duration">
+          <option value="15">15 Minutes</option>
+          <option value="30" selected>30 Minutes</option>
+          <option value="45">45 Minutes</option>
+          <option value="60">60 Minutes</option>
+          <option value="90">90 Minutes</option>
+          <option value="120">120 Minutes</option>
+        </select>
+
+      </div>
+
+    </div>
+
+    <p class="help" id="settingsHelp">
+      The year and difficulty filters will use matching
+      questions from the connected question bank.
+    </p>
+
+  </section>
+
+  <!-- EXAM SUMMARY -->
+
+  <section class="summary">
+
+    <h3>✦ YOUR EXAMINATION SUMMARY</h3>
+
+    <div class="summary-row">
+      <span>Examination</span>
+      <strong id="sumExam">JAMB / UTME</strong>
+    </div>
+
+    <div class="summary-row">
+      <span>Subject</span>
+      <strong id="sumSubject">English Language</strong>
+    </div>
+
+    <div class="summary-row">
+      <span>Topic</span>
+      <strong id="sumTopic">All Topics</strong>
+    </div>
+
+    <div class="summary-row">
+      <span>Practice Mode</span>
+      <strong id="sumMode">Practice Mode</strong>
+    </div>
+
+    <div class="summary-row">
+      <span>Questions</span>
+      <strong id="sumCount">30</strong>
+    </div>
+
+    <div class="summary-row">
+      <span>Difficulty</span>
+      <strong id="sumDifficulty">All Levels</strong>
+    </div>
+
+    <div class="summary-row">
+      <span>Year</span>
+      <strong id="sumYear">All Available Years</strong>
+    </div>
+
+    <div class="summary-row">
+      <span>Duration</span>
+      <strong id="sumDuration">30 Minutes</strong>
+    </div>
+
+    <button class="start" id="startButton"
+      onclick="startExam()">
+
+      🚀 START EXAMINATION
+
+    </button>
+
+    <p class="help" style="text-align:center;margin-top:13px">
+      Your selected settings will be transferred
+      to the examination engine.
+    </p>
+
+  </section>
+
+  <footer class="footer">
+    <strong>EXAM PILOT</strong><br>
+    Practice. Learn. Excel.<br>
+    Navigate Your Way to Academic Excellence.
+  </footer>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+
+/* ======================================
+   EXAM PILOT PRACTICE CENTRE
+   CONFIGURATION AND NAVIGATION
+====================================== */
+
+
+/* 1. APPLICATION STATE */
+
+let selectedExam = "JAMB";
+let selectedSubject = "English Language";
+let selectedMode = "practice";
+
+
+/* 2. SUBJECT CATALOGUE */
+
+const SUBJECTS = {
+
+  JAMB: [
+    "English Language",
+    "Mathematics",
+    "Physics",
+    "Chemistry",
+    "Biology",
+    "Government",
+    "Economics",
+    "Literature in English",
+    "Geography",
+    "Commerce",
+    "Accounting",
+    "Agricultural Science",
+    "Computer Studies"
+  ],
+
+  WAEC: [
+    "English Language",
+    "Mathematics",
+    "Physics",
+    "Chemistry",
+    "Biology",
+    "Government",
+    "Economics",
+    "Literature in English",
+    "Geography",
+    "Commerce",
+    "Accounting",
+    "Agricultural Science",
+    "Civic Education",
+    "Computer Studies",
+    "Further Mathematics"
+  ],
+
+  NECO: [
+    "English Language",
+    "Mathematics",
+    "Physics",
+    "Chemistry",
+    "Biology",
+    "Government",
+    "Economics",
+    "Literature in English",
+    "Geography",
+    "Commerce",
+    "Accounting",
+    "Agricultural Science",
+    "Civic Education",
+    "Computer Studies",
+    "Further Mathematics"
+  ]
+
+};
+
+
+/* 3. SUBJECT TOPIC DATABASE */
+
+const TOPICS = {
+
+  "English Language": [
+    "Grammar and Mechanics",
+    "Comprehension",
+    "Vocabulary",
+    "Oral English",
+    "Lexis and Structure",
+    "Sentence Interpretation",
+    "Summary Writing",
+    "Register",
+    "Synonyms and Antonyms",
+    "Figures of Speech"
+  ],
+
+  "Mathematics": [
+    "Number Bases",
+    "Fractions and Decimals",
+    "Indices and Logarithms",
+    "Algebra",
+    "Geometry",
+    "Trigonometry",
+    "Statistics",
+    "Probability",
+    "Mensuration",
+    "Coordinate Geometry",
+    "Sets",
+    "Sequences and Series"
+  ],
+
+  "Physics": [
+    "Measurements",
+    "Motion",
+    "Force and Equilibrium",
+    "Work, Energy and Power",
+    "Heat",
+    "Waves",
+    "Sound",
+    "Light",
+    "Electricity",
+    "Magnetism",
+    "Modern Physics"
+  ],
+
+  "Chemistry": [
+    "Atomic Structure",
+    "Chemical Bonding",
+    "Periodic Table",
+    "Acids, Bases and Salts",
+    "Chemical Reactions",
+    "Organic Chemistry",
+    "Electrolysis",
+    "Gas Laws",
+    "Chemical Equilibrium",
+    "Metals and Non-metals"
+  ],
+
+  "Biology": [
+    "Cell Biology",
+    "Nutrition",
+    "Respiration",
+    "Transport Systems",
+    "Reproduction",
+    "Genetics",
+    "Ecology",
+    "Evolution",
+    "Classification",
+    "Human Biology"
+  ],
+
+  "Government": [
+    "Basic Concepts in Government",
+    "Political Concepts",
+    "Constitutional Development",
+    "Constitutionalism",
+    "Forms of Government",
+    "Systems of Government",
+    "Political Parties",
+    "Electoral Systems",
+    "Public Administration",
+    "International Relations",
+    "Political Ideologies",
+    "Military Rule in Nigeria",
+    "Nigerian Foreign Policy",
+    "ECOWAS and African Organisations",
+    "United Nations"
+  ],
+
+  "Economics": [
+    "Basic Economic Concepts",
+    "Demand and Supply",
+    "Elasticity",
+    "Production",
+    "Market Structures",
+    "National Income",
+    "Inflation",
+    "Unemployment",
+    "Money and Banking",
+    "Public Finance",
+    "International Trade"
+  ],
+
+  "Literature in English": [
+    "Literary Appreciation",
+    "Literary Terms",
+    "Figures of Speech",
+    "Poetry",
+    "Prose",
+    "Drama",
+    "Characterisation",
+    "Themes and Settings",
+    "African Literature",
+    "Non-African Literature"
+  ],
+
+  "Geography": [
+    "Physical Geography",
+    "Weather and Climate",
+    "Population",
+    "Settlement",
+    "Economic Activities",
+    "Map Reading",
+    "Environmental Resources"
+  ],
+
+  "Commerce": [
+    "Trade",
+    "Business Organisation",
+    "Banking",
+    "Insurance",
+    "Transportation",
+    "Advertising",
+    "Warehousing",
+    "International Trade"
+  ],
+
+  "Accounting": [
+    "Accounting Principles",
+    "Double Entry",
+    "Ledger Accounts",
+    "Trial Balance",
+    "Final Accounts",
+    "Bank Reconciliation",
+    "Depreciation",
+    "Partnership Accounts"
+  ],
+
+  "Agricultural Science": [
+    "Soil Science",
+    "Crop Production",
+    "Animal Production",
+    "Farm Management",
+    "Agricultural Economics",
+    "Farm Tools and Machinery",
+    "Pests and Diseases"
+  ],
+
+  "Civic Education": [
+    "Citizenship",
+    "Human Rights",
+    "Democracy",
+    "Rule of Law",
+    "National Values",
+    "Constitution",
+    "Drug Abuse"
+  ],
+
+  "Computer Studies": [
+    "Computer Fundamentals",
+    "Computer Hardware",
+    "Computer Software",
+    "Data Processing",
+    "Programming",
+    "Computer Networks",
+    "Internet and Security"
+  ],
+
+  "Further Mathematics": [
+    "Matrices",
+    "Differentiation",
+    "Integration",
+    "Vectors",
+    "Complex Numbers",
+    "Mechanics",
+    "Probability",
+    "Advanced Trigonometry"
+  ]
+
+};
+
+
+/* 4. TOAST NOTIFICATIONS */
+
+let toastTimer;
+
+function notify(message, error = false) {
+
+  const toast = document.getElementById("toast");
+
+  toast.textContent = message;
+
+  toast.classList.toggle("error", error);
+
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2800);
+
+}
+
+
+/* 5. HOME NAVIGATION */
+
+function goHome() {
+
+  window.location.href = "index.html";
+
+}
+
+
+/* 6. EXAMINATION SELECTION */
+
+function chooseExam(button) {
+
+  document.querySelectorAll(".exam-card")
+    .forEach(card => card.classList.remove("selected"));
+
+  button.classList.add("selected");
+
+  selectedExam = button.dataset.exam;
+
+  renderSubjects();
+
+  updateSummary();
+
+  notify(selectedExam + " selected.");
+
+}
+
+
+/* 7. SUBJECT RENDERING */
+
+function renderSubjects() {
+
+  const container = document.getElementById("subjects");
+
+  const available = SUBJECTS[selectedExam];
+
+  container.innerHTML = "";
+
+  available.forEach(name => {
+
+    const button = document.createElement("button");
+
+    button.className = "subject-option";
+
+    button.dataset.subject = name;
+
+    button.textContent = name;
+
+    button.addEventListener("click", function() {
+      chooseSubject(this);
+    });
+
+    container.appendChild(button);
+
+  });
+
+  // Preserve the selected subject if available.
+  // Otherwise, choose the first available subject.
+
+  if (!available.includes(selectedSubject)) {
+    selectedSubject = available[0];
+  }
+
+  const matching = [...container.children].find(
+    button => button.dataset.subject === selectedSubject
+  );
+
+  if (matching) {
+    matching.classList.add("selected");
+  }
+
+  renderTopics();
+
+}
+
+
+/* 8. SUBJECT SELECTION */
+
+function chooseSubject(button) {
+
+  document.querySelectorAll(".subject-option")
+    .forEach(item => item.classList.remove("selected"));
+
+  button.classList.add("selected");
+
+  selectedSubject = button.dataset.subject;
+
+  renderTopics();
+
+  updateSummary();
+
+  notify(selectedSubject + " selected.");
+
+}
+
+
+/* 9. TOPIC RENDERING */
+
+function renderTopics() {
+
+  const select = document.getElementById("topic");
+
+  const help = document.getElementById("topicHelp");
+
+  const topics = TOPICS[selectedSubject] || [];
+
+  select.innerHTML = "";
+
+  const allOption = document.createElement("option");
+
+  allOption.value = "all";
+
+  allOption.textContent = "All Topics";
+
+  select.appendChild(allOption);
+
+  topics.forEach(topic => {
+
+    const option = document.createElement("option");
+
+    option.value = topic;
+
+    option.textContent = topic;
+
+    select.appendChild(option);
+
+  });
+
+  help.textContent = topics.length
+    ? topics.length + " topic categories available for " + selectedSubject + "."
+    : "Topic categories will be added for this subject.";
+
+}
+
+
+/* 10. MODE SELECTION */
+
+function chooseMode(button) {
+
+  document.querySelectorAll(".mode")
+    .forEach(item => item.classList.remove("selected"));
+
+  button.classList.add("selected");
+
+  selectedMode = button.dataset.mode;
+
+  const durationField = document.getElementById("durationField");
+
+  durationField.style.opacity =
+    selectedMode === "timed" ? "1" : ".55";
+
+  document.getElementById("duration").disabled =
+    selectedMode !== "timed";
+
+  updateSummary();
+
+}
+
+
+/* 11. UPDATE SUMMARY */
+
+function updateSummary() {
+
+  const topic = document.getElementById("topic");
+
+  const count = document.getElementById("questionCount");
+
+  const difficulty = document.getElementById("difficulty");
+
+  const year = document.getElementById("year");
+
+  const duration = document.getElementById("duration");
+
+  document.getElementById("sumExam").textContent =
+    selectedExam === "JAMB" ? "JAMB / UTME" : selectedExam;
+
+  document.getElementById("sumSubject").textContent =
+    selectedSubject;
+
+  document.getElementById("sumTopic").textContent =
+    topic.selectedOptions[0].textContent;
+
+  document.getElementById("sumMode").textContent =
+    selectedMode === "practice"
+      ? "Practice Mode"
+      : "Timed CBT Mode";
+
+  document.getElementById("sumCount").textContent =
+    count.value;
+
+  document.getElementById("sumDifficulty").textContent =
+    difficulty.selectedOptions[0].textContent;
+
+  document.getElementById("sumYear").textContent =
+    year.selectedOptions[0].textContent;
+
+  document.getElementById("sumDuration").textContent =
+    selectedMode === "practice"
+      ? "No time limit"
+      : duration.value + " Minutes";
+
+}
+
+
+/* 12. LISTEN FOR SETTING CHANGES */
+
+[
+  "topic",
+  "questionCount",
+  "difficulty",
+  "year",
+  "duration"
+].forEach(id => {
+
+  document.getElementById(id)
+    .addEventListener("change", updateSummary);
+
+});
+
+
+/* 13. EXAMINATION CONFIGURATION */
+
+function getConfiguration() {
+
+  return {
+
+    exam: selectedExam,
+
+    subject: selectedSubject,
+
+    topic: document.getElementById("topic").value,
+
+    mode: selectedMode,
+
+    questions: Number(
+      document.getElementById("questionCount").value
+    ),
+
+    difficulty: document.getElementById("difficulty").value,
+
+    year: document.getElementById("year").value,
+
+    duration: selectedMode === "timed"
+      ? Number(document.getElementById("duration").value)
+      : null,
+
+    createdAt: new Date().toISOString(),
+
+    version: 1
+
+  };
+
+}
+
+
+/* 14. START EXAMINATION */
+
+function startExam() {
+
+  const configuration = getConfiguration();
+
+  if (!configuration.exam ||
+      !configuration.subject ||
+      !configuration.questions) {
+
+    notify("Please complete your examination settings.", true);
+
+    return;
+
+  }
+
+  const startButton = document.getElementById("startButton");
+
+  try {
+
+    // Save the configuration for the next page.
+
+    sessionStorage.setItem(
+      "examPilotConfig",
+      JSON.stringify(configuration)
+    );
+
+    startButton.disabled = true;
+
+    startButton.textContent = "PREPARING EXAMINATION...";
+
+    // Open the future CBT examination engine.
+
+    window.location.href = "cbt.html";
+
+  } catch (error) {
+
+    startButton.disabled = false;
+
+    startButton.textContent = "🚀 START EXAMINATION";
+
+    notify("Unable to save your settings. Try again.", true);
+
+  }
+
+}
+
+
+/* 15. INITIALISE PAGE */
+
+function initialise() {
+
+  const params = new URLSearchParams(window.location.search);
+
+  const requestedSubject = params.get("subject");
+
+  if (requestedSubject) {
+
+    const match = Object.values(SUBJECTS)
+      .flat()
+      .find(subject =>
+        subject.toLowerCase() === requestedSubject.toLowerCase()
+      );
+
+    if (match) {
+      selectedSubject = match;
+    }
+
+  }
+
+  renderSubjects();
+
+  updateSummary();
+
+  document.getElementById("duration").disabled =
+    selectedMode !== "timed";
+
+}
+
+initialise();
+
+</script>
+
+</body>
+</html>
