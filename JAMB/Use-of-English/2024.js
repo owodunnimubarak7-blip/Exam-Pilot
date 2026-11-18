@@ -7,7 +7,7 @@ window.ExamPilot.registerBank({
 
   questions: [
     {
-      id: "JAMB-ENG-2024-001",
+      id: "jamb-english-2024",
       exam: "JAMB",
       subject: "English Language",
       year: 2024,
