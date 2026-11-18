@@ -1,0 +1,1818 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101827">
+<title>Exam Pilot | Computer-Based Test</title>
+
+<style>
+:root{
+  --bg:#0b1220;--panel:#111c2e;--panel2:#17243a;--line:#26364f;
+  --text:#edf3ff;--muted:#9aabc4;--primary:#3978f6;--primary2:#245bd0;
+  --green:#19a875;--red:#e05260;--amber:#e6a23c;--radius:16px;
+  --shadow:0 16px 45px rgba(0,0,0,.22)
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(11,18,32,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top-inner{max-width:1400px;margin:auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:850;letter-spacing:.2px}
+.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#3978f6,#19a875);display:grid;place-items:center;font-weight:900}
+.brand small{display:block;color:var(--muted);font-size:11px;font-weight:600;letter-spacing:1.3px}
+.top-actions{display:flex;align-items:center;gap:10px}
+.timer{padding:8px 13px;border:1px solid var(--line);border-radius:12px;background:var(--panel);font-weight:800;font-variant-numeric:tabular-nums}
+.timer.warning{color:#ffbd55;border-color:#956a2e}
+.timer.danger{color:#ff7781;border-color:#a9434c}
+.btn{border:0;border-radius:11px;padding:10px 15px;font-weight:750;color:white;background:var(--primary);transition:.18s}
+.btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn.secondary{background:var(--panel2);border:1px solid var(--line);color:var(--text)}
+.btn.danger{background:#a93643}
+.btn.success{background:#13845d}
+.btn.small{padding:7px 10px;font-size:13px}
+main{max-width:1400px;margin:22px auto;padding:0 20px 40px}
+.setup{max-width:850px;margin:35px auto;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:26px;box-shadow:var(--shadow)}
+h1,h2,h3,p{margin-top:0}
+h1{font-size:clamp(25px,4vw,36px);line-height:1.15;margin-bottom:9px}
+.subtitle{color:var(--muted);margin-bottom:23px}
+.setup-note{margin:18px 0;padding:13px 15px;border-radius:12px;background:#14243a;color:#b8c9e4;font-size:13px}
+.setup-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.exam-layout.single-column{display:grid;grid-template-columns:minmax(0,1fr);max-width:1050px;margin:0 auto}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.exam-head{padding:16px 19px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--line)}
+.exam-meta{color:var(--muted);font-size:13px}
+.progress-wrap{height:5px;background:#25344b}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--primary),#19a875);width:0%;transition:width .2s}
+.question-area{padding:clamp(18px,3vw,30px);min-height:400px}
+.q-top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:18px}
+.q-number{font-weight:800;color:#9ebcff}
+.topic-tag{font-size:12px;padding:5px 9px;border-radius:99px;background:#1b2b45;color:#b7cafa}
+.passage{padding:17px 18px;margin:0 0 22px;border-left:3px solid var(--primary);background:#0d192b;border-radius:0 12px 12px 0;color:#d4e0f3;white-space:pre-wrap}
+.passage h3{font-size:14px;color:#9ebcff;margin-bottom:8px}
+.question-text{font-size:clamp(17px,2vw,20px);font-weight:650;line-height:1.65;white-space:pre-wrap;margin-bottom:22px}
+.options{display:grid;gap:11px}
+.option{display:flex;align-items:flex-start;gap:12px;padding:13px 15px;border:1px solid var(--line);border-radius:13px;background:#101c2e;text-align:left;color:var(--text);width:100%;transition:.15s}
+.option:hover{border-color:#527fcf;background:#14243b}
+.option.selected{border-color:var(--primary);background:#172e55;box-shadow:inset 0 0 0 1px var(--primary)}
+.option.correct{border-color:var(--green);background:#10382f}
+.option.incorrect{border-color:var(--red);background:#3b202a}
+.option-letter{flex:0 0 28px;width:28px;height:28px;border-radius:8px;background:#26364f;display:grid;place-items:center;font-weight:850;font-size:13px}
+.option.selected .option-letter{background:var(--primary)}
+.option-text{padding-top:2px}
+.q-controls{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:26px;flex-wrap:wrap}
+.control-group{display:flex;gap:9px;flex-wrap:wrap}
+.jump-navigator{margin-top:16px;padding:16px 18px}
+.jump-heading{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.jump-content{padding-top:17px}
+.jump-submit{display:flex;justify-content:flex-end;margin-top:12px}
+.palette{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:8px}
+.pal{height:39px;border:1px solid var(--line);border-radius:9px;background:#17243a;color:var(--text);font-weight:750;position:relative}
+.pal.current{outline:2px solid #7da7ff;border-color:#7da7ff}
+.pal.answered{background:#155d48;border-color:#218b6b}
+.pal.flagged:after{content:"⚑";position:absolute;right:3px;top:-7px;color:#ffc15b;font-size:13px}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:16px 0;color:var(--muted);font-size:12px}
+.legend span{display:flex;align-items:center;gap:7px}
+.dot{width:10px;height:10px;border-radius:3px;background:#17243a;border:1px solid var(--line)}
+.dot.ans{background:#155d48}
+.dot.cur{background:#7da7ff}
+.dot.flag{background:#8b672e}
+.side-stats{border-top:1px solid var(--line);padding-top:13px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat{background:#0d192b;border-radius:10px;padding:10px}
+.stat strong{display:block;font-size:20px}
+.stat small{color:var(--muted)}
+.overlay{position:fixed;inset:0;background:rgba(2,7,16,.78);z-index:50;display:none;align-items:center;justify-content:center;padding:18px}
+.overlay.show{display:flex}
+.modal{width:min(520px,100%);background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:var(--shadow)}
+.modal h2{margin-bottom:8px}
+.modal p{color:var(--muted)}
+.modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:20px;flex-wrap:wrap}
+.result-wrap{max-width:1050px;margin:24px auto}
+.result-hero{padding:25px;text-align:center}
+.score-ring{width:150px;height:150px;border-radius:50%;margin:18px auto;display:grid;place-items:center;background:conic-gradient(var(--green) var(--score,0%),#26364f 0);position:relative}
+.score-ring:before{content:"";position:absolute;inset:11px;border-radius:50%;background:var(--panel)}
+.score-ring div{position:relative}
+.score-ring strong{display:block;font-size:32px}
+.score-ring small{color:var(--muted)}
+.result-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+.result-stat{padding:15px;text-align:center}
+.result-stat strong{display:block;font-size:24px}
+.result-stat span{font-size:12px;color:var(--muted)}
+.review-list{display:grid;gap:13px;margin-top:17px}
+.review-item{padding:18px}
+.review-item h3{font-size:16px;line-height:1.5}
+.review-line{padding:8px 10px;border-radius:9px;margin:7px 0;font-size:14px;background:#0d192b}
+.review-line.good{border-left:3px solid var(--green)}
+.review-line.bad{border-left:3px solid var(--red)}
+.explanation{margin-top:12px;padding:13px;background:#14243a;border-radius:11px;color:#d2def0}
+.explanation h4{margin:0 0 6px;color:#9ebcff}
+.option-analysis{margin:8px 0 0;padding-left:20px;color:#c5d2e7}
+.empty{padding:25px;text-align:center;color:var(--muted)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#23344d;color:white;padding:11px 16px;border-radius:11px;z-index:80;display:none;max-width:90%;text-align:center}
+.toast.show{display:block}
+.hidden{display:none!important}
+
+@media(max-width:600px){
+  .jump-navigator .palette{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .jump-heading{align-items:flex-start;flex-direction:column}
+  .jump-submit .btn{width:100%}
+  main{padding:0 12px 25px;margin:14px auto}
+  .top-inner{padding:10px 12px}
+  .brand small{display:none}
+  .top-actions .secondary{display:none}
+  .setup{padding:19px;margin:18px auto}
+  .result-stats{grid-template-columns:repeat(2,1fr)}
+  .q-controls{align-items:stretch}
+  .control-group{width:100%}
+  .control-group .btn{flex:1}
+  .exam-head{align-items:flex-start;flex-direction:column}
+  .side-stats{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="top-inner">
+    <div class="brand">
+      <div class="logo">EP</div>
+      <div>EXAM PILOT<small>SMART CBT PLATFORM</small></div>
+    </div>
+
+    <div class="top-actions">
+      <div id="timerBox" class="timer hidden">00:00:00</div>
+      <button class="btn secondary small" id="historyBtn" type="button">History</button>
+      <button class="btn danger small hidden" id="topSubmitBtn" type="button">Submit exam</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- This is a loading/error screen, NOT another setup form. -->
+  <section id="setupScreen" class="setup">
+    <h1>Preparing your examination</h1>
+    <p class="subtitle" id="setupMessage">
+      Loading the examination settings selected on the Practice page…
+    </p>
+
+    <div class="setup-note">
+      Exam Pilot uses your previous Practice-page selection.
+      You do not need to select the examination, subject, year,
+      topic or duration again here.
+    </div>
+
+    <div class="setup-actions">
+      <button class="btn secondary" id="retryBtn" type="button">Try loading again</button>
+      <button class="btn secondary" id="backPracticeBtn" type="button">Back to Practice</button>
+    </div>
+  </section>
+
+  <!-- EXAMINATION SCREEN -->
+  <section id="examScreen" class="hidden">
+
+    <div class="exam-layout single-column">
+
+      <section class="card">
+
+        <div class="exam-head">
+          <div>
+            <strong id="examTitle">JAMB • Use of English</strong>
+            <div class="exam-meta" id="examSubtitle">Year 1978 · Examination mode</div>
+          </div>
+          <div class="exam-meta" id="questionCounter">Question 1 of 30</div>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="question-area">
+
+          <div class="q-top">
+            <span class="q-number" id="qNumber">QUESTION 01</span>
+            <span class="topic-tag" id="qTopic">General</span>
+          </div>
+
+          <div id="passageBox" class="passage hidden"></div>
+
+          <div id="questionText" class="question-text"></div>
+
+          <div id="optionsBox" class="options"></div>
+
+          <div class="q-controls">
+
+            <div class="control-group">
+              <button class="btn secondary" id="prevBtn" type="button">← Previous</button>
+              <button class="btn secondary" id="nextBtn" type="button">Next →</button>
+            </div>
+
+            <div class="control-group">
+              <button class="btn secondary" id="clearBtn" type="button">Clear answer</button>
+              <button class="btn" id="flagBtn" type="button">⚑ Flag question</button>
+            </div>
+
+          </div>
+
+          <div id="practiceFeedback" class="explanation hidden" aria-live="polite"></div>
+
+        </div>
+      </section>
+
+      <!-- QUESTION NAVIGATOR BELOW THE QUESTIONS -->
+      <section class="card jump-navigator">
+
+        <div class="jump-heading">
+          <div>
+            <strong>Question navigator</strong>
+            <div class="exam-meta">Jump directly to any question in this examination.</div>
+          </div>
+
+          <button
+            class="btn secondary small"
+            id="toggleJumpBtn"
+            type="button"
+            aria-expanded="false"
+            aria-controls="jumpBox">
+            Open jump box ＋
+          </button>
+        </div>
+
+        <div id="jumpBox" class="jump-content hidden">
+
+          <div class="side-title">
+            <h3>Jump to question</h3>
+            <span class="exam-meta" id="paletteCount">0 questions</span>
+          </div>
+
+          <div id="palette" class="palette"></div>
+
+          <div class="legend">
+            <span><i class="dot ans"></i> Answered</span>
+            <span><i class="dot cur"></i> Current</span>
+            <span><i class="dot flag"></i> Flagged</span>
+            <span><i class="dot"></i> Not answered</span>
+          </div>
+
+          <div class="side-stats">
+            <div class="stat"><strong id="answeredCount">0</strong><small>Answered</small></div>
+            <div class="stat"><strong id="remainingCount">0</strong><small>Remaining</small></div>
+            <div class="stat"><strong id="flaggedCount">0</strong><small>Flagged</small></div>
+            <div class="stat"><strong id="totalCount">0</strong><small>Total</small></div>
+          </div>
+
+        </div>
+
+        <div class="jump-submit">
+          <button class="btn danger" id="sideSubmitBtn" type="button">Submit examination</button>
+        </div>
+
+      </section>
+
+    </div>
+  </section>
+
+  <!-- RESULTS SCREEN -->
+  <section id="resultScreen" class="result-wrap hidden">
+
+    <div class="card result-hero">
+
+      <div class="topic-tag" style="display:inline-block">EXAMINATION COMPLETED</div>
+
+      <h1 style="margin-top:13px">Your performance</h1>
+
+      <p class="subtitle" id="resultSubtitle">Your result summary is ready.</p>
+
+      <div class="score-ring" id="scoreRing">
+        <div>
+          <strong id="scorePercent">0%</strong>
+          <small>Score</small>
+        </div>
+      </div>
+
+      <h2 id="scoreFraction">0 / 0</h2>
+
+      <p id="performanceMessage" class="subtitle"></p>
+
+      <div class="setup-actions" style="justify-content:center">
+        <button class="btn" id="reviewBtn" type="button">Review answers and explanations</button>
+        <button class="btn secondary" id="newExamBtn" type="button">Start another exam</button>
+      </div>
+
+    </div>
+
+    <div class="result-stats">
+
+      <div class="card result-stat">
+        <strong id="correctStat">0</strong>
+        <span>Correct</span>
+      </div>
+
+      <div class="card result-stat">
+        <strong id="wrongStat">0</strong>
+        <span>Incorrect</span>
+      </div>
+
+      <div class="card result-stat">
+        <strong id="unansweredStat">0</strong>
+        <span>Unanswered</span>
+      </div>
+
+      <div class="card result-stat">
+        <strong id="timeStat">00:00</strong>
+        <span>Time used</span>
+      </div>
+
+    </div>
+
+    <div id="reviewSection" class="hidden">
+      <h2>Answer review</h2>
+      <p class="subtitle">Study the correct answers and explanations below.</p>
+      <div id="reviewList" class="review-list"></div>
+    </div>
+
+  </section>
+
+  <!-- EXAMINATION HISTORY -->
+  <section id="historyScreen" class="setup hidden">
+
+    <h1>Examination history</h1>
+    <p class="subtitle">Your recent results saved on this device.</p>
+
+    <div id="historyList"></div>
+
+    <div class="setup-actions">
+      <button class="btn secondary" id="backFromHistory" type="button">Back</button>
+      <button class="btn danger" id="clearHistoryBtn" type="button">Clear history</button>
+    </div>
+
+  </section>
+
+</main>
+
+<!-- SUBMISSION CONFIRMATION -->
+<div class="overlay" id="confirmOverlay" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+
+  <div class="modal">
+
+    <h2 id="confirmTitle">Submit your examination?</h2>
+
+    <p id="confirmText">Check your answers before submitting.</p>
+
+    <div class="modal-actions">
+      <button class="btn secondary" id="cancelSubmit" type="button">Continue exam</button>
+      <button class="btn danger" id="confirmSubmit" type="button">Submit now</button>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* =========================================================
+   EXAM PILOT CBT ENGINE
+
+   Question bank registration format:
+
+   window.ExamPilot.registerBank({
+     exam: "JAMB",
+     subject: "Use of English",
+     year: 1978,
+     questions: masterQuestions,
+     passages: passages
+   });
+
+   Supported question properties:
+   q, a, c
+   OR
+   question, options, correctAnswer
+
+   Correct answer index is ZERO-BASED:
+   A = 0, B = 1, C = 2, D = 3, E = 4.
+   ========================================================= */
+
+(function(){
+"use strict";
+
+const $ = id => document.getElementById(id);
+
+const state = {
+  questions: [],
+  passages: {},
+  answers: {},
+  flagged: new Set(),
+  current: 0,
+  config: null,
+  startedAt: null,
+  deadline: null,
+  timerId: null,
+  submitted: false,
+  results: null,
+  practiceChecked: new Set(),
+  lastBankKey: null
+};
+
+const bankRegistry = window.ExamPilot = window.ExamPilot || {};
+
+bankRegistry.banks = bankRegistry.banks || {};
+
+/* REGISTER QUESTION BANKS */
+bankRegistry.registerBank = function(bank){
+
+  if(
+    !bank ||
+    !bank.exam ||
+    !bank.subject ||
+    !bank.year ||
+    !Array.isArray(bank.questions)
+  ){
+    console.error("Exam Pilot: invalid question bank registration", bank);
+    return;
+  }
+
+  const key = makeBankKey(bank.exam, bank.subject, bank.year);
+
+  bankRegistry.banks[key] = {
+    ...bank,
+    passages: bank.passages || {}
+  };
+
+  console.info("Exam Pilot question bank registered:", key);
+};
+
+const makeBankKey = (exam,subject,year) =>
+  [norm(exam),norm(subject),String(year)].join("|");
+
+const norm = value =>
+  String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_-]+/g," ");
+
+const escapeHTML = value =>
+  String(value ?? "").replace(/[&<>"']/g,ch=>({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  }[ch]));
+
+const shuffle = arr => {
+  const a = [...arr];
+
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+
+  return a;
+};
+
+const letters = ["A","B","C","D","E","F","G","H"];
+
+let toastTimer;
+
+/* TOAST MESSAGE */
+function showToast(message){
+
+  $("toast").textContent = message;
+  $("toast").classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer = setTimeout(
+    ()=>$("toast").classList.remove("show"),
+    2800
+  );
+}
+
+/* SCREEN MANAGEMENT */
+function showScreen(name){
+
+  [
+    "setupScreen",
+    "examScreen",
+    "resultScreen",
+    "historyScreen"
+  ].forEach(id => $(id).classList.add("hidden"));
+
+  $(name).classList.remove("hidden");
+
+  $("timerBox").classList.toggle(
+    "hidden",
+    name !== "examScreen"
+  );
+
+  $("topSubmitBtn").classList.toggle(
+    "hidden",
+    name !== "examScreen"
+  );
+}
+
+/* READ SETTINGS FROM PRACTICE PAGE */
+function readConfig(){
+
+  let saved = {};
+
+  try{
+    saved = JSON.parse(
+      sessionStorage.getItem("examPilotConfig") || "{}"
+    ) || {};
+  }catch(error){
+    console.error("Could not read examination settings:",error);
+  }
+
+  return {
+
+    exam: saved.exam || "JAMB",
+
+    subject: saved.subject || "Use of English",
+
+    year: saved.year || "1978",
+
+    topic: saved.topic || "",
+
+    mode: saved.mode || "exam",
+
+    questions: Number(
+      saved.questions ??
+      saved.questionCount ??
+      30
+    ),
+
+    duration: Number(saved.duration ?? 30),
+
+    difficulty: saved.difficulty || "all",
+
+    shuffleQuestions: saved.shuffleQuestions === true,
+
+    shuffleOptions: saved.shuffleOptions === true
+
+  };
+}
+
+/* LOAD QUESTION BANK */
+async function loadManifestBank(cfg){
+
+  const key = makeBankKey(
+    cfg.exam,
+    cfg.subject,
+    cfg.year
+  );
+
+  if(bankRegistry.banks[key]){
+    return bankRegistry.banks[key];
+  }
+
+  let manifest;
+
+  try{
+
+    const response = await fetch(
+      "questions/manifest.json",
+      {cache:"no-store"}
+    );
+
+    if(!response.ok){
+      throw new Error("Question manifest could not be found.");
+    }
+
+    manifest = await response.json();
+
+  }catch(error){
+
+    console.error("Manifest loading error:",error);
+
+    throw new Error(
+      "Unable to load the question manifest. Check questions/manifest.json."
+    );
+
+  }
+
+  /*
+    Find the selected year file.
+
+    Example manifest path:
+    JAMB/Use-of-English/1978.js
+
+    The loader automatically adds:
+    questions/
+  */
+
+  const examEntry = Object.keys(manifest).find(
+    key => norm(key) === norm(cfg.exam)
+  );
+
+  const subjects = examEntry ? manifest[examEntry] : null;
+
+  const subjectEntry = subjects
+    ? Object.keys(subjects).find(
+        key => norm(key) === norm(cfg.subject)
+      )
+    : null;
+
+  const years = subjectEntry ? subjects[subjectEntry] : null;
+
+  const path = years ? years[String(cfg.year)] : null;
+
+  if(!path){
+
+    throw new Error(
+      `No question bank was found for ${cfg.exam}, ${cfg.subject}, ${cfg.year}.`
+    );
+
+  }
+
+  await new Promise((resolve,reject)=>{
+
+    const script = document.createElement("script");
+
+    script.src =
+      "questions/" + String(path).replace(/^\/+/,"");
+
+    script.onload = resolve;
+
+    script.onerror = () => reject(
+      new Error("Could not load question file: " + path)
+    );
+
+    document.head.appendChild(script);
+
+  });
+
+  if(bankRegistry.banks[key]){
+    return bankRegistry.banks[key];
+  }
+
+  throw new Error(
+    "The question file loaded, but it did not register its question bank. Check registerBank()."
+  );
+
+}
+
+/* NORMALISE QUESTION STRUCTURE */
+function normalizeQuestion(raw,index,bank){
+
+  const options = raw.options || raw.a || [];
+
+  let correct = raw.correctAnswer;
+
+  if(correct === undefined){
+    correct = raw.c;
+  }
+
+  if(
+    typeof correct === "string" &&
+    /^[A-H]$/i.test(correct.trim())
+  ){
+
+    correct =
+      correct.trim().toUpperCase().charCodeAt(0) - 65;
+
+  }
+
+  correct = Number(correct);
+
+  const explanation = raw.explanation || {};
+
+  const optionAnalysis =
+    Array.isArray(explanation.optionAnalysis)
+      ? explanation.optionAnalysis
+      : (
+          Array.isArray(raw.optionAnalysis)
+            ? raw.optionAnalysis
+            : []
+        );
+
+  return {
+
+    ...raw,
+
+    id: raw.id || `${bank.exam}-${bank.year}-${index+1}`,
+
+    exam: raw.exam || bank.exam,
+
+    subject: raw.subject || bank.subject,
+
+    year: raw.year || bank.year,
+
+    topic: raw.topic || "General",
+
+    q: raw.q || raw.question || raw.text || "",
+
+    a: Array.isArray(options) ? options : [],
+
+    c: Number.isInteger(correct) ? correct : -1,
+
+    passageId: raw.passageId || null,
+
+    explanation: {
+
+      correctReason:
+        explanation.correctReason ||
+        explanation.text ||
+        raw.explanationText ||
+        "",
+
+      optionAnalysis,
+
+      learningPoint:
+        explanation.learningPoint || ""
+
+    },
+
+    answerVerified: raw.answerVerified === true,
+
+    explanationVerified: raw.explanationVerified === true
+
+  };
+
+}
+
+/* GET COMPREHENSION PASSAGE */
+function getPassage(bank,q){
+
+  if(!q.passageId) return null;
+
+  const passage = bank.passages?.[q.passageId];
+
+  if(!passage) return null;
+
+  return typeof passage === "string"
+    ? passage
+    : (passage.text || passage.content || "");
+
+}
+
+/* FILTER AND PREPARE QUESTIONS */
+function filterQuestions(bank,cfg){
+
+  let questions = bank.questions.map(
+    (q,i)=>normalizeQuestion(q,i,bank)
+  );
+
+  if(cfg.topic){
+
+    questions = questions.filter(
+      q => norm(q.topic) === norm(cfg.topic)
+    );
+
+  }
+
+  if(cfg.difficulty !== "all"){
+
+    questions = questions.filter(
+      q => norm(q.difficulty) === norm(cfg.difficulty)
+    );
+
+  }
+
+  if(!questions.length){
+
+    throw new Error(
+      "No questions match the selected topic or difficulty."
+    );
+
+  }
+
+  if(cfg.shuffleQuestions){
+    questions = shuffle(questions);
+  }
+
+  questions = questions.slice(
+    0,
+    Math.max(1,cfg.questions || questions.length)
+  );
+
+  return questions;
+
+}
+
+/* START EXAMINATION */
+async function startExam(){
+
+  const cfg = readConfig();
+
+  if(
+    !Number.isFinite(cfg.questions) ||
+    cfg.questions < 1 ||
+    !Number.isFinite(cfg.duration) ||
+    cfg.duration < 1
+  ){
+
+    showToast("Invalid question count or examination duration.");
+    return;
+
+  }
+
+  try{
+
+    $("setupMessage").textContent =
+      "Loading your selected question bank. Please wait…";
+
+    const bank = await loadManifestBank(cfg);
+
+    let questions = filterQuestions(bank,cfg);
+
+    /*
+      Shuffle options only when Practice page
+      explicitly requests it.
+    */
+
+    if(cfg.shuffleOptions){
+
+      questions = questions.map(q=>{
+
+        const indexed = q.a.map(
+          (value,i)=>({value,original:i})
+        );
+
+        const shuffled = shuffle(indexed);
+
+        return {
+
+          ...q,
+
+          a: shuffled.map(x=>x.value),
+
+          c: shuffled.findIndex(
+            x=>x.original === q.c
+          )
+
+        };
+
+      });
+
+    }
+
+    if(
+      questions.some(
+        q=>!q.q || !q.a.length
+      )
+    ){
+
+      throw new Error(
+        "A question is missing its question text or options."
+      );
+
+    }
+
+    state.questions = questions;
+
+    state.passages = bank.passages || {};
+
+    state.config = cfg;
+
+    state.answers = {};
+
+    state.flagged = new Set();
+
+    state.current = 0;
+
+    state.submitted = false;
+
+    state.practiceChecked = new Set();
+
+    state.startedAt = Date.now();
+
+    state.deadline =
+      cfg.mode === "practice"
+        ? null
+        : Date.now() + cfg.duration * 60000;
+
+    state.lastBankKey = makeBankKey(
+      cfg.exam,
+      cfg.subject,
+      cfg.year
+    );
+
+    $("examTitle").textContent =
+      `${cfg.exam} • ${cfg.subject}`;
+
+    $("examSubtitle").textContent =
+      `Year ${cfg.year} · ${
+        cfg.mode === "practice"
+          ? "Practice mode"
+          : "Examination mode"
+      }`;
+
+    $("paletteCount").textContent =
+      `${questions.length} questions`;
+
+    showScreen("examScreen");
+
+    renderQuestion();
+
+    renderPalette();
+
+    updateCounts();
+
+    if(cfg.mode === "exam"){
+
+      startTimer();
+
+    }else{
+
+      $("timerBox").textContent = "PRACTICE";
+
+    }
+
+    showToast(
+      `${questions.length} questions loaded successfully.`
+    );
+
+  }catch(error){
+
+    console.error("Exam loading error:",error);
+
+    $("setupMessage").textContent =
+      error.message ||
+      "Unable to load the selected examination.";
+
+    showToast(error.message || "Unable to load questions.");
+
+  }
+
+}
+
+/* RENDER CURRENT QUESTION */
+function renderQuestion(){
+
+  const q = state.questions[state.current];
+
+  if(!q) return;
+
+  $("qNumber").textContent =
+    `QUESTION ${String(state.current+1).padStart(2,"0")}`;
+
+  $("questionCounter").textContent =
+    `Question ${state.current+1} of ${state.questions.length}`;
+
+  $("qTopic").textContent = q.topic || "General";
+
+  $("questionText").textContent = q.q;
+
+  const passage = getPassage(
+    {passages:state.passages},
+    q
+  );
+
+  if(passage){
+
+    $("passageBox").classList.remove("hidden");
+
+    $("passageBox").innerHTML =
+      `<h3>${escapeHTML(
+        state.passages[q.passageId]?.title ||
+        "COMPREHENSION PASSAGE"
+      )}</h3>${escapeHTML(passage)}`;
+
+  }else{
+
+    $("passageBox").classList.add("hidden");
+
+  }
+
+  $("optionsBox").innerHTML = "";
+
+  q.a.forEach((option,index)=>{
+
+    const button = document.createElement("button");
+
+    button.type = "button";
+
+    button.className = "option";
+
+    if(state.answers[q.id] === index){
+      button.classList.add("selected");
+    }
+
+    if(
+      state.config.mode === "practice" &&
+      state.practiceChecked.has(q.id)
+    ){
+
+      if(index === q.c){
+        button.classList.add("correct");
+      }else if(state.answers[q.id] === index){
+        button.classList.add("incorrect");
+      }
+
+    }
+
+    button.innerHTML = `
+      <span class="option-letter">${letters[index] || index+1}</span>
+      <span class="option-text">${escapeHTML(option)}</span>
+    `;
+
+    button.addEventListener(
+      "click",
+      ()=>selectAnswer(index)
+    );
+
+    $("optionsBox").appendChild(button);
+
+  });
+
+  $("prevBtn").disabled = state.current === 0;
+
+  $("nextBtn").disabled =
+    state.current === state.questions.length-1;
+
+  $("flagBtn").textContent =
+    state.flagged.has(q.id)
+      ? "⚑ Remove flag"
+      : "⚑ Flag question";
+
+  $("progressBar").style.width =
+    `${((state.current+1)/state.questions.length)*100}%`;
+
+  renderPracticeFeedback(q);
+
+  renderPalette();
+
+  updateCounts();
+
+}
+
+/* SELECT ANSWER */
+function selectAnswer(index){
+
+  if(state.submitted) return;
+
+  const q = state.questions[state.current];
+
+  state.answers[q.id] = index;
+
+  if(state.config.mode === "practice"){
+    state.practiceChecked.add(q.id);
+  }
+
+  renderQuestion();
+
+}
+
+/* PRACTICE MODE FEEDBACK */
+function renderPracticeFeedback(q){
+
+  const box = $("practiceFeedback");
+
+  if(
+    state.config.mode !== "practice" ||
+    !state.practiceChecked.has(q.id)
+  ){
+
+    box.classList.add("hidden");
+    return;
+
+  }
+
+  box.classList.remove("hidden");
+
+  const correct = state.answers[q.id] === q.c;
+
+  box.innerHTML = `
+    <h4>${correct ? "Correct answer" : "Not quite — review the answer"}</h4>
+    <p>${escapeHTML(
+      q.explanation.correctReason ||
+      "No explanation has been added to this question yet."
+    )}</p>
+
+    ${
+      q.explanation.learningPoint
+        ? `<p><strong>Learning point:</strong> ${escapeHTML(q.explanation.learningPoint)}</p>`
+        : ""
+    }
+  `;
+
+}
+
+/* QUESTION NAVIGATOR */
+function renderPalette(){
+
+  $("palette").innerHTML = "";
+
+  state.questions.forEach((q,index)=>{
+
+    const button = document.createElement("button");
+
+    button.type = "button";
+
+    button.className = "pal";
+
+    button.textContent = index+1;
+
+    if(state.answers[q.id] !== undefined){
+      button.classList.add("answered");
+    }
+
+    if(state.flagged.has(q.id)){
+      button.classList.add("flagged");
+    }
+
+    if(index === state.current){
+      button.classList.add("current");
+    }
+
+    button.addEventListener("click",()=>{
+
+      state.current = index;
+
+      renderQuestion();
+
+    });
+
+    $("palette").appendChild(button);
+
+  });
+
+}
+
+/* UPDATE QUESTION STATISTICS */
+function updateCounts(){
+
+  const answered = Object.keys(state.answers).length;
+
+  $("answeredCount").textContent = answered;
+
+  $("remainingCount").textContent =
+    state.questions.length - answered;
+
+  $("flaggedCount").textContent =
+    state.flagged.size;
+
+  $("totalCount").textContent =
+    state.questions.length;
+
+}
+
+/* EXAMINATION TIMER */
+function startTimer(){
+
+  clearInterval(state.timerId);
+
+  tickTimer();
+
+  state.timerId = setInterval(
+    tickTimer,
+    1000
+  );
+
+}
+
+function tickTimer(){
+
+  if(!state.deadline) return;
+
+  const remaining = Math.max(
+    0,
+    Math.ceil((state.deadline-Date.now())/1000)
+  );
+
+  const hours = Math.floor(remaining/3600);
+
+  const minutes = Math.floor((remaining%3600)/60);
+
+  const seconds = remaining%60;
+
+  $("timerBox").textContent = [
+    hours,
+    minutes,
+    seconds
+  ].map(
+    n=>String(n).padStart(2,"0")
+  ).join(":");
+
+  $("timerBox").classList.toggle(
+    "warning",
+    remaining<=300 && remaining>60
+  );
+
+  $("timerBox").classList.toggle(
+    "danger",
+    remaining<=60
+  );
+
+  if(remaining<=0){
+
+    clearInterval(state.timerId);
+
+    submitExam(true);
+
+  }
+
+}
+
+/* SUBMISSION CONFIRMATION */
+function askSubmit(){
+
+  const unanswered =
+    state.questions.length -
+    Object.keys(state.answers).length;
+
+  $("confirmText").textContent =
+    `You have answered ${
+      Object.keys(state.answers).length
+    } of ${
+      state.questions.length
+    } questions. ${
+      unanswered
+    } question(s) remain unanswered. Are you sure you want to submit?`;
+
+  $("confirmOverlay").classList.add("show");
+
+}
+
+/* MARK AND SUBMIT EXAM */
+function submitExam(auto=false){
+
+  if(state.submitted) return;
+
+  $("confirmOverlay").classList.remove("show");
+
+  state.submitted = true;
+
+  clearInterval(state.timerId);
+
+  let correct = 0;
+
+  let wrong = 0;
+
+  let unanswered = 0;
+
+  state.questions.forEach(q=>{
+
+    const answer = state.answers[q.id];
+
+    if(answer === undefined){
+
+      unanswered++;
+
+    }else if(answer === q.c){
+
+      correct++;
+
+    }else{
+
+      wrong++;
+
+    }
+
+  });
+
+  const total = state.questions.length;
+
+  const percent = total
+    ? Math.round(correct/total*100)
+    : 0;
+
+  const elapsed = Math.max(
+    0,
+    Math.floor((Date.now()-state.startedAt)/1000)
+  );
+
+  state.results = {
+    correct,
+    wrong,
+    unanswered,
+    total,
+    percent,
+    elapsed,
+    auto
+  };
+
+  saveHistory();
+
+  showResults();
+
+}
+
+/* FORMAT TIME */
+function formatTime(seconds){
+
+  const hours = Math.floor(seconds/3600);
+
+  const minutes = Math.floor((seconds%3600)/60);
+
+  const secs = seconds%60;
+
+  return hours
+    ? `${String(hours).padStart(2,"0")}:${String(minutes).padStart(2,"0")}:${String(secs).padStart(2,"0")}`
+    : `${String(minutes).padStart(2,"0")}:${String(secs).padStart(2,"0")}`;
+
+}
+
+/* DISPLAY RESULTS */
+function showResults(){
+
+  const r = state.results;
+
+  showScreen("resultScreen");
+
+  $("resultSubtitle").textContent =
+    `${state.config.exam} • ${state.config.subject} • ${state.config.year}`;
+
+  $("scorePercent").textContent = `${r.percent}%`;
+
+  $("scoreFraction").textContent =
+    `${r.correct} / ${r.total}`;
+
+  $("scoreRing").style.setProperty(
+    "--score",
+    `${r.percent}%`
+  );
+
+  $("correctStat").textContent = r.correct;
+
+  $("wrongStat").textContent = r.wrong;
+
+  $("unansweredStat").textContent = r.unanswered;
+
+  $("timeStat").textContent = formatTime(r.elapsed);
+
+  $("performanceMessage").textContent =
+    r.percent >= 70
+      ? "Excellent work. Keep strengthening your understanding."
+      : r.percent >= 50
+        ? "Good effort. Review the explanations to improve further."
+        : "Keep practising. Use the explanations to understand each topic.";
+
+  $("reviewSection").classList.add("hidden");
+
+  $("reviewBtn").textContent =
+    "Review answers and explanations";
+
+}
+
+/* DETAILED ANSWER REVIEW */
+function renderReview(){
+
+  $("reviewList").innerHTML = "";
+
+  state.questions.forEach((q,index)=>{
+
+    const user = state.answers[q.id];
+
+    const correct = user === q.c;
+
+    const unanswered = user === undefined;
+
+    const item = document.createElement("article");
+
+    item.className = "card review-item";
+
+    const analysis = q.explanation.optionAnalysis || [];
+
+    const analysisHTML = analysis.length
+      ? `<ul class="option-analysis">${
+          analysis.map((text,j)=>
+            `<li><strong>${letters[j] || j+1}:</strong> ${escapeHTML(text)}</li>`
+          ).join("")
+        }</ul>`
+      : "<p>Option-by-option analysis has not yet been supplied for this question.</p>";
+
+    const passage = getPassage(
+      {passages:state.passages},
+      q
+    );
+
+    item.innerHTML = `
+
+      <div class="q-top">
+        <span class="q-number">QUESTION ${String(index+1).padStart(2,"0")}</span>
+        <span class="topic-tag">${escapeHTML(q.topic || "General")}</span>
+      </div>
+
+      ${
+        passage
+          ? `<div class="passage">${escapeHTML(passage)}</div>`
+          : ""
+      }
+
+      <h3>${escapeHTML(q.q)}</h3>
+
+      <div class="review-line ${correct ? "good" : "bad"}">
+        Your answer:
+        ${
+          unanswered
+            ? "Not answered"
+            : `${letters[user] || user+1}. ${escapeHTML(q.a[user])}`
+        }
+        ${correct ? "✓" : ""}
+      </div>
+
+      <div class="review-line good">
+        Correct answer:
+        ${
+          q.c >= 0
+            ? `${letters[q.c] || q.c+1}. ${escapeHTML(q.a[q.c] || "")}`
+            : "Not available in question bank"
+        }
+      </div>
+
+      <div class="explanation">
+
+        <h4>Why this is correct</h4>
+
+        <p>${escapeHTML(
+          q.explanation.correctReason ||
+          "A detailed explanation has not yet been added."
+        )}</p>
+
+        <h4>Option analysis</h4>
+
+        ${analysisHTML}
+
+        ${
+          q.explanation.learningPoint
+            ? `<h4>Learning point</h4><p>${escapeHTML(q.explanation.learningPoint)}</p>`
+            : ""
+        }
+
+        <p style="font-size:12px;color:var(--muted)">
+          Answer verified: ${q.answerVerified ? "Yes" : "Not yet"}
+          ·
+          Explanation verified: ${q.explanationVerified ? "Yes" : "Not yet"}
+        </p>
+
+      </div>
+
+    `;
+
+    $("reviewList").appendChild(item);
+
+  });
+
+  $("reviewSection").classList.remove("hidden");
+
+  $("reviewSection").scrollIntoView({
+    behavior:"smooth"
+  });
+
+}
+
+/* SAVE EXAM HISTORY */
+function saveHistory(){
+
+  const record = {
+
+    date: new Date().toISOString(),
+
+    exam: state.config.exam,
+
+    subject: state.config.subject,
+
+    year: state.config.year,
+
+    mode: state.config.mode,
+
+    ...state.results
+
+  };
+
+  try{
+
+    const history = JSON.parse(
+      localStorage.getItem("examPilotHistory") || "[]"
+    );
+
+    history.unshift(record);
+
+    localStorage.setItem(
+      "examPilotHistory",
+      JSON.stringify(history.slice(0,50))
+    );
+
+  }catch(error){
+
+    console.warn(
+      "Examination history could not be saved.",
+      error
+    );
+
+  }
+
+}
+
+/* DISPLAY HISTORY */
+function showHistory(){
+
+  showScreen("historyScreen");
+
+  let history = [];
+
+  try{
+
+    history = JSON.parse(
+      localStorage.getItem("examPilotHistory") || "[]"
+    );
+
+  }catch(error){}
+
+  $("historyList").innerHTML = history.length
+
+    ? history.map(record=>`
+
+        <div class="review-line">
+
+          <strong>
+            ${escapeHTML(record.exam)}
+            •
+            ${escapeHTML(record.subject)}
+            (${escapeHTML(record.year)})
+          </strong>
+
+          <br>
+
+          ${escapeHTML(
+            new Date(record.date).toLocaleString()
+          )}
+
+          —
+
+          <strong>${record.percent}%</strong>
+
+          (${record.correct}/${record.total})
+
+        </div>
+
+      `).join("")
+
+    : '<div class="empty">No examination history saved on this device yet.</div>';
+
+}
+
+/* NAVIGATOR OPEN/CLOSE */
+$("toggleJumpBtn").addEventListener("click",()=>{
+
+  const box = $("jumpBox");
+
+  const open = box.classList.contains("hidden");
+
+  box.classList.toggle("hidden",!open);
+
+  $("toggleJumpBtn").textContent =
+    open
+      ? "Close jump box −"
+      : "Open jump box ＋";
+
+  $("toggleJumpBtn").setAttribute(
+    "aria-expanded",
+    String(open)
+  );
+
+});
+
+/* BUTTON EVENTS */
+
+$("retryBtn").addEventListener(
+  "click",
+  ()=>startExam()
+);
+
+$("backPracticeBtn").addEventListener(
+  "click",
+  ()=>window.location.href = "practice.html"
+);
+
+$("prevBtn").addEventListener("click",()=>{
+
+  if(state.current>0){
+
+    state.current--;
+
+    renderQuestion();
+
+  }
+
+});
+
+$("nextBtn").addEventListener("click",()=>{
+
+  if(state.current<state.questions.length-1){
+
+    state.current++;
+
+    renderQuestion();
+
+  }
+
+});
+
+$("clearBtn").addEventListener("click",()=>{
+
+  const q = state.questions[state.current];
+
+  delete state.answers[q.id];
+
+  state.practiceChecked.delete(q.id);
+
+  renderQuestion();
+
+});
+
+$("flagBtn").addEventListener("click",()=>{
+
+  const id = state.questions[state.current].id;
+
+  if(state.flagged.has(id)){
+
+    state.flagged.delete(id);
+
+  }else{
+
+    state.flagged.add(id);
+
+  }
+
+  renderQuestion();
+
+});
+
+$("sideSubmitBtn").addEventListener(
+  "click",
+  askSubmit
+);
+
+$("topSubmitBtn").addEventListener(
+  "click",
+  askSubmit
+);
+
+$("cancelSubmit").addEventListener("click",()=>{
+
+  $("confirmOverlay").classList.remove("show");
+
+});
+
+$("confirmSubmit").addEventListener(
+  "click",
+  ()=>submitExam(false)
+);
+
+$("reviewBtn").addEventListener("click",()=>{
+
+  if($("reviewSection").classList.contains("hidden")){
+
+    renderReview();
+
+    $("reviewBtn").textContent = "Hide answer review";
+
+  }else{
+
+    $("reviewSection").classList.add("hidden");
+
+    $("reviewBtn").textContent =
+      "Review answers and explanations";
+
+  }
+
+});
+
+/* START ANOTHER EXAM RETURNS TO PRACTICE PAGE */
+$("newExamBtn").addEventListener("click",()=>{
+
+  clearInterval(state.timerId);
+
+  window.location.href = "practice.html";
+
+});
+
+$("historyBtn").addEventListener(
+  "click",
+  showHistory
+);
+
+$("backFromHistory").addEventListener("click",()=>{
+
+  window.location.href = "practice.html";
+
+});
+
+$("clearHistoryBtn").addEventListener("click",()=>{
+
+  if(confirm("Clear all saved examination history on this device?")){
+
+    localStorage.removeItem("examPilotHistory");
+
+    showHistory();
+
+  }
+
+});
+
+/* KEYBOARD NAVIGATION */
+document.addEventListener("keydown",event=>{
+
+  if(
+    $("examScreen").classList.contains("hidden") ||
+    state.submitted
+  ){
+    return;
+  }
+
+  if(
+    event.key === "ArrowLeft" &&
+    state.current > 0
+  ){
+
+    state.current--;
+
+    renderQuestion();
+
+  }
+
+  if(
+    event.key === "ArrowRight" &&
+    state.current < state.questions.length-1
+  ){
+
+    state.current++;
+
+    renderQuestion();
+
+  }
+
+  if(["1","2","3","4","5"].includes(event.key)){
+
+    selectAnswer(Number(event.key)-1);
+
+  }
+
+});
+
+/* WARN BEFORE LEAVING AN ACTIVE EXAM */
+window.addEventListener("beforeunload",event=>{
+
+  if(
+    !$("examScreen").classList.contains("hidden") &&
+    !state.submitted &&
+    state.config?.mode === "exam"
+  ){
+
+    event.preventDefault();
+
+    event.returnValue =
+      "Your examination is in progress.";
+
+  }
+
+});
+
+/* INITIALISE CBT */
+function boot(){
+
+  let cfg = {};
+
+  try{
+
+    cfg = JSON.parse(
+      sessionStorage.getItem("examPilotConfig") || "{}"
+    ) || {};
+
+  }catch(error){}
+
+  const hasPracticeConfig = !!(
+    cfg.exam &&
+    cfg.subject &&
+    cfg.year &&
+    (cfg.questions || cfg.questionCount) &&
+    cfg.duration
+  );
+
+  if(!hasPracticeConfig){
+
+    showScreen("setupScreen");
+
+    $("setupMessage").textContent =
+      "No complete examination selection was received. Return to the Practice page, choose your examination settings and press Start.";
+
+    $("retryBtn").classList.add("hidden");
+
+    return;
+
+  }
+
+  showScreen("setupScreen");
+
+  $("setupMessage").textContent =
+    "Your Practice-page settings have been received. Loading your selected question bank…";
+
+  startExam();
+
+}
+
+boot();
+
+})();
+</script>
+
+</body>
+</html>
