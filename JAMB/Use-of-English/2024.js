@@ -1,4 +1,3 @@
-
 window.ExamPilot.registerBank({
   exam: "JAMB",
   subject: "English Language",
