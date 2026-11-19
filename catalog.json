@@ -1,0 +1,228 @@
+
+{
+  "version": "1.0",
+  "project": "Exam Pilot",
+  "description": "Central catalogue for Exam Pilot educational materials",
+
+  "categories": [
+    {
+      "id": "recommended-texts",
+      "name": "JAMB Recommended Texts",
+      "description": "Recommended reading materials and prescribed texts"
+    },
+    {
+      "id": "study-notes",
+      "name": "Study Notes",
+      "description": "Comprehensive subject-based learning materials"
+    },
+    {
+      "id": "syllabus",
+      "name": "JAMB Syllabus",
+      "description": "JAMB examination subjects, topics and objectives"
+    }
+  ],
+
+  "subjects": [
+    "Use of English",
+    "Mathematics",
+    "Physics",
+    "Chemistry",
+    "Biology",
+    "Agricultural Science",
+    "Economics",
+    "Government",
+    "Literature in English",
+    "Commerce",
+    "Accounting",
+    "Geography",
+    "Christian Religious Studies",
+    "Islamic Religious Studies",
+    "History",
+    "Civic Education",
+    "Computer Studies",
+    "Fine Arts",
+    "French",
+    "Hausa",
+    "Igbo",
+    "Yoruba",
+    "Arabic",
+    "Home Economics",
+    "Technical Drawing",
+    "Music",
+    "Insurance",
+    "Office Practice"
+  ],
+
+  "materials": [
+
+    {
+      "id": "english-notes-001",
+      "title": "JAMB Use of English Study Notes",
+      "subject": "Use of English",
+      "category": "study-notes",
+      "description": "Comprehensive English language study materials for JAMB candidates.",
+      "file": "english-notes.pdf",
+      "type": "pdf",
+      "tags": ["English", "Grammar", "Comprehension", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+
+    {
+      "id": "mathematics-notes-001",
+      "title": "JAMB Mathematics Study Notes",
+      "subject": "Mathematics",
+      "category": "study-notes",
+      "description": "Mathematical concepts, formulas and worked examples.",
+      "file": "mathematics-notes.pdf",
+      "type": "pdf",
+      "tags": ["Mathematics", "Algebra", "Geometry", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+
+    {
+      "id": "physics-notes-001",
+      "title": "JAMB Physics Study Notes",
+      "subject": "Physics",
+      "category": "study-notes",
+      "description": "Physics concepts, principles, equations and explanations.",
+      "file": "physics-notes.pdf",
+      "type": "pdf",
+      "tags": ["Physics", "Mechanics", "Electricity", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+
+    {
+      "id": "chemistry-notes-001",
+      "title": "JAMB Chemistry Study Notes",
+      "subject": "Chemistry",
+      "category": "study-notes",
+      "description": "Chemistry concepts, reactions and important explanations.",
+      "file": "chemistry-notes.pdf",
+      "type": "pdf",
+      "tags": ["Chemistry", "Organic Chemistry", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+
+    {
+      "id": "biology-notes-001",
+      "title": "JAMB Biology Study Notes",
+      "subject": "Biology",
+      "category": "study-notes",
+      "description": "Detailed Biology notes covering important examination topics.",
+      "file": "biology-notes.pdf",
+      "type": "pdf",
+      "tags": ["Biology", "Genetics", "Ecology", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+
+    {
+      "id": "government-notes-001",
+      "title": "JAMB Government Study Notes",
+      "subject": "Government",
+      "category": "study-notes",
+      "description": "Government concepts, political systems and institutions.",
+      "file": "government-notes.pdf",
+      "type": "pdf",
+      "tags": ["Government", "Politics", "Constitution", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+
+    {
+      "id": "economics-notes-001",
+      "title": "JAMB Economics Study Notes",
+      "subject": "Economics",
+      "category": "study-notes",
+      "description": "Microeconomics, macroeconomics and economic principles.",
+      "file": "economics-notes.pdf",
+      "type": "pdf",
+      "tags": ["Economics", "Utility", "Demand", "Supply", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+
+    {
+      "id": "literature-notes-001",
+      "title": "JAMB Literature in English Study Notes",
+      "subject": "Literature in English",
+      "category": "study-notes",
+      "description": "Literary concepts, genres, techniques and examination preparation.",
+      "file": "literature-notes.pdf",
+      "type": "pdf",
+      "tags": ["Literature", "Drama", "Prose", "Poetry", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+
+    {
+      "id": "jamb-syllabus-english",
+      "title": "JAMB Use of English Syllabus",
+      "subject": "Use of English",
+      "category": "syllabus",
+      "description": "JAMB Use of English examination syllabus.",
+      "file": "english-syllabus.pdf",
+      "type": "pdf",
+      "tags": ["English", "Syllabus", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+
+    {
+      "id": "jamb-syllabus-mathematics",
+      "title": "JAMB Mathematics Syllabus",
+      "subject": "Mathematics",
+      "category": "syllabus",
+      "description": "JAMB Mathematics examination syllabus.",
+      "file": "mathematics-syllabus.pdf",
+      "type": "pdf",
+      "tags": ["Mathematics", "Syllabus", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+
+    {
+      "id": "jamb-syllabus-physics",
+      "title": "JAMB Physics Syllabus",
+      "subject": "Physics",
+      "category": "syllabus",
+      "description": "JAMB Physics examination syllabus.",
+      "file": "physics-syllabus.pdf",
+      "type": "pdf",
+      "tags": ["Physics", "Syllabus", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+
+    {
+      "id": "jamb-syllabus-chemistry",
+      "title": "JAMB Chemistry Syllabus",
+      "subject": "Chemistry",
+      "category": "syllabus",
+      "description": "JAMB Chemistry examination syllabus.",
+      "file": "chemistry-syllabus.pdf",
+      "type": "pdf",
+      "tags": ["Chemistry", "Syllabus", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+
+    {
+      "id": "recommended-literature-texts",
+      "title": "JAMB Recommended Literature Texts",
+      "subject": "Literature in English",
+      "category": "recommended-texts",
+      "description": "Recommended literature reading materials for JAMB candidates.",
+      "file": "literature-recommended-texts.pdf",
+      "type": "pdf",
+      "tags": ["Literature", "Recommended Texts", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    }
+
+  ]
+}
