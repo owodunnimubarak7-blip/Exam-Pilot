@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Examination | STUDY-WITH-MUBARAK</title>
+    <title>Examination | EXAM PILOT</title>
     <meta name="theme-color" content="#10b981">
     <style>
         :root {
@@ -36,7 +36,7 @@
 
         [data-theme="dark"] {
             --bg-main: #020617;
-            --card-bg: rgba(15, 23, 42, 0.85);
+            --card-bg: rgba(15, 23, 42, 0.88);
             --text-main: #f8fafc;
             --dark: #f8fafc;
             --gray: #94a3b8;
@@ -44,13 +44,13 @@
             --option-hover: #064e3b;
             --instruction-bg: #0f172a;
             --instruction-text: #cbd5e1;
-            --success-bg: rgba(6, 78, 59, 0.4);
+            --success-bg: rgba(6, 78, 59, 0.42);
             --success-text: #a7f3d0;
             --success-border: #059669;
-            --danger-bg: rgba(127, 29, 29, 0.4);
+            --danger-bg: rgba(127, 29, 29, 0.42);
             --danger-text: #fecaca;
             --danger-border: #dc2626;
-            --warning-bg: rgba(120, 53, 15, 0.4);
+            --warning-bg: rgba(120, 53, 15, 0.42);
             --warning-text: #fcd34a;
             --warning-border: #d97706;
             --jump-btn-bg: #1e293b;
@@ -59,8 +59,8 @@
             --primary-glow: rgba(16, 185, 129, 0.4);
         }
 
-        * { 
-            box-sizing: border-box; 
+        * {
+            box-sizing: border-box;
             outline: none;
             margin: 0;
             padding: 0;
@@ -81,7 +81,7 @@
         }
 
         header {
-            background: rgba(15, 23, 42, 0.92);
+            background: rgba(15, 23, 42, 0.94);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             color: white;
@@ -96,6 +96,7 @@
         header h1 {
             font-size: 0.95rem;
             font-weight: 800;
+            letter-spacing: 0.5px;
             background: linear-gradient(135deg, #ffffff 0%, #a7f3d0 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -133,7 +134,7 @@
             display: flex;
             flex-direction: column;
             padding: 12px;
-            max-width: 620px;
+            max-width: 660px;
             width: 100%;
             margin: 0 auto;
             overflow: hidden;
@@ -329,7 +330,7 @@
         .control-panel {
             display: flex;
             justify-content: space-between;
-            gap: 5px;
+            gap: 6px;
             flex-shrink: 0;
         }
 
@@ -351,11 +352,11 @@
 
         .submit-btn-style { background: linear-gradient(135deg, #dc2626, #ef4444); }
 
-        .flag-btn, .bookmark-btn {
+        .flag-btn {
             background: var(--warning-bg);
             color: var(--warning-text);
             border: 1px solid var(--warning-border);
-            padding: 10px 8px;
+            padding: 10px 10px;
             border-radius: 10px;
             font-size: 0.8rem;
             font-weight: 700;
@@ -366,7 +367,7 @@
             gap: 4px;
             flex: 1;
         }
-        .flag-btn.flagged, .bookmark-btn.bookmarked {
+        .flag-btn.flagged {
             background: var(--warning-border);
             color: white;
         }
@@ -375,7 +376,7 @@
             background: var(--instruction-bg);
             color: var(--primary);
             border: 1px solid var(--option-border);
-            flex: 0.7;
+            flex: 0.75;
         }
 
         .action-btn:disabled, .nav-btn:disabled {
@@ -443,92 +444,220 @@
             top: 1px;
             right: 2px;
         }
-        .jump-item.bookmarked::before {
-            content: '🔖';
-            font-size: 7px;
-            position: absolute;
-            top: 1px;
-            left: 2px;
-        }
 
+        /* =====================================================
+           RESULTS & MARKING / EXPLANATION PAGE
+        ===================================================== */
         .scrollable-result-view {
             overflow-y: auto;
             flex: 1;
             padding-right: 4px;
+            padding-bottom: 12px;
+        }
+
+        .marking-hero {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.14), rgba(5, 150, 105, 0.04));
+            border: 1px solid rgba(16, 185, 129, 0.28);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .marking-kicker {
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary);
+            background: rgba(16, 185, 129, 0.14);
+            padding: 3px 10px;
+            border-radius: 999px;
+            margin-bottom: 6px;
+        }
+
+        .marking-hero h2 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            margin-bottom: 4px;
         }
 
         .score-display {
-            font-size: 2.3rem;
+            font-size: 2.35rem;
+            line-height: 1.1;
             background: linear-gradient(135deg, var(--primary), #34d399);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-weight: 900;
-            margin: 6px 0;
+            margin: 8px 0 6px;
+        }
+
+        .accuracy-track {
+            width: 100%;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--option-border);
+            overflow: hidden;
+            margin: 10px 0 8px;
+        }
+
+        .accuracy-fill {
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            transition: width 0.5s ease;
         }
 
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-            margin: 10px 0;
+            gap: 8px;
+            margin-bottom: 12px;
         }
         .stat-card {
             background: var(--instruction-bg);
-            padding: 8px 4px;
-            border-radius: 10px;
+            padding: 10px 6px;
+            border-radius: 12px;
             border: 1px solid var(--option-border);
+            text-align: center;
         }
         .stat-value {
             font-size: 1.15rem;
             font-weight: 900;
             color: var(--primary);
         }
+        .stat-value.wrong-val { color: #ef4444; }
+        .stat-value.empty-val { color: #f59e0b; }
         .stat-label {
             font-size: 0.65rem;
             color: var(--gray);
             text-transform: uppercase;
-            font-weight: 700;
+            font-weight: 800;
+            margin-top: 2px;
+        }
+
+        /* PER-SUBJECT INDIVIDUAL SCORE CARDS */
+        .subject-scores-panel {
+            background: var(--instruction-bg);
+            border: 1px solid var(--option-border);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+        .subject-scores-panel h4 {
+            font-size: 0.74rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        .subject-score-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+        @media (max-width: 480px) {
+            .subject-score-grid { grid-template-columns: 1fr; }
+        }
+        .subject-score-card {
+            background: var(--card-bg);
+            border: 1px solid var(--option-border);
+            border-radius: 10px;
+            padding: 10px 12px;
+        }
+        .subject-score-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+        .subject-score-name {
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+        .subject-score-pct {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--primary);
+            background: rgba(16, 185, 129, 0.14);
+            padding: 2px 7px;
+            border-radius: 999px;
+        }
+        .subject-score-fraction {
+            font-size: 1.05rem;
+            font-weight: 900;
+            color: var(--text-main);
+        }
+        .subject-score-sub {
+            font-size: 0.68rem;
+            color: var(--gray);
+            margin-top: 2px;
+        }
+
+        .marking-actions-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
         }
 
         .topic-breakdown {
             background: var(--instruction-bg);
             border: 1px solid var(--option-border);
-            border-radius: 10px;
-            padding: 10px;
-            margin: 10px 0;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
             text-align: left;
         }
         .topic-breakdown h4 {
-            font-size: 0.75rem;
+            font-size: 0.74rem;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
             color: var(--primary);
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
         .topic-row {
             display: flex;
             justify-content: space-between;
-            font-size: 0.76rem;
-            padding: 3px 0;
+            align-items: center;
+            font-size: 0.78rem;
+            padding: 5px 0;
             border-bottom: 1px dashed var(--option-border);
         }
         .topic-row:last-child { border-bottom: none; }
 
+        .marking-section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.76rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray);
+            margin: 12px 0 6px;
+        }
+
         .filter-tabs {
             display: flex;
-            gap: 4px;
-            margin: 12px 0 4px;
+            gap: 6px;
+            margin-bottom: 8px;
         }
         .filter-tab {
             flex: 1;
-            padding: 6px 4px;
-            border-radius: 8px;
+            padding: 7px 6px;
+            border-radius: 9px;
             border: 1px solid var(--option-border);
             background: var(--instruction-bg);
             color: var(--text-main);
-            font-size: 0.7rem;
+            font-size: 0.72rem;
             font-weight: 700;
             cursor: pointer;
             text-align: center;
+            transition: all 0.15s ease;
         }
         .filter-tab.active {
             background: var(--primary);
@@ -540,33 +669,104 @@
             margin-top: 10px;
             background: var(--instruction-bg);
             border: 1px solid var(--option-border);
-            padding: 12px;
-            border-radius: 10px;
+            border-left: 4px solid var(--option-border);
+            padding: 14px;
+            border-radius: 12px;
             text-align: left;
         }
+        .review-card.is-correct { border-left-color: #22c55e; }
+        .review-card.is-wrong { border-left-color: #ef4444; }
+        .review-card.is-unanswered { border-left-color: #f59e0b; }
+
+        .review-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
         .choice-badge {
             display: inline-block;
-            padding: 2px 7px;
-            border-radius: 4px;
-            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-size: 0.68rem;
             font-weight: 800;
             text-transform: uppercase;
-            margin-bottom: 6px;
         }
         .badge-correct { background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border); }
         .badge-wrong { background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); }
         .badge-unanswered { background: var(--warning-bg); color: var(--warning-text); border: 1px solid var(--warning-border); }
 
+        .answer-compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin: 8px 0;
+        }
+        @media (max-width: 480px) {
+            .answer-compare-grid { grid-template-columns: 1fr; }
+        }
+
+        .answer-box {
+            padding: 8px 10px;
+            border-radius: 9px;
+            border: 1px solid var(--option-border);
+            background: var(--card-bg);
+            font-size: 0.78rem;
+            line-height: 1.35;
+        }
+        .answer-box small {
+            display: block;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            color: var(--gray);
+            margin-bottom: 2px;
+        }
+        .answer-box.correct-box {
+            border-color: var(--success-border);
+            background: var(--success-bg);
+            color: var(--success-text);
+        }
+        .answer-box.wrong-box {
+            border-color: var(--danger-border);
+            background: var(--danger-bg);
+            color: var(--danger-text);
+        }
+
         .explanation-box, .ai-explanation-box {
             margin-top: 8px;
-            padding: 10px;
-            border-radius: 8px;
+            padding: 11px 12px;
+            border-radius: 10px;
             font-size: 0.8rem;
-            line-height: 1.45;
+            line-height: 1.5;
         }
-        .explanation-box { background: var(--success-bg); border-left: 4px solid var(--success-border); color: var(--success-text); }
-        .ai-explanation-box { background: rgba(168, 85, 247, 0.1); border-left: 4px solid #a855f7; color: #6b21a8; }
-        [data-theme="dark"] .ai-explanation-box { background: rgba(168, 85, 247, 0.2); color: #f3e8ff; }
+        .explanation-box {
+            background: var(--success-bg);
+            border: 1px solid rgba(34, 197, 94, 0.25);
+            border-left: 4px solid var(--success-border);
+            color: var(--success-text);
+        }
+        .explanation-label {
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 3px;
+            opacity: 0.9;
+        }
+        .ai-explanation-box {
+            background: rgba(168, 85, 247, 0.1);
+            border-left: 4px solid #a855f7;
+            color: #6b21a8;
+        }
+        [data-theme="dark"] .ai-explanation-box {
+            background: rgba(168, 85, 247, 0.2);
+            color: #f3e8ff;
+        }
 
         .hidden { display: none !important; }
 
@@ -624,7 +824,7 @@
 <body data-theme="dark">
 
 <header>
-    <h1>STUDY-WITH-MUBARAK</h1>
+    <h1>EXAM PILOT</h1>
     <div style="display: flex; align-items: center; gap: 6px;">
         <a href="practice.html">⚙️ Setup</a>
         <div class="header-controls">
@@ -664,7 +864,7 @@
             <span id="instruction-box">Topic</span>
             <span id="year-badge" class="year-pill hidden"></span>
         </div>
-        
+
         <div class="question-area">
             <div class="question-text" id="q-text">Loading Questions...</div>
             <button class="audio-speech-btn" title="Read Question Aloud" onclick="speakQuestion()">🔊</button>
@@ -675,7 +875,6 @@
         <div class="control-panel">
             <button id="prev-btn" class="action-btn nav-btn" onclick="navigateQuestion(-1)">←</button>
             <button id="flag-btn" class="flag-btn" onclick="toggleFlag()">🚩 Flag</button>
-            <button id="bookmark-btn" class="bookmark-btn" onclick="toggleBookmark()">🔖 Save</button>
             <button id="submit-shortcut-btn" class="action-btn submit-btn-style" onclick="showSubmitModal()">Submit</button>
             <button id="next-btn" class="action-btn nav-btn" onclick="navigateQuestion(1)">→</button>
         </div>
@@ -690,33 +889,45 @@
         </div>
     </div>
 
-    <!-- Results Panel -->
-    <div id="result-box" class="grand-card hidden" style="text-align: center;">
+    <!-- Redesigned Marking & Explanation Panel -->
+    <div id="result-box" class="grand-card hidden">
         <div class="scrollable-result-view">
-            <h2>Examination Completed 🎉</h2>
-            <div class="score-display" id="final-score">0 / 0</div>
+            <div class="marking-hero">
+                <div class="marking-kicker">✦ Official Marking &amp; Diagnostics</div>
+                <h2 id="marking-subject-heading">Examination Completed</h2>
+                <div class="score-display" id="final-score">0 / 0</div>
+                <div class="accuracy-track">
+                    <div class="accuracy-fill" id="accuracy-fill" style="width: 0%;"></div>
+                </div>
+                <p id="performance-msg" style="color: var(--gray); font-size: 0.82rem; font-weight: 600;"></p>
+            </div>
 
             <div class="stats-grid">
                 <div class="stat-card"><div class="stat-value" id="stat-correct">0</div><div class="stat-label">Correct</div></div>
-                <div class="stat-card"><div class="stat-value" id="stat-wrong">0</div><div class="stat-label">Wrong</div></div>
-                <div class="stat-card"><div class="stat-value" id="stat-unanswered">0</div><div class="stat-label">Empty</div></div>
-                <div class="stat-card"><div class="stat-value" id="stat-time">0:00</div><div class="stat-label">Duration</div></div>
+                <div class="stat-card"><div class="stat-value wrong-val" id="stat-wrong">0</div><div class="stat-label">Wrong</div></div>
+                <div class="stat-card"><div class="stat-value empty-val" id="stat-unanswered">0</div><div class="stat-label">Empty</div></div>
+                <div class="stat-card"><div class="stat-value" id="stat-time">0:00</div><div class="stat-label">Time Used</div></div>
             </div>
 
-            <p id="performance-msg" style="color: var(--gray); font-size: 0.85rem; font-weight: 600; margin-bottom: 10px;"></p>
-            
-            <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 10px;">
-                <button class="action-btn" style="justify-content:center;" onclick="returnToPractice()">⚙️ Practice Centre</button>
-                <button class="action-btn nav-btn" style="flex:1;" onclick="exportResults()">📥 Export CSV</button>
+            <!-- Individual Subject Scores -->
+            <div id="subject-scores-box" class="subject-scores-panel"></div>
+
+            <div class="marking-actions-bar">
+                <button class="action-btn" style="flex: 1.2;" onclick="returnToPractice()">⚙️ New Session</button>
+                <button class="action-btn nav-btn" style="flex: 1;" onclick="exportResults()">📥 Export CSV</button>
             </div>
 
             <div id="topic-breakdown-box" class="topic-breakdown"></div>
+
+            <div class="marking-section-title">
+                <span>Marked Questions &amp; Explanations</span>
+                <span id="marking-filter-count">0 items</span>
+            </div>
 
             <div class="filter-tabs">
                 <button class="filter-tab active" onclick="filterReviews('all', this)">All</button>
                 <button class="filter-tab" onclick="filterReviews('wrong', this)">Missed</button>
                 <button class="filter-tab" onclick="filterReviews('flagged', this)">Flagged</button>
-                <button class="filter-tab" onclick="filterReviews('saved', this)">🔖 Saved</button>
             </div>
 
             <div id="review-cards-container"></div>
@@ -739,7 +950,6 @@
     "use strict";
 
     const CONFIG_KEY = "examPilotConfig";
-    const BOOKMARK_STORAGE_KEY = "study_mubarak_bookmarks";
     const OPTION_LETTERS = ["A", "B", "C", "D", "E"];
     const POLLINATION_API_URL = 'https://text.pollinations.ai/';
 
@@ -748,14 +958,13 @@
     let currentQ = 0;
     let userAnswers = [];
     let flaggedQuestions = new Set();
-    let bookmarkedQuestions = new Set(JSON.parse(localStorage.getItem(BOOKMARK_STORAGE_KEY) || "[]"));
-    
+
     let timerInterval = null;
     let totalDuration = 1800;
     let timeRemaining = 1800;
     let timerPaused = false;
     let startedAt = null;
-    let aiExplanationCache = JSON.parse(localStorage.getItem("study_mubarak_ai_cache") || "{}");
+    let aiExplanationCache = JSON.parse(localStorage.getItem("exam_pilot_ai_cache") || "{}");
 
     function toggleDarkMode() {
         const body = document.body;
@@ -775,42 +984,16 @@
         timerPaused = !timerPaused;
     }
 
-    function toggleBookmark() {
-        const qItem = questions[currentQ];
-        if (!qItem) return;
-        const qId = qItem.q;
-        if (bookmarkedQuestions.has(qId)) {
-            bookmarkedQuestions.delete(qId);
-        } else {
-            bookmarkedQuestions.add(qId);
-        }
-        localStorage.setItem(BOOKMARK_STORAGE_KEY, JSON.stringify(Array.from(bookmarkedQuestions)));
-        renderActiveQuestion();
-        renderNavigatorGrid();
-    }
-
-    function toggleBookmarkReview(questionText, btnEl) {
-        if (bookmarkedQuestions.has(questionText)) {
-            bookmarkedQuestions.delete(questionText);
-            btnEl.classList.remove("bookmarked");
-            btnEl.textContent = "🔖 Save to Bookmarks";
-        } else {
-            bookmarkedQuestions.add(questionText);
-            btnEl.classList.add("bookmarked");
-            btnEl.textContent = "🔖 Bookmarked ✓";
-        }
-        localStorage.setItem(BOOKMARK_STORAGE_KEY, JSON.stringify(Array.from(bookmarkedQuestions)));
-    }
-
     function normalizeQuestion(item) {
         return {
             instr: item.instr || `Topic: ${item.topic || item.t || config.subject}`,
             topic: item.topic || item.t || config.subject,
+            subjectLabel: item.subjectLabel || item.subject || config.subject,
             year: item.year || item.y || null,
             q: item.q,
             options: item.options || item.a,
             correct: item.correct !== undefined ? Number(item.correct) : Number(item.c),
-            exp: item.explanation?.correctReason || item.exp || item.e || "Review course notes for detailed study."
+            exp: item.explanation?.correctReason || item.exp || item.e || "Review your study notes for a detailed breakdown of this question."
         };
     }
 
@@ -822,51 +1005,74 @@
             }
             config = JSON.parse(savedConfig);
 
-            document.getElementById("loadingText").textContent = `Loading ${config.subject} (${config.exam}) questions...`;
+            const targetSubjects = Array.isArray(config.subjects) && config.subjects.length
+                ? config.subjects
+                : [config.subject];
+
+            document.getElementById("loadingText").textContent =
+                `Loading ${targetSubjects.join(" + ")} (${config.exam}) questions...`;
 
             const registry = window.ExamPilot?.subjectBanks || {};
-            let bank = registry[config.subject];
-            if (!bank) {
-                const matchedKey = Object.keys(registry).find(
-                    k => k.toLowerCase().replace(/[^a-z0-9]/g, "") === config.subject.toLowerCase().replace(/[^a-z0-9]/g, "")
+            const normKey = s => String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+
+            let combinedQuestions = [];
+            const missingSubjects = [];
+
+            for (const subName of targetSubjects) {
+                let bank = registry[subName];
+                if (!bank) {
+                    const matchedKey = Object.keys(registry).find(k => normKey(k) === normKey(subName));
+                    if (matchedKey) bank = registry[matchedKey];
+                }
+
+                if (!bank || !Array.isArray(bank.questions) || bank.questions.length === 0) {
+                    missingSubjects.push(subName);
+                    continue;
+                }
+
+                let subQuestions = bank.questions.map(item => {
+                    const qObj = normalizeQuestion(item);
+                    qObj.subjectLabel = subName;
+                    qObj.instr = `[${subName}] • ${qObj.topic}`;
+                    return qObj;
+                });
+
+                if (config.exam) {
+                    const examFiltered = subQuestions.filter(
+                        q => !q.exam || String(q.exam).toUpperCase() === String(config.exam).toUpperCase()
+                    );
+                    if (examFiltered.length) subQuestions = examFiltered;
+                }
+
+                if (config.year && config.year !== "all") {
+                    const yearFiltered = subQuestions.filter(q => String(q.year) === String(config.year));
+                    if (yearFiltered.length) subQuestions = yearFiltered;
+                }
+
+                if (targetSubjects.length === 1 && config.topic && config.topic !== "all") {
+                    const topicFiltered = subQuestions.filter(
+                        q => q.topic.toLowerCase().includes(config.topic.toLowerCase())
+                    );
+                    if (topicFiltered.length) subQuestions = topicFiltered;
+                }
+
+                combinedQuestions.push(...subQuestions);
+            }
+
+            if (combinedQuestions.length === 0) {
+                throw new Error(
+                    `No questions found for ${missingSubjects.join(", ") || targetSubjects.join(", ")}. Ensure their subject scripts are loaded.`
                 );
-                if (matchedKey) bank = registry[matchedKey];
             }
 
-            if (!bank || !Array.isArray(bank.questions) || bank.questions.length === 0) {
-                throw new Error(`No question bank registered for '${config.subject}'. Please verify your subject script is loaded.`);
-            }
-
-            let bankQuestions = bank.questions.map(normalizeQuestion);
-
-            // Filter by Exam Type if specified
-            if (config.exam) {
-                bankQuestions = bankQuestions.filter(q => !q.exam || q.exam.toUpperCase() === config.exam.toUpperCase());
-            }
-
-            // Filter by Year
-            if (config.year && config.year !== "all") {
-                bankQuestions = bankQuestions.filter(q => String(q.year) === String(config.year));
-            }
-
-            // Filter by Topic
-            if (config.topic && config.topic !== "all") {
-                bankQuestions = bankQuestions.filter(q => q.topic.toLowerCase().includes(config.topic.toLowerCase()));
-            }
-
-            if (bankQuestions.length === 0) {
-                // Fallback to full subject bank if filters return empty
-                bankQuestions = bank.questions.map(normalizeQuestion);
-            }
-
-            // Shuffle pool
-            for (let i = bankQuestions.length - 1; i > 0; i--) {
+            // Shuffle combined question pool
+            for (let i = combinedQuestions.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                [bankQuestions[i], bankQuestions[j]] = [bankQuestions[j], bankQuestions[i]];
+                [combinedQuestions[i], combinedQuestions[j]] = [combinedQuestions[j], combinedQuestions[i]];
             }
 
             const requestedCount = Number(config.questions) || 30;
-            questions = bankQuestions.slice(0, requestedCount);
+            questions = combinedQuestions.slice(0, requestedCount);
             userAnswers = new Array(questions.length).fill(null);
             flaggedQuestions.clear();
             currentQ = 0;
@@ -890,7 +1096,8 @@
             updateProgressIndicators();
 
         } catch (error) {
-            document.getElementById("loadingText").innerHTML = `<span style="color:var(--danger-border);">${error.message}</span><br><br><button class="action-btn" onclick="returnToPractice()">Return to Practice Centre</button>`;
+            document.getElementById("loadingText").innerHTML =
+                `<span style="color:var(--danger-border);">${error.message}</span><br><br><button class="action-btn" onclick="returnToPractice()">Return to Practice Centre</button>`;
         }
     }
 
@@ -925,10 +1132,10 @@
         }
 
         document.getElementById("q-text").textContent = `${currentQ + 1}. ${item.q}`;
-        
+
         const grid = document.getElementById("options-grid");
         grid.innerHTML = "";
-        
+
         item.options.forEach((opt, idx) => {
             const btn = document.createElement("button");
             btn.className = `option-btn ${userAnswers[currentQ] === idx ? 'selected' : ''}`;
@@ -939,18 +1146,9 @@
 
         document.getElementById("prev-btn").disabled = currentQ === 0;
         document.getElementById("next-btn").disabled = currentQ === questions.length - 1;
-        
+
         const flagBtn = document.getElementById("flag-btn");
         flagBtn.className = flaggedQuestions.has(currentQ) ? "flag-btn flagged" : "flag-btn";
-
-        const bookmarkBtn = document.getElementById("bookmark-btn");
-        if (bookmarkedQuestions.has(item.q)) {
-            bookmarkBtn.className = "bookmark-btn bookmarked";
-            bookmarkBtn.textContent = "🔖 Saved ✓";
-        } else {
-            bookmarkBtn.className = "bookmark-btn";
-            bookmarkBtn.textContent = "🔖 Save";
-        }
     }
 
     function selectOptionIndex(idx) {
@@ -984,15 +1182,14 @@
     function renderNavigatorGrid() {
         const gridContainer = document.getElementById("jump-box-grid");
         gridContainer.innerHTML = "";
-        
+
         questions.forEach((q, index) => {
             const item = document.createElement("div");
             item.className = `jump-item`;
             if (index === currentQ) item.classList.add("active");
             if (userAnswers[index] !== null) item.classList.add("answered");
             if (flaggedQuestions.has(index)) item.classList.add("flagged");
-            if (bookmarkedQuestions.has(q.q)) item.classList.add("bookmarked");
-            
+
             item.textContent = index + 1;
             item.onclick = () => {
                 currentQ = index;
@@ -1014,9 +1211,9 @@
 
     function showSubmitModal() {
         const unansweredCount = userAnswers.filter(ans => ans === null).length;
-        const msg = unansweredCount > 0 
+        const msg = unansweredCount > 0
             ? `You still have ${unansweredCount} unanswered question(s). Are you sure you want to submit now?`
-            : `All ${questions.length} questions answered! Ready to submit and view your score?`;
+            : `All ${questions.length} questions answered! Ready to submit and mark your examination?`;
         document.getElementById("submit-modal-msg").textContent = msg;
         document.getElementById("submit-modal").classList.remove("hidden");
     }
@@ -1035,11 +1232,14 @@
             else wrong++;
         });
 
-        const elapsedSeconds = config.mode === "timed" ? (totalDuration - timeRemaining) : Math.floor((Date.now() - startedAt) / 1000);
+        const elapsedSeconds = config.mode === "timed"
+            ? (totalDuration - timeRemaining)
+            : Math.floor((Date.now() - startedAt) / 1000);
+
         const statistics = {
-            correct: correct, 
-            wrong: wrong, 
-            unanswered: unanswered,
+            correct,
+            wrong,
+            unanswered,
             timeTaken: `${Math.floor(elapsedSeconds / 60)}m ${elapsedSeconds % 60}s`,
             score: correct
         };
@@ -1052,36 +1252,90 @@
         document.getElementById("quiz-box").classList.add("hidden");
         document.getElementById("result-box").classList.remove("hidden");
 
-        const percentage = Math.round((stats.correct / questions.length) * 100);
+        const subjectTitle = Array.isArray(config.subjects) && config.subjects.length
+            ? config.subjects.join(" + ")
+            : config.subject;
+
+        const percentage = questions.length ? Math.round((stats.correct / questions.length) * 100) : 0;
+
+        document.getElementById("marking-subject-heading").textContent = `${config.exam} • ${subjectTitle}`;
         document.getElementById("final-score").textContent = `${stats.correct} / ${questions.length} (${percentage}%)`;
+        document.getElementById("accuracy-fill").style.width = `${percentage}%`;
         document.getElementById("stat-correct").textContent = stats.correct;
         document.getElementById("stat-wrong").textContent = stats.wrong;
         document.getElementById("stat-unanswered").textContent = stats.unanswered;
         document.getElementById("stat-time").textContent = stats.timeTaken;
 
         const perfMsg = document.getElementById("performance-msg");
-        if (percentage >= 80) perfMsg.textContent = "Outstanding mastery! Excellent performance.";
-        else if (percentage >= 60) perfMsg.textContent = "Very good effort! Review the missed explanations below.";
-        else perfMsg.textContent = "Keep practising! Study the detailed explanations and review your bookmarked items.";
+        if (percentage >= 80) perfMsg.textContent = "Outstanding mastery! Strong command across your selected subjects.";
+        else if (percentage >= 60) perfMsg.textContent = "Solid effort! Inspect the marked explanations below to close gaps.";
+        else perfMsg.textContent = "Keep practising! Review each explanation carefully and use AI breakdown where needed.";
 
+        renderSubjectScores();
         renderTopicBreakdown();
         renderReviewCards("all");
+    }
+
+    function renderSubjectScores() {
+        const subjectMap = {};
+        const selectedList = Array.isArray(config.subjects) && config.subjects.length
+            ? config.subjects
+            : [config.subject];
+
+        selectedList.forEach(sub => {
+            subjectMap[sub] = { total: 0, correct: 0, wrong: 0, unanswered: 0 };
+        });
+
+        questions.forEach((q, idx) => {
+            const sub = q.subjectLabel || config.subject || "General";
+            if (!subjectMap[sub]) {
+                subjectMap[sub] = { total: 0, correct: 0, wrong: 0, unanswered: 0 };
+            }
+            subjectMap[sub].total++;
+            if (userAnswers[idx] === null) subjectMap[sub].unanswered++;
+            else if (userAnswers[idx] === q.correct) subjectMap[sub].correct++;
+            else subjectMap[sub].wrong++;
+        });
+
+        const box = document.getElementById("subject-scores-box");
+        let cardsHtml = "";
+
+        Object.entries(subjectMap).forEach(([sub, data]) => {
+            const pct = data.total ? Math.round((data.correct / data.total) * 100) : 0;
+            cardsHtml += `
+                <div class="subject-score-card">
+                    <div class="subject-score-top">
+                        <span class="subject-score-name">${sub}</span>
+                        <span class="subject-score-pct">${pct}%</span>
+                    </div>
+                    <div class="subject-score-fraction">${data.correct} / ${data.total}</div>
+                    <div class="subject-score-sub">Wrong: ${data.wrong} • Empty: ${data.unanswered}</div>
+                </div>
+            `;
+        });
+
+        box.innerHTML = `
+            <h4>🎯 Individual Subject Scores</h4>
+            <div class="subject-score-grid">${cardsHtml}</div>
+        `;
     }
 
     function renderTopicBreakdown() {
         const topicMap = {};
         questions.forEach((q, idx) => {
-            const topic = q.topic || "General";
-            if (!topicMap[topic]) topicMap[topic] = { total: 0, correct: 0 };
-            topicMap[topic].total++;
-            if (userAnswers[idx] === q.correct) topicMap[topic].correct++;
+            const label = q.subjectLabel && q.subjectLabel !== q.topic
+                ? `${q.subjectLabel} — ${q.topic}`
+                : (q.topic || "General");
+            if (!topicMap[label]) topicMap[label] = { total: 0, correct: 0 };
+            topicMap[label].total++;
+            if (userAnswers[idx] === q.correct) topicMap[label].correct++;
         });
 
         const box = document.getElementById("topic-breakdown-box");
         let html = `<h4>📊 Performance by Topic</h4>`;
-        Object.entries(topicMap).forEach(([topic, data]) => {
+        Object.entries(topicMap).forEach(([label, data]) => {
             const pct = Math.round((data.correct / data.total) * 100);
-            html += `<div class="topic-row"><span>${topic}</span><strong>${data.correct}/${data.total} (${pct}%)</strong></div>`;
+            html += `<div class="topic-row"><span>${label}</span><strong>${data.correct}/${data.total} (${pct}%)</strong></div>`;
         });
         box.innerHTML = html;
     }
@@ -1096,44 +1350,64 @@
         const container = document.getElementById("review-cards-container");
         container.innerHTML = "";
 
-        questions.forEach((q, idx) => {
+        const filtered = questions
+            .map((q, idx) => ({ q, idx }))
+            .filter(({ q, idx }) => {
+                const userAnswer = userAnswers[idx];
+                const isCorrect = userAnswer === q.correct;
+                const isFlagged = flaggedQuestions.has(idx);
+                if (filterType === "wrong") return !isCorrect;
+                if (filterType === "flagged") return isFlagged;
+                return true;
+            });
+
+        document.getElementById("marking-filter-count").textContent =
+            `${filtered.length} ${filtered.length === 1 ? "item" : "items"}`;
+
+        filtered.forEach(({ q, idx }) => {
             const userAnswer = userAnswers[idx];
             const isCorrect = userAnswer === q.correct;
             const isUnanswered = userAnswer === null;
-            const isFlagged = flaggedQuestions.has(idx);
-            const isBookmarked = bookmarkedQuestions.has(q.q);
-
-            if (filterType === "wrong" && isCorrect) return;
-            if (filterType === "flagged" && !isFlagged) return;
-            if (filterType === "saved" && !isBookmarked) return;
 
             const card = document.createElement("div");
-            card.className = "review-card";
+            const cardStateClass = isUnanswered ? "is-unanswered" : isCorrect ? "is-correct" : "is-wrong";
+            card.className = `review-card ${cardStateClass}`;
 
             const statusClass = isUnanswered ? "badge-unanswered" : isCorrect ? "badge-correct" : "badge-wrong";
-            const statusText = isUnanswered ? "Unanswered" : isCorrect ? "Correct" : "Incorrect";
-            const userChoiceText = isUnanswered ? "None" : `${OPTION_LETTERS[userAnswer]}. ${q.options[userAnswer]}`;
+            const statusText = isUnanswered ? "✓ Marked: Unanswered" : isCorrect ? "✓ Marked: Correct" : "✕ Marked: Incorrect";
+            const userChoiceText = isUnanswered ? "No answer selected" : `${OPTION_LETTERS[userAnswer]}. ${q.options[userAnswer]}`;
             const correctChoiceText = `${OPTION_LETTERS[q.correct]}. ${q.options[q.correct]}`;
+            const metaText = `${q.subjectLabel ? q.subjectLabel + ' • ' : ''}${q.topic}${q.year ? ' • ' + q.year : ''}`;
 
             card.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <div class="review-meta-row">
                     <span class="choice-badge ${statusClass}">${statusText}</span>
-                    <span style="font-size:0.7rem; color:var(--gray); font-weight:700;">${q.topic}${q.year ? ' • ' + q.year : ''}</span>
+                    <span style="font-size:0.7rem; color:var(--gray); font-weight:700;">${metaText}</span>
                 </div>
-                <div style="font-size:0.88rem; font-weight:700; margin-bottom:6px;">Q${idx+1}: ${q.q}</div>
-                <div style="font-size:0.8rem; color:var(--gray); margin-bottom:2px;">Your Answer: <strong>${userChoiceText}</strong></div>
-                <div style="font-size:0.8rem; color:var(--primary-dark); margin-bottom:4px;">Correct Option: <strong>${correctChoiceText}</strong></div>
-                <div class="explanation-box">${q.exp}</div>
-                <div style="display:flex; gap:6px; margin-top:8px;">
-                    <button class="action-btn nav-btn bookmark-review-btn ${isBookmarked ? 'bookmarked' : ''}" style="flex:1; padding:6px;" onclick="toggleBookmarkReview('${q.q.replace(/'/g, "\\'")}', this)">${isBookmarked ? '🔖 Bookmarked ✓' : '🔖 Save to Bookmarks'}</button>
-                    <button class="action-btn nav-btn" style="flex:1; padding:6px;" onclick="fetchAIExplanation(${idx})">✨ Mubarak AI</button>
+                <div style="font-size:0.9rem; font-weight:700; margin-bottom:8px; line-height:1.4;">Q${idx + 1}. ${q.q}</div>
+                <div class="answer-compare-grid">
+                    <div class="answer-box ${isUnanswered ? '' : (isCorrect ? 'correct-box' : 'wrong-box')}">
+                        <small>Your Response</small>
+                        <strong>${userChoiceText}</strong>
+                    </div>
+                    <div class="answer-box correct-box">
+                        <small>Correct Answer</small>
+                        <strong>${correctChoiceText}</strong>
+                    </div>
+                </div>
+                <div class="explanation-box">
+                    <span class="explanation-label">Explanation</span>
+                    ${q.exp}
+                </div>
+                <div style="display:flex; gap:6px; margin-top:10px;">
+                    <button class="action-btn nav-btn" style="flex:1; padding:7px;" onclick="fetchAIExplanation(${idx})">✨ Mubarak AI Breakdown</button>
                 </div>
                 <div id="ai-explanation-${idx}" class="hidden"></div>
             `;
             container.appendChild(card);
         });
 
-        if (container.innerHTML === "") {
+        if (filtered.length === 0) {
             container.innerHTML = `<p style="font-size:0.82rem; color:var(--gray); margin-top:14px; text-align:center;">No questions match this filter.</p>`;
         }
     }
@@ -1157,7 +1431,7 @@
                 body: JSON.stringify({
                     messages: [
                         { role: 'system', content: "You are an expert Nigerian examination tutor for WAEC, NECO, and UTME candidates. Keep your explanation concise, clear, and exam-focused." },
-                        { role: 'user', content: `Explain why "${q.options[q.correct]}" is the correct answer for this ${config.subject} question: "${q.q}". Options: ${q.options.join(', ')}.` }
+                        { role: 'user', content: `Explain why "${q.options[q.correct]}" is the correct answer for this ${q.subjectLabel || config.subject} question: "${q.q}". Options: ${q.options.join(', ')}.` }
                     ],
                     model: 'openai'
                 })
@@ -1165,7 +1439,7 @@
             const text = await response.text();
             const formatted = text.replace(/\n/g, '<br>');
             aiExplanationCache[q.q] = formatted;
-            localStorage.setItem("study_mubarak_ai_cache", JSON.stringify(aiExplanationCache));
+            localStorage.setItem("exam_pilot_ai_cache", JSON.stringify(aiExplanationCache));
             container.innerHTML = `<div class="ai-explanation-box"><strong>Mubarak AI:</strong><br>${formatted}</div>`;
         } catch (e) {
             container.innerHTML = '<div class="ai-explanation-box">Connection timeout or network blocked. Please check your internet connection.</div>';
@@ -1173,17 +1447,18 @@
     }
 
     function exportResults() {
-        let csv = "Question,Topic,Year,Your Choice,Correct Choice,Status,Bookmarked\n";
+        let csv = "Question,Subject,Topic,Year,Your Choice,Correct Choice,Status\n";
         questions.forEach((q, idx) => {
             const userChoice = userAnswers[idx] !== null ? q.options[userAnswers[idx]] : "None";
             const status = userAnswers[idx] === null ? "Unanswered" : (userAnswers[idx] === q.correct ? "Correct" : "Wrong");
-            const isSaved = bookmarkedQuestions.has(q.q) ? "Yes" : "No";
-            csv += `"${q.q.replace(/"/g, '""')}","${q.topic}","${q.year || ''}","${userChoice.replace(/"/g, '""')}","${q.options[q.correct].replace(/"/g, '""')}","${status}","${isSaved}"\n`;
+            csv += `"${q.q.replace(/"/g, '""')}","${q.subjectLabel || config.subject}","${q.topic}","${q.year || ''}","${userChoice.replace(/"/g, '""')}","${q.options[q.correct].replace(/"/g, '""')}","${status}"\n`;
         });
         const blob = new Blob([csv], { type: 'text/csv' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `${config.subject.toLowerCase().replace(/\s+/g, '-')}-results.csv`;
+        const fileSlug = (Array.isArray(config.subjects) ? config.subjects.join("-") : config.subject)
+            .toLowerCase().replace(/[^a-z0-9]+/g, "-");
+        link.download = `${fileSlug}-results.csv`;
         link.click();
     }
 
