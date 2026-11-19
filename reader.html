@@ -1,0 +1,1018 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#030b29">
+
+<title>PDF Reader | Exam Pilot</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+<style>
+:root {
+  --bg: #030b29;
+  --panel: #091a40;
+  --panel2: #102650;
+  --text: #f4f7ff;
+  --muted: #9aaccb;
+  --green: #00ed8b;
+  --border: rgba(255,255,255,.10);
+  --reader-bg: #17243c;
+}
+
+body.light {
+  --bg: #edf1f8;
+  --panel: #ffffff;
+  --panel2: #f0f4fa;
+  --text: #102044;
+  --muted: #66748f;
+  --green: #00a96b;
+  --border: rgba(15,35,75,.13);
+  --reader-bg: #dce3ee;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Manrope, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background .2s, color .2s;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+}
+
+.topbar {
+  height: 68px;
+  padding: 0 4%;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.brand-icon {
+  width: 38px;
+  height: 38px;
+  background: var(--green);
+  color: #03152c;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+}
+
+.brand span {
+  color: var(--green);
+}
+
+.top-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.tool-btn {
+  min-width: 40px;
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel2);
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 11px;
+  font-size: 13px;
+}
+
+.tool-btn:hover:not(:disabled) {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.back-btn {
+  color: var(--muted);
+}
+
+.document-info {
+  padding: 18px 4%;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.document-info h1 {
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.document-info p {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+
+.toolbar {
+  padding: 12px 4%;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  position: sticky;
+  top: 68px;
+  z-index: 15;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding-right: 10px;
+  border-right: 1px solid var(--border);
+}
+
+.toolbar-group:last-child {
+  border: none;
+  padding: 0;
+}
+
+.page-input {
+  width: 52px;
+  height: 35px;
+  background: var(--panel2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-align: center;
+  outline: none;
+}
+
+.page-total {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.zoom-value {
+  min-width: 48px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.reader-area {
+  min-height: calc(100vh - 210px);
+  padding: 25px 12px 45px;
+  background: var(--reader-bg);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: auto;
+}
+
+.page-container {
+  max-width: 100%;
+  min-height: 300px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+#pdfCanvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  background: white;
+  box-shadow: 0 8px 35px rgba(0,0,0,.25);
+}
+
+.loading {
+  text-align: center;
+  padding: 70px 20px;
+  color: var(--muted);
+  max-width: 450px;
+  margin: auto;
+}
+
+.loading i {
+  font-size: 36px;
+  color: var(--green);
+  margin-bottom: 18px;
+}
+
+.loading h2 {
+  font-size: 17px;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.loading p {
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.progress-track {
+  height: 5px;
+  background: var(--panel2);
+  border-radius: 20px;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--green);
+  transition: width .2s;
+}
+
+.status-message {
+  font-size: 11px;
+  margin-top: 12px;
+  color: var(--muted);
+}
+
+.reader-footer {
+  background: var(--panel);
+  border-top: 1px solid var(--border);
+  padding: 15px 4%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.reader-footer span {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.reader-footer strong {
+  color: var(--green);
+}
+
+#message {
+  color: #ff7777;
+  font-size: 12px;
+  line-height: 1.7;
+  margin-top: 12px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+body.fullscreen .topbar,
+body.fullscreen .document-info,
+body.fullscreen .reader-footer {
+  display: none;
+}
+
+body.fullscreen .toolbar {
+  top: 0;
+}
+
+@media(max-width: 600px) {
+  .topbar {
+    padding: 0 3%;
+  }
+
+  .brand {
+    font-size: 13px;
+  }
+
+  .top-actions .tool-btn {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 8px;
+  }
+
+  .toolbar {
+    top: 68px;
+    padding: 10px 5px;
+    gap: 6px;
+  }
+
+  .toolbar-group {
+    padding-right: 5px;
+  }
+
+  .toolbar .tool-btn {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 8px;
+    font-size: 11px;
+  }
+
+  .reader-area {
+    padding: 12px 5px 30px;
+  }
+
+  .document-info {
+    padding: 13px 4%;
+  }
+
+  .document-info h1 {
+    font-size: 14px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<header class="topbar">
+
+  <a href="study-library.html" class="brand">
+    <div class="brand-icon">
+      <i class="fas fa-graduation-cap"></i>
+    </div>
+    <div>EXAM <span>PILOT</span></div>
+  </a>
+
+  <div class="top-actions">
+
+    <button class="tool-btn back-btn" id="backBtn">
+      <i class="fas fa-arrow-left"></i>
+      <span>Library</span>
+    </button>
+
+    <button class="tool-btn" id="themeBtn"
+      title="Toggle reading theme">
+      <i class="fas fa-sun"></i>
+    </button>
+
+  </div>
+
+</header>
+
+<!-- DOCUMENT INFORMATION -->
+
+<section class="document-info">
+
+  <h1 id="documentTitle">Loading document...</h1>
+
+  <p id="documentDetails">
+    Exam Pilot Integrated PDF Reader
+  </p>
+
+</section>
+
+<!-- READER TOOLBAR -->
+
+<section class="toolbar">
+
+  <div class="toolbar-group">
+
+    <button class="tool-btn" id="previousBtn"
+      title="Previous page" disabled>
+      <i class="fas fa-chevron-left"></i>
+    </button>
+
+    <input type="number" id="pageInput"
+      class="page-input" min="1" value="1"
+      aria-label="Page number">
+
+    <span class="page-total">
+      / <span id="totalPages">--</span>
+    </span>
+
+    <button class="tool-btn" id="nextBtn"
+      title="Next page" disabled>
+      <i class="fas fa-chevron-right"></i>
+    </button>
+
+  </div>
+
+  <div class="toolbar-group">
+
+    <button class="tool-btn" id="zoomOut"
+      title="Zoom out" disabled>
+      <i class="fas fa-minus"></i>
+    </button>
+
+    <span class="zoom-value" id="zoomValue">100%</span>
+
+    <button class="tool-btn" id="zoomIn"
+      title="Zoom in" disabled>
+      <i class="fas fa-plus"></i>
+    </button>
+
+  </div>
+
+  <div class="toolbar-group">
+
+    <button class="tool-btn" id="fitBtn"
+      title="Fit page to screen" disabled>
+      <i class="fas fa-expand"></i>
+      Fit
+    </button>
+
+    <button class="tool-btn" id="fullscreenBtn"
+      title="Full screen">
+      <i class="fas fa-maximize"></i>
+    </button>
+
+  </div>
+
+</section>
+
+<!-- READER -->
+
+<main class="reader-area" id="readerArea">
+
+  <div class="loading" id="loading">
+
+    <i class="fas fa-spinner fa-spin"></i>
+
+    <h2>Preparing your reading experience</h2>
+
+    <p id="loadingText">
+      Retrieving your document from the Exam Pilot library...
+    </p>
+
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <p id="message"></p>
+
+  </div>
+
+  <div class="page-container hidden" id="pageContainer">
+    <canvas id="pdfCanvas"></canvas>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+
+<footer class="reader-footer">
+
+  <span>
+    <strong>EXAM PILOT</strong> Integrated Reader
+  </span>
+
+  <span id="readingProgress">
+    Reading progress: 0%
+  </span>
+
+</footer>
+
+<script>
+
+/* ======================================
+   CONFIGURATION
+====================================== */
+
+const CATALOG_URL = "catalog.json";
+
+const params = new URLSearchParams(location.search);
+const materialId = params.get("id");
+
+const canvas = document.getElementById("pdfCanvas");
+const context = canvas.getContext("2d");
+
+const loading = document.getElementById("loading");
+const loadingText = document.getElementById("loadingText");
+const message = document.getElementById("message");
+const progressFill = document.getElementById("progressFill");
+
+const pageInput = document.getElementById("pageInput");
+const totalPages = document.getElementById("totalPages");
+
+let pdfDocument = null;
+let currentPage = 1;
+let zoom = 1;
+let rendering = false;
+let pendingPage = null;
+let resizeTimer = null;
+let renderToken = 0;
+let documentRecord = null;
+
+
+/* ======================================
+   PDF.JS WORKER
+====================================== */
+
+if (window.pdfjsLib) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+}
+
+
+/* ======================================
+   BASIC HELPERS
+====================================== */
+
+function showError(text) {
+  loading.classList.remove("hidden");
+  document.getElementById("pageContainer").classList.add("hidden");
+
+  loading.innerHTML = `
+    <i class="fas fa-circle-exclamation"
+       style="color:#ff7777"></i>
+    <h2>Unable to open document</h2>
+    <p>${escapeHTML(text)}</p>
+    <button onclick="location.href='study-library.html'"
+      style="margin-top:20px;padding:12px 18px;border:0;border-radius:9px;background:var(--green);font-weight:800;">
+      Return to Study Library
+    </button>
+  `;
+}
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+function getProgressKey() {
+  return "examPilotProgress_" + materialId;
+}
+
+function updateProgress() {
+  if (!pdfDocument) return;
+
+  const percentage = Math.round(
+    (currentPage / pdfDocument.numPages) * 100
+  );
+
+  document.getElementById("readingProgress").textContent =
+    "Reading progress: " + percentage + "%";
+
+  localStorage.setItem(getProgressKey(), currentPage);
+}
+
+
+/* ======================================
+   LOAD CATALOGUE
+====================================== */
+
+async function loadDocument() {
+
+  if (!materialId) {
+    showError("No document ID was provided. Please open a document from the Study Library.");
+    return;
+  }
+
+  if (!window.pdfjsLib) {
+    showError("PDF.js could not load. Please check your internet connection and try again.");
+    return;
+  }
+
+  try {
+
+    loadingText.textContent = "Loading the library catalogue...";
+
+    const response = await fetch(CATALOG_URL, {
+      cache: "no-cache"
+    });
+
+    if (!response.ok) {
+      throw new Error("catalog.json could not be found.");
+    }
+
+    const catalogue = await response.json();
+
+    const materials = Array.isArray(catalogue)
+      ? catalogue
+      : catalogue.materials;
+
+    if (!Array.isArray(materials)) {
+      throw new Error("The catalogue has an invalid format.");
+    }
+
+    documentRecord = materials.find(item =>
+      String(item.id) === materialId
+    );
+
+    if (!documentRecord) {
+      throw new Error("This document does not exist in the catalogue.");
+    }
+
+    if (documentRecord.status === "placeholder") {
+      throw new Error("This document has not been uploaded yet.");
+    }
+
+    const filename = documentRecord.file;
+
+    if (
+      typeof filename !== "string" ||
+      !filename.toLowerCase().endsWith(".pdf") ||
+      filename.includes("/") ||
+      filename.includes("\\") ||
+      filename.includes("..")
+    ) {
+      throw new Error("The PDF filename is invalid. Use a PDF filename in your repository root.");
+    }
+
+    document.getElementById("documentTitle").textContent =
+      documentRecord.title || "Study Material";
+
+    document.getElementById("documentDetails").textContent =
+      (documentRecord.subject || "General") +
+      " • " +
+      (documentRecord.category || "Learning Material");
+
+    await loadPDF(filename);
+
+  } catch (error) {
+
+    console.error(error);
+    showError(error.message);
+
+  }
+}
+
+
+/* ======================================
+   LOAD PDF
+====================================== */
+
+async function loadPDF(filename) {
+
+  loadingText.textContent = "Downloading your PDF...";
+
+  const pdfURL = new URL(
+    encodeURIComponent(filename),
+    window.location.href
+  ).href;
+
+  const loadingTask = pdfjsLib.getDocument({
+    url: pdfURL
+  });
+
+  loadingTask.onProgress = data => {
+    if (data.total > 0) {
+      const percentage = Math.round(
+        (data.loaded / data.total) * 100
+      );
+
+      progressFill.style.width = percentage + "%";
+
+      loadingText.textContent =
+        "Downloading document... " + percentage + "%";
+    }
+  };
+
+  pdfDocument = await loadingTask.promise;
+
+  totalPages.textContent = pdfDocument.numPages;
+  pageInput.max = pdfDocument.numPages;
+
+  document.getElementById("previousBtn").disabled = false;
+  document.getElementById("nextBtn").disabled = false;
+  document.getElementById("zoomIn").disabled = false;
+  document.getElementById("zoomOut").disabled = false;
+  document.getElementById("fitBtn").disabled = false;
+
+  const savedPage = Number(
+    localStorage.getItem(getProgressKey())
+  );
+
+  currentPage = savedPage >= 1 && savedPage <= pdfDocument.numPages
+    ? savedPage
+    : 1;
+
+  pageInput.value = currentPage;
+
+  loading.classList.add("hidden");
+  document.getElementById("pageContainer").classList.remove("hidden");
+
+  await renderPage(currentPage);
+
+}
+
+
+/* ======================================
+   RENDER PDF PAGE
+====================================== */
+
+async function renderPage(pageNumber) {
+
+  if (!pdfDocument) return;
+
+  if (rendering) {
+    pendingPage = pageNumber;
+    return;
+  }
+
+  rendering = true;
+
+  const token = ++renderToken;
+
+  try {
+
+    const page = await pdfDocument.getPage(pageNumber);
+
+    const viewport = page.getViewport({
+      scale: zoom
+    });
+
+    const readerWidth = Math.max(
+      200,
+      document.getElementById("readerArea").clientWidth - 24
+    );
+
+    const actualScale = Math.min(
+      2,
+      window.devicePixelRatio || 1
+    );
+
+    canvas.width = Math.floor(viewport.width * actualScale);
+    canvas.height = Math.floor(viewport.height * actualScale);
+
+    canvas.style.width = viewport.width + "px";
+    canvas.style.height = viewport.height + "px";
+
+    const task = page.render({
+      canvasContext: context,
+      viewport: viewport,
+      transform: actualScale !== 1
+        ? [actualScale, 0, 0, actualScale, 0, 0]
+        : null
+    });
+
+    await task.promise;
+
+    if (token !== renderToken) return;
+
+    currentPage = pageNumber;
+    pageInput.value = currentPage;
+
+    document.getElementById("previousBtn").disabled =
+      currentPage <= 1;
+
+    document.getElementById("nextBtn").disabled =
+      currentPage >= pdfDocument.numPages;
+
+    updateProgress();
+
+  } catch (error) {
+
+    console.error("Page rendering error:", error);
+
+  } finally {
+
+    rendering = false;
+
+    if (pendingPage !== null) {
+      const nextPage = pendingPage;
+      pendingPage = null;
+      renderPage(nextPage);
+    }
+
+  }
+
+}
+
+
+/* ======================================
+   PAGE NAVIGATION
+====================================== */
+
+document.getElementById("previousBtn").addEventListener("click", () => {
+  if (currentPage > 1) {
+    renderPage(currentPage - 1);
+  }
+});
+
+document.getElementById("nextBtn").addEventListener("click", () => {
+  if (pdfDocument && currentPage < pdfDocument.numPages) {
+    renderPage(currentPage + 1);
+  }
+});
+
+pageInput.addEventListener("change", () => {
+
+  if (!pdfDocument) return;
+
+  let page = Number(pageInput.value);
+
+  if (!Number.isInteger(page)) {
+    page = currentPage;
+  }
+
+  page = Math.max(1, Math.min(page, pdfDocument.numPages));
+
+  renderPage(page);
+
+});
+
+document.addEventListener("keydown", event => {
+
+  if (event.target.matches("input")) return;
+
+  if (event.key === "ArrowRight" && pdfDocument) {
+    if (currentPage < pdfDocument.numPages) {
+      renderPage(currentPage + 1);
+    }
+  }
+
+  if (event.key === "ArrowLeft" && pdfDocument) {
+    if (currentPage > 1) {
+      renderPage(currentPage - 1);
+    }
+  }
+
+});
+
+
+/* ======================================
+   ZOOM
+====================================== */
+
+function updateZoom() {
+  document.getElementById("zoomValue").textContent =
+    Math.round(zoom * 100) + "%";
+}
+
+document.getElementById("zoomIn").addEventListener("click", () => {
+
+  if (zoom < 2.5) {
+    zoom = Math.min(2.5, zoom + 0.15);
+    updateZoom();
+    renderPage(currentPage);
+  }
+
+});
+
+document.getElementById("zoomOut").addEventListener("click", () => {
+
+  if (zoom > 0.5) {
+    zoom = Math.max(0.5, zoom - 0.15);
+    updateZoom();
+    renderPage(currentPage);
+  }
+
+});
+
+document.getElementById("fitBtn").addEventListener("click", async () => {
+
+  if (!pdfDocument) return;
+
+  const page = await pdfDocument.getPage(currentPage);
+  const original = page.getViewport({ scale: 1 });
+
+  const availableWidth =
+    document.getElementById("readerArea").clientWidth - 30;
+
+  zoom = Math.min(2, availableWidth / original.width);
+
+  updateZoom();
+  renderPage(currentPage);
+
+});
+
+
+/* ======================================
+   FULLSCREEN
+====================================== */
+
+document.getElementById("fullscreenBtn").addEventListener("click", async () => {
+
+  try {
+
+    if (!document.fullscreenElement) {
+      await document.documentElement.requestFullscreen();
+    } else {
+      await document.exitFullscreen();
+    }
+
+  } catch (error) {
+    console.warn("Fullscreen unavailable:", error);
+  }
+
+});
+
+document.addEventListener("fullscreenchange", () => {
+
+  document.body.classList.toggle(
+    "fullscreen",
+    Boolean(document.fullscreenElement)
+  );
+
+  if (pdfDocument) {
+    setTimeout(() => renderPage(currentPage), 150);
+  }
+
+});
+
+
+/* ======================================
+   THEME
+====================================== */
+
+const themeBtn = document.getElementById("themeBtn");
+
+function applyTheme(theme) {
+
+  document.body.classList.toggle("light", theme === "light");
+
+  themeBtn.innerHTML = theme === "light"
+    ? '<i class="fas fa-moon"></i>'
+    : '<i class="fas fa-sun"></i>';
+
+  localStorage.setItem("examPilotTheme", theme);
+
+}
+
+applyTheme(localStorage.getItem("examPilotTheme") || "dark");
+
+themeBtn.addEventListener("click", () => {
+
+  const newTheme = document.body.classList.contains("light")
+    ? "dark"
+    : "light";
+
+  applyTheme(newTheme);
+
+});
+
+
+/* ======================================
+   RETURN TO LIBRARY
+====================================== */
+
+document.getElementById("backBtn").addEventListener("click", () => {
+
+  if (documentRecord?.category === "study-notes") {
+    window.location.href = "study-notes.html";
+  } else {
+    window.location.href = "study-library.html";
+  }
+
+});
+
+
+/* ======================================
+   RESIZE HANDLING
+====================================== */
+
+window.addEventListener("resize", () => {
+
+  if (!pdfDocument) return;
+
+  clearTimeout(resizeTimer);
+
+  resizeTimer = setTimeout(() => {
+    renderPage(currentPage);
+  }, 250);
+
+});
+
+
+/* ======================================
+   START READER
+====================================== */
+
+loadDocument();
+
+</script>
+
+</body>
+</html>
