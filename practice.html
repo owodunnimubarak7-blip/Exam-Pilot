@@ -1274,6 +1274,7 @@ let toastTimer;
 function notify(message, error = false) {
 
   const toast = document.getElementById("toast");
+  if (!toast) return;
 
   toast.textContent = message;
 
@@ -1324,14 +1325,17 @@ function chooseExam(button) {
 function renderSubjects() {
 
   const container = document.getElementById("subjects");
+  if (!container) return;
 
-  const available = SUBJECTS[selectedExam];
+  const available = SUBJECTS[selectedExam] || [];
 
   container.innerHTML = "";
 
   available.forEach(name => {
 
     const button = document.createElement("button");
+
+    button.type = "button";
 
     button.className = "subject-option";
 
@@ -1347,10 +1351,9 @@ function renderSubjects() {
 
   });
 
-  // Keep only subjects available in the newly selected exam
   selectedSubjects = selectedSubjects.filter(sub => available.includes(sub));
 
-  if (!selectedSubjects.length) {
+  if (!selectedSubjects.length && available.length) {
     selectedSubjects = [available[0]];
   }
 
@@ -1404,6 +1407,7 @@ function renderTopics() {
   const select = document.getElementById("topic");
 
   const help = document.getElementById("topicHelp");
+  if (!select) return;
 
   const primarySubject = selectedSubjects[0];
   const topics = selectedSubjects.length === 1 ? (TOPICS[primarySubject] || []) : [];
@@ -1430,12 +1434,14 @@ function renderTopics() {
 
   });
 
-  if (selectedSubjects.length > 1) {
-    help.textContent = "Combined subject mode (" + selectedSubjects.join(", ") + ") uses All Topics across selected subjects.";
-  } else {
-    help.textContent = topics.length
-      ? topics.length + " topic categories available for " + primarySubject + "."
-      : "Topic categories will be added for this subject.";
+  if (help) {
+    if (selectedSubjects.length > 1) {
+      help.textContent = "Combined subject mode (" + selectedSubjects.join(", ") + ") uses All Topics across selected subjects.";
+    } else {
+      help.textContent = topics.length
+        ? topics.length + " topic categories available for " + primarySubject + "."
+        : "Topic categories will be added for this subject.";
+    }
   }
 
 }
@@ -1453,12 +1459,15 @@ function chooseMode(button) {
   selectedMode = button.dataset.mode;
 
   const durationField = document.getElementById("durationField");
+  const durationSelect = document.getElementById("duration");
 
-  durationField.style.opacity =
-    selectedMode === "timed" ? "1" : ".55";
+  if (durationField) {
+    durationField.style.opacity = selectedMode === "timed" ? "1" : ".55";
+  }
 
-  document.getElementById("duration").disabled =
-    selectedMode !== "timed";
+  if (durationSelect) {
+    durationSelect.disabled = selectedMode !== "timed";
+  }
 
   updateSummary();
 
@@ -1479,35 +1488,31 @@ function updateSummary() {
 
   const duration = document.getElementById("duration");
 
-  document.getElementById("sumExam").textContent =
-    selectedExam === "JAMB" ? "JAMB / UTME" : selectedExam;
+  const setText = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  };
 
-  document.getElementById("sumSubject").textContent =
-    selectedSubjects.join(" + ");
+  setText("sumExam", selectedExam === "JAMB" ? "JAMB / UTME" : selectedExam);
 
-  document.getElementById("sumTopic").textContent =
+  setText("sumSubject", selectedSubjects.join(" + "));
+
+  setText(
+    "sumTopic",
     selectedSubjects.length > 1
       ? "All Topics"
-      : topic.selectedOptions[0].textContent;
+      : (topic && topic.selectedOptions[0] ? topic.selectedOptions[0].textContent : "All Topics")
+  );
 
-  document.getElementById("sumMode").textContent =
-    selectedMode === "practice"
-      ? "Practice Mode"
-      : "Timed CBT Mode";
+  setText("sumMode", selectedMode === "practice" ? "Practice Mode" : "Timed CBT Mode");
 
-  document.getElementById("sumCount").textContent =
-    count.value;
+  setText("sumCount", count ? count.value : "30");
 
-  document.getElementById("sumDifficulty").textContent =
-    difficulty.selectedOptions[0].textContent;
+  setText("sumDifficulty", difficulty && difficulty.selectedOptions[0] ? difficulty.selectedOptions[0].textContent : "All Levels");
 
-  document.getElementById("sumYear").textContent =
-    year.selectedOptions[0].textContent;
+  setText("sumYear", year && year.selectedOptions[0] ? year.selectedOptions[0].textContent : "All Available Years");
 
-  document.getElementById("sumDuration").textContent =
-    selectedMode === "practice"
-      ? "No time limit"
-      : duration.value + " Minutes";
+  setText("sumDuration", selectedMode === "practice" ? "No time limit" : (duration ? duration.value + " Minutes" : "30 Minutes"));
 
 }
 
@@ -1522,8 +1527,10 @@ function updateSummary() {
   "duration"
 ].forEach(id => {
 
-  document.getElementById(id)
-    .addEventListener("change", updateSummary);
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener("change", updateSummary);
+  }
 
 });
 
@@ -1532,28 +1539,32 @@ function updateSummary() {
 
 function getConfiguration() {
 
+  const topicEl = document.getElementById("topic");
+  const countEl = document.getElementById("questionCount");
+  const diffEl = document.getElementById("difficulty");
+  const yearEl = document.getElementById("year");
+  const durEl = document.getElementById("duration");
+
   return {
 
     exam: selectedExam,
 
-    subject: selectedSubjects[0],
+    subject: selectedSubjects[0] || "English Language",
 
-    subjects: [...selectedSubjects],
+    subjects: selectedSubjects.length ? [...selectedSubjects] : ["English Language"],
 
-    topic: selectedSubjects.length > 1 ? "all" : document.getElementById("topic").value,
+    topic: selectedSubjects.length > 1 ? "all" : (topicEl ? topicEl.value : "all"),
 
     mode: selectedMode,
 
-    questions: Number(
-      document.getElementById("questionCount").value
-    ),
+    questions: Number(countEl ? countEl.value : 30) || 30,
 
-    difficulty: document.getElementById("difficulty").value,
+    difficulty: diffEl ? diffEl.value : "all",
 
-    year: document.getElementById("year").value,
+    year: yearEl ? yearEl.value : "all",
 
     duration: selectedMode === "timed"
-      ? Number(document.getElementById("duration").value)
+      ? (Number(durEl ? durEl.value : 30) || 30)
       : null,
 
     createdAt: new Date().toISOString(),
@@ -1577,7 +1588,6 @@ function ensureStartButtonActive() {
   startButton.setAttribute("aria-disabled", "false");
   startButton.style.opacity = "1";
   startButton.style.pointerEvents = "auto";
-  startButton.textContent = "🚀 START EXAMINATION";
 
 }
 
@@ -1586,8 +1596,6 @@ function startExam() {
   ensureStartButtonActive();
 
   const configuration = getConfiguration();
-
-  const startButton = document.getElementById("startButton");
 
   if (!configuration.exam ||
       !Array.isArray(configuration.subjects) ||
@@ -1608,17 +1616,14 @@ function startExam() {
       JSON.stringify(configuration)
     );
 
-    ensureStartButtonActive();
-    window.location.href = "exam.html";
-
   } catch (error) {
 
-    ensureStartButtonActive();
-    notify("Unable to save your settings. Try again.", true);
+    // Continue to exam.html even if sessionStorage is restricted in a preview frame
 
   }
 
-  setTimeout(ensureStartButtonActive, 0);
+  ensureStartButtonActive();
+  window.location.href = "exam.html";
 
 }
 
@@ -1627,21 +1632,29 @@ function startExam() {
 
 function initialise() {
 
-  const params = new URLSearchParams(window.location.search);
+  try {
 
-  const requestedSubject = params.get("subject");
+    const params = new URLSearchParams(window.location.search);
 
-  if (requestedSubject) {
+    const requestedSubject = params.get("subject");
 
-    const match = Object.values(SUBJECTS)
-      .flat()
-      .find(subject =>
-        subject.toLowerCase() === requestedSubject.toLowerCase()
-      );
+    if (requestedSubject) {
 
-    if (match) {
-      selectedSubjects = [match];
+      const match = Object.values(SUBJECTS)
+        .flat()
+        .find(subject =>
+          subject.toLowerCase() === requestedSubject.toLowerCase()
+        );
+
+      if (match) {
+        selectedSubjects = [match];
+      }
+
     }
+
+  } catch (err) {
+
+    // Ignore URL parameter parsing issues
 
   }
 
@@ -1649,24 +1662,17 @@ function initialise() {
 
   updateSummary();
 
-  document.getElementById("duration").disabled =
-    selectedMode !== "timed";
+  const durationEl = document.getElementById("duration");
+  if (durationEl) {
+    durationEl.disabled = selectedMode !== "timed";
+  }
 
   ensureStartButtonActive();
 
-  const startButton = document.getElementById("startButton");
-  if (startButton) {
-    new MutationObserver(ensureStartButtonActive).observe(startButton, {
-      attributes: true,
-      attributeFilter: ["disabled", "aria-disabled", "style"]
-    });
-  }
-
-  window.addEventListener("pageshow", ensureStartButtonActive);
-
 }
 
-initialise();
+document.addEventListener("DOMContentLoaded", initialise);
+window.addEventListener("pageshow", ensureStartButtonActive);
 
 </script>
 
