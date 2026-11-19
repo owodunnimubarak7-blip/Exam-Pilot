@@ -1,9 +1,9 @@
 
 /* =====================================================
    EXAM PILOT — SHARED STUDY LIBRARY ENGINE
-   Version: 1.0
-   Purpose: Catalogue, search, favourites and navigation
-   All student learning materials remain free.
+   Version: 2.0
+   Root-level files architecture
+   All learning materials remain FREE.
 ===================================================== */
 
 (function () {
@@ -11,6 +11,8 @@
 
   const CONFIG = {
     catalogue: "catalog.json",
+    reader: "reader.html",
+
     storage: {
       theme: "examPilotTheme",
       favourites: "examPilotFavourites",
@@ -21,9 +23,7 @@
   let catalogue = null;
   let loadingPromise = null;
 
-  /* =====================================
-     BASIC UTILITIES
-  ===================================== */
+  /* UTILITIES */
 
   function normalise(value) {
     return String(value || "")
@@ -47,25 +47,31 @@
     return new URL(".", window.location.href);
   }
 
-  /* =====================================
-     CATALOGUE VALIDATION
-  ===================================== */
+  /* CATEGORIES */
+
+  const CATEGORIES = Object.freeze({
+    "study-notes": "Study Notes",
+    "recommended-texts": "JAMB Recommended Texts",
+    "syllabus": "JAMB Syllabus"
+  });
+
+  function getCategoryName(category) {
+    return CATEGORIES[normalise(category).replace(/\s/g, "-")]
+      || category;
+  }
+
+  /* CATALOGUE VALIDATION */
 
   function validateCatalogue(data) {
-    if (!data || typeof data !== "object") {
-      throw new Error("Invalid catalogue.");
-    }
-
-    if (!Array.isArray(data.materials)) {
-      throw new Error("Catalogue materials must be an array.");
+    if (!data || !Array.isArray(data.materials)) {
+      throw new Error("catalog.json must contain a materials array.");
     }
 
     const ids = new Set();
 
     data.materials.forEach(material => {
-
       if (!material.id || !material.title || !material.category) {
-        throw new Error("A catalogue entry is missing required fields.");
+        throw new Error("A material is missing its ID, title or category.");
       }
 
       if (ids.has(String(material.id))) {
@@ -74,27 +80,23 @@
 
       ids.add(String(material.id));
 
+      if (!["study-notes", "recommended-texts", "syllabus"].includes(
+        normalise(material.category).replace(/\s/g, "-")
+      )) {
+        throw new Error("Unknown category: " + material.category);
+      }
     });
 
     return data;
   }
 
-  /* =====================================
-     LOAD CATALOGUE
-  ===================================== */
+  /* LOAD CATALOGUE */
 
   async function loadCatalogue(forceRefresh = false) {
-
-    if (catalogue && !forceRefresh) {
-      return catalogue;
-    }
-
-    if (loadingPromise && !forceRefresh) {
-      return loadingPromise;
-    }
+    if (catalogue && !forceRefresh) return catalogue;
+    if (loadingPromise && !forceRefresh) return loadingPromise;
 
     loadingPromise = (async () => {
-
       const url = new URL(CONFIG.catalogue, getBaseURL());
 
       if (forceRefresh) {
@@ -106,17 +108,12 @@
       });
 
       if (!response.ok) {
-        throw new Error(
-          "Could not load catalog.json. HTTP " + response.status
-        );
+        throw new Error("Catalogue loading failed: HTTP " + response.status);
       }
 
-      const data = await response.json();
-
-      catalogue = validateCatalogue(data);
+      catalogue = validateCatalogue(await response.json());
 
       return catalogue;
-
     })();
 
     try {
@@ -125,26 +122,11 @@
       loadingPromise = null;
       throw error;
     }
-
   }
 
-  /* =====================================
-     MATERIAL CATEGORIES
-  ===================================== */
-
-  const CATEGORIES = {
-    "study-notes": "Study Notes",
-    "recommended-texts": "JAMB Recommended Texts",
-    "syllabus": "JAMB Syllabus"
-  };
-
-  function getCategoryName(category) {
-    return CATEGORIES[normalise(category).replace(/\s/g, "-")]
-      || category;
-  }
+  /* MATERIALS */
 
   function getMaterials(options = {}) {
-
     if (!catalogue) return [];
 
     const {
@@ -155,30 +137,21 @@
     } = options;
 
     return catalogue.materials.filter(material => {
-
-      if (!includeUnavailable &&
-          material.status === "placeholder") {
+      if (!includeUnavailable && material.status === "placeholder") {
         return false;
       }
 
-      if (category) {
-        if (
-          normalise(material.category) !== normalise(category)
-        ) {
-          return false;
-        }
+      if (category &&
+          normalise(material.category) !== normalise(category)) {
+        return false;
       }
 
-      if (subject) {
-        if (
-          normalise(material.subject) !== normalise(subject)
-        ) {
-          return false;
-        }
+      if (subject &&
+          normalise(material.subject) !== normalise(subject)) {
+        return false;
       }
 
       if (search) {
-
         const searchable = normalise([
           material.title,
           material.subject,
@@ -187,114 +160,70 @@
           ...(Array.isArray(material.tags) ? material.tags : [])
         ].join(" "));
 
-        if (!searchable.includes(normalise(search))) {
-          return false;
-        }
-
+        if (!searchable.includes(normalise(search))) return false;
       }
 
       return true;
-
     });
-
   }
-
-  /* =====================================
-     GET MATERIAL BY ID
-  ===================================== */
 
   function findMaterial(id) {
-
     if (!catalogue) return null;
 
-    return catalogue.materials.find(material =>
-      String(material.id) === String(id)
+    return catalogue.materials.find(
+      item => String(item.id) === String(id)
     ) || null;
-
   }
 
-  /* =====================================
-     GET SUBJECTS
-  ===================================== */
+  /* SUBJECTS */
 
   function getSubjects(category = "study-notes") {
-
     if (!catalogue) return [];
 
     const subjects = new Map();
 
     getMaterials({ category }).forEach(material => {
-
       if (material.subject) {
-        const key = normalise(material.subject);
-
-        if (!subjects.has(key)) {
-          subjects.set(key, material.subject);
-        }
+        subjects.set(normalise(material.subject), material.subject);
       }
-
     });
 
-    if (Array.isArray(catalogue.subjects)) {
-
-      catalogue.subjects.forEach(subject => {
-
-        const key = normalise(subject);
-
-        if (!subjects.has(key)) {
-          subjects.set(key, subject);
-        }
-
-      });
-
-    }
+    (catalogue.subjects || []).forEach(subject => {
+      subjects.set(normalise(subject), subject);
+    });
 
     return [...subjects.values()].sort((a, b) =>
       a.localeCompare(b)
     );
-
   }
 
-  /* =====================================
-     PDF FILE VALIDATION
-  ===================================== */
+  /* PDF URL */
 
   function getPDFURL(material) {
-
     if (!material || !material.file) {
-      throw new Error("PDF file is missing.");
+      throw new Error("PDF filename is missing.");
     }
 
     const filename = String(material.file);
 
-    // This version supports root-level PDF files.
     if (
       !filename.toLowerCase().endsWith(".pdf") ||
       filename.includes("/") ||
       filename.includes("\\") ||
       filename.includes("..")
     ) {
-      throw new Error("Invalid PDF filename.");
+      throw new Error("Invalid PDF filename. Use a root-level PDF.");
     }
 
-    return new URL(
-      encodeURIComponent(filename),
-      getBaseURL()
-    ).href;
-
+    return new URL(encodeURIComponent(filename), getBaseURL()).href;
   }
 
-  /* =====================================
-     OPEN READER
-  ===================================== */
+  /* OPEN READER */
 
   function openReader(id) {
-
     const material = findMaterial(id);
 
-    if (!material) {
-      throw new Error("Material not found.");
-    }
+    if (!material) throw new Error("Material not found.");
 
     if (material.status === "placeholder") {
       throw new Error("This material has not been uploaded yet.");
@@ -303,28 +232,21 @@
     getPDFURL(material);
 
     window.location.href =
-      "reader.html?id=" + encodeURIComponent(material.id);
-
+      CONFIG.reader + "?id=" + encodeURIComponent(material.id);
   }
 
-  /* =====================================
-     FAVOURITES
-  ===================================== */
+  /* FAVOURITES */
 
   function getFavourites() {
-
     try {
-
-      const saved = JSON.parse(
+      const result = JSON.parse(
         localStorage.getItem(CONFIG.storage.favourites) || "[]"
       );
 
-      return Array.isArray(saved) ? saved : [];
-
+      return Array.isArray(result) ? result : [];
     } catch {
       return [];
     }
-
   }
 
   function isFavourite(id) {
@@ -332,16 +254,13 @@
   }
 
   function toggleFavourite(id) {
+    id = String(id);
 
     let favourites = getFavourites();
 
-    id = String(id);
-
-    if (favourites.includes(id)) {
-      favourites = favourites.filter(item => item !== id);
-    } else {
-      favourites.push(id);
-    }
+    favourites = favourites.includes(id)
+      ? favourites.filter(item => item !== id)
+      : [...favourites, id];
 
     localStorage.setItem(
       CONFIG.storage.favourites,
@@ -349,110 +268,66 @@
     );
 
     return favourites;
-
   }
 
   function getFavouriteMaterials() {
-
-    const favourites = getFavourites();
-
-    return favourites
-      .map(id => findMaterial(id))
+    return getFavourites()
+      .map(findMaterial)
       .filter(Boolean);
-
   }
 
-  /* =====================================
-     READING PROGRESS
-  ===================================== */
+  /* READING PROGRESS */
 
   function saveProgress(id, page) {
-
     localStorage.setItem(
       CONFIG.storage.progressPrefix + id,
       String(Math.max(1, Number(page) || 1))
     );
-
   }
 
   function getProgress(id) {
-
     return Number(
-      localStorage.getItem(
-        CONFIG.storage.progressPrefix + id
-      )
+      localStorage.getItem(CONFIG.storage.progressPrefix + id)
     ) || 1;
-
   }
 
-  /* =====================================
-     THEME
-  ===================================== */
+  /* THEME */
 
   function getTheme() {
-
     return localStorage.getItem(CONFIG.storage.theme) || "dark";
-
   }
 
   function setTheme(theme) {
-
-    if (!["dark", "light"].includes(theme)) {
-      return;
-    }
+    if (!["dark", "light"].includes(theme)) return;
 
     localStorage.setItem(CONFIG.storage.theme, theme);
 
-    document.body.classList.toggle(
-      "light",
-      theme === "light"
-    );
-
+    document.body.classList.toggle("light", theme === "light");
   }
 
-  /* =====================================
-     LIBRARY STATISTICS
-  ===================================== */
+  /* STATISTICS */
 
   function getStatistics() {
-
-    if (!catalogue) {
-      return {
-        total: 0,
-        notes: 0,
-        texts: 0,
-        syllabuses: 0
-      };
-    }
-
     const available = getMaterials();
 
     return {
       total: available.length,
-
-      notes: available.filter(item =>
-        normalise(item.category) === "study notes"
+      notes: available.filter(x =>
+        normalise(x.category) === "study notes"
       ).length,
-
-      texts: available.filter(item =>
-        normalise(item.category) === "recommended texts"
+      texts: available.filter(x =>
+        normalise(x.category) === "recommended texts"
       ).length,
-
-      syllabuses: available.filter(item =>
-        normalise(item.category) === "syllabus"
+      syllabuses: available.filter(x =>
+        normalise(x.category) === "syllabus"
       ).length
     };
-
   }
 
-  /* =====================================
-     PUBLIC EXAM PILOT API
-  ===================================== */
+  /* PUBLIC API */
 
   window.ExamPilotLibrary = Object.freeze({
-
-    version: "1.0",
-
+    version: "2.0",
     categories: CATEGORIES,
 
     loadCatalogue,
@@ -461,8 +336,8 @@
     getMaterials,
     findMaterial,
     getSubjects,
-
     getCategoryName,
+
     getPDFURL,
     openReader,
 
@@ -481,9 +356,8 @@
 
     normalise,
     escapeHTML
-
   });
 
-  console.log("Exam Pilot Study Library Engine initialized.");
+  console.log("Exam Pilot Library Engine v2.0 ready.");
 
 })();
