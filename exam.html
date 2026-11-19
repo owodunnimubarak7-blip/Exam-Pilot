@@ -167,6 +167,38 @@
             transition: width 0.4s ease;
         }
 
+        /* SUBJECT SWITCHER BAR ON TOP OF QUESTIONS PAGE */
+        .subject-switcher-bar {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+            scrollbar-width: thin;
+        }
+        .subject-tab-btn {
+            background: var(--instruction-bg);
+            color: var(--text-main);
+            border: 1px solid var(--option-border);
+            padding: 6px 11px;
+            border-radius: 9px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.15s ease;
+        }
+        .subject-tab-btn:hover {
+            border-color: var(--primary);
+        }
+        .subject-tab-btn.active {
+            background: linear-gradient(135deg, var(--primary), #059669);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.25);
+        }
+
         .grand-card {
             background: var(--card-bg);
             backdrop-filter: blur(8px);
@@ -277,7 +309,7 @@
             flex: 1;
             overflow-y: auto;
             padding-right: 4px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .option-btn {
@@ -323,6 +355,36 @@
             flex-shrink: 0;
         }
         .option-btn.selected .opt-letter {
+            background: var(--primary);
+            color: white;
+        }
+
+        .next-subject-banner {
+            margin-bottom: 8px;
+            flex-shrink: 0;
+        }
+
+        .next-subject-btn {
+            width: 100%;
+            padding: 9px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(16, 185, 129, 0.45);
+            background: rgba(16, 185, 129, 0.16);
+            color: var(--primary-dark);
+            font-size: 0.8rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+        }
+        [data-theme="dark"] .next-subject-btn {
+            color: #6ee7b7;
+            background: rgba(16, 185, 129, 0.18);
+        }
+        .next-subject-btn:hover {
             background: var(--primary);
             color: white;
         }
@@ -537,7 +599,6 @@
             margin-top: 2px;
         }
 
-        /* PER-SUBJECT INDIVIDUAL SCORE CARDS */
         .subject-scores-panel {
             background: var(--instruction-bg);
             border: 1px solid var(--option-border);
@@ -820,8 +881,9 @@
     <script src="economics.js"></script>
     <script src="literature.js"></script>
     <script src="civic.js"></script>
-    <script src="physics.js"></script>
+    <script src="biology.js"></script>
     <script src="chemistry.js"></script>
+    <script src="physics.js"></script>
 </head>
 <body data-theme="dark">
 
@@ -845,6 +907,9 @@
         </div>
         <div class="progress-bar"><div id="progress-fill"></div></div>
     </div>
+
+    <!-- Subject Tabs on Top of Questions Page -->
+    <div id="subject-switcher-bar" class="subject-switcher-bar hidden"></div>
 
     <!-- Loading Card -->
     <div id="loading-box" class="grand-card">
@@ -873,6 +938,12 @@
         </div>
 
         <div id="options-grid" class="options-container"></div>
+
+        <div id="next-subject-banner" class="next-subject-banner hidden">
+            <button type="button" id="next-subject-btn" class="next-subject-btn" onclick="goToNextSubject()">
+                Next Subject →
+            </button>
+        </div>
 
         <div class="control-panel">
             <button id="prev-btn" class="action-btn nav-btn" onclick="navigateQuestion(-1)">←</button>
@@ -956,6 +1027,7 @@
     const POLLINATION_API_URL = 'https://text.pollinations.ai/';
 
     let config = null;
+    let activeSubjectsList = [];
     let questions = [];
     let currentQ = 0;
     let userAnswers = [];
@@ -986,17 +1058,110 @@
         timerPaused = !timerPaused;
     }
 
-    function normalizeQuestion(item) {
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function normalizeQuestion(item, assignedSubject) {
+        const cleanSubject = assignedSubject || item.subjectLabel || item.subject || config.subject;
+        const cleanTopic = item.topic || item.t || cleanSubject;
         return {
-            instr: item.instr || `Topic: ${item.topic || item.t || config.subject}`,
-            topic: item.topic || item.t || config.subject,
-            subjectLabel: item.subjectLabel || item.subject || config.subject,
+            instr: `${cleanSubject} • ${cleanTopic}`,
+            topic: cleanTopic,
+            subjectLabel: cleanSubject,
+            exam: item.exam || null,
             year: item.year || item.y || null,
             q: item.q,
             options: item.options || item.a,
             correct: item.correct !== undefined ? Number(item.correct) : Number(item.c),
             exp: item.explanation?.correctReason || item.exp || item.e || "Review your study notes for a detailed breakdown of this question."
         };
+    }
+
+    function getSubjectIndices(subName) {
+        return questions
+            .map((q, idx) => (q.subjectLabel === subName ? idx : -1))
+            .filter(idx => idx !== -1);
+    }
+
+    function getSubjectQuestionNumber(globalIdx) {
+        const currentSubject = questions[globalIdx]?.subjectLabel;
+        const indices = getSubjectIndices(currentSubject);
+        const pos = indices.indexOf(globalIdx);
+        return {
+            indexInSubject: pos >= 0 ? pos + 1 : 1,
+            totalInSubject: indices.length
+        };
+    }
+
+    function getNextSubjectName(currentSub) {
+        if (activeSubjectsList.length <= 1) return null;
+        const subPos = activeSubjectsList.indexOf(currentSub);
+        if (subPos === -1 || subPos >= activeSubjectsList.length - 1) return null;
+        return activeSubjectsList[subPos + 1];
+    }
+
+    function updateNextSubjectButton() {
+        const banner = document.getElementById("next-subject-banner");
+        const btn = document.getElementById("next-subject-btn");
+        const currentSub = questions[currentQ]?.subjectLabel;
+        const indices = getSubjectIndices(currentSub);
+        const isLastOfCurrentSubject = indices.length > 0 && indices[indices.length - 1] === currentQ;
+        const nextSub = getNextSubjectName(currentSub);
+
+        if (activeSubjectsList.length > 1 && isLastOfCurrentSubject && nextSub) {
+            btn.textContent = `Next Subject: ${nextSub} →`;
+            banner.classList.remove("hidden");
+        } else {
+            banner.classList.add("hidden");
+        }
+    }
+
+    function goToNextSubject() {
+        const currentSub = questions[currentQ]?.subjectLabel;
+        const nextSub = getNextSubjectName(currentSub);
+        if (nextSub) {
+            jumpToSubject(nextSub);
+        }
+    }
+
+    function jumpToSubject(subName) {
+        const indices = getSubjectIndices(subName);
+        if (!indices.length) return;
+        currentQ = indices[0];
+        document.getElementById("jump-grid-wrapper").classList.add("hidden");
+        renderSubjectSwitcher();
+        renderActiveQuestion();
+        renderNavigatorGrid();
+        updateProgressIndicators();
+    }
+
+    function renderSubjectSwitcher() {
+        const bar = document.getElementById("subject-switcher-bar");
+        const currentSub = questions[currentQ]?.subjectLabel;
+
+        if (!activeSubjectsList.length) {
+            bar.classList.add("hidden");
+            return;
+        }
+
+        bar.classList.remove("hidden");
+        bar.innerHTML = "";
+
+        activeSubjectsList.forEach(subName => {
+            const indices = getSubjectIndices(subName);
+            const answeredInSub = indices.filter(i => userAnswers[i] !== null).length;
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = `subject-tab-btn ${subName === currentSub ? "active" : ""}`;
+            btn.textContent = `${subName} (${answeredInSub}/${indices.length})`;
+            btn.onclick = () => jumpToSubject(subName);
+            bar.appendChild(btn);
+        });
     }
 
     async function initialiseExam() {
@@ -1017,7 +1182,7 @@
             const registry = window.ExamPilot?.subjectBanks || {};
             const normKey = s => String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
 
-            let combinedQuestions = [];
+            const perSubjectBuckets = [];
             const missingSubjects = [];
 
             for (const subName of targetSubjects) {
@@ -1032,12 +1197,7 @@
                     continue;
                 }
 
-                let subQuestions = bank.questions.map(item => {
-                    const qObj = normalizeQuestion(item);
-                    qObj.subjectLabel = subName;
-                    qObj.instr = `[${subName}] • ${qObj.topic}`;
-                    return qObj;
-                });
+                let subQuestions = bank.questions.map(item => normalizeQuestion(item, subName));
 
                 if (config.exam) {
                     const examFiltered = subQuestions.filter(
@@ -1058,23 +1218,37 @@
                     if (topicFiltered.length) subQuestions = topicFiltered;
                 }
 
-                combinedQuestions.push(...subQuestions);
+                shuffleArray(subQuestions);
+                perSubjectBuckets.push({ subName, pool: subQuestions });
             }
 
-            if (combinedQuestions.length === 0) {
+            if (perSubjectBuckets.length === 0) {
                 throw new Error(
                     `No questions found for ${missingSubjects.join(", ") || targetSubjects.join(", ")}. Ensure their subject scripts are loaded.`
                 );
             }
 
-            // Shuffle combined question pool
-            for (let i = combinedQuestions.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [combinedQuestions[i], combinedQuestions[j]] = [combinedQuestions[j], combinedQuestions[i]];
+            const requestedCount = Math.max(1, Number(config.questions) || 30);
+            const bucketCount = perSubjectBuckets.length;
+            const baseQuota = Math.floor(requestedCount / bucketCount);
+            let remainder = requestedCount % bucketCount;
+
+            const groupedQuestions = [];
+            const populatedSubjects = [];
+
+            for (const bucket of perSubjectBuckets) {
+                const quota = baseQuota + (remainder > 0 ? 1 : 0);
+                if (remainder > 0) remainder--;
+
+                const slice = bucket.pool.slice(0, Math.max(1, quota));
+                if (slice.length > 0) {
+                    groupedQuestions.push(...slice);
+                    populatedSubjects.push(bucket.subName);
+                }
             }
 
-            const requestedCount = Number(config.questions) || 30;
-            questions = combinedQuestions.slice(0, requestedCount);
+            activeSubjectsList = populatedSubjects;
+            questions = groupedQuestions;
             userAnswers = new Array(questions.length).fill(null);
             flaggedQuestions.clear();
             currentQ = 0;
@@ -1093,6 +1267,7 @@
             document.getElementById("loading-box").classList.add("hidden");
             document.getElementById("quiz-box").classList.remove("hidden");
 
+            renderSubjectSwitcher();
             renderActiveQuestion();
             renderNavigatorGrid();
             updateProgressIndicators();
@@ -1123,7 +1298,9 @@
         const item = questions[currentQ];
         if (!item) return;
 
-        document.getElementById("instruction-box").textContent = item.instr;
+        const subNum = getSubjectQuestionNumber(currentQ);
+        document.getElementById("instruction-box").textContent =
+            `${item.subjectLabel} • Q${subNum.indexInSubject}/${subNum.totalInSubject} (${item.topic})`;
 
         const yearBadge = document.getElementById("year-badge");
         if (item.year) {
@@ -1133,7 +1310,7 @@
             yearBadge.classList.add("hidden");
         }
 
-        document.getElementById("q-text").textContent = `${currentQ + 1}. ${item.q}`;
+        document.getElementById("q-text").textContent = `${subNum.indexInSubject}. ${item.q}`;
 
         const grid = document.getElementById("options-grid");
         grid.innerHTML = "";
@@ -1151,11 +1328,14 @@
 
         const flagBtn = document.getElementById("flag-btn");
         flagBtn.className = flaggedQuestions.has(currentQ) ? "flag-btn flagged" : "flag-btn";
+
+        updateNextSubjectButton();
     }
 
     function selectOptionIndex(idx) {
         if (idx < 0 || idx >= questions[currentQ].options.length) return;
         userAnswers[currentQ] = idx;
+        renderSubjectSwitcher();
         renderActiveQuestion();
         renderNavigatorGrid();
         updateProgressIndicators();
@@ -1165,6 +1345,7 @@
         const target = currentQ + step;
         if (target < 0 || target >= questions.length) return;
         currentQ = target;
+        renderSubjectSwitcher();
         renderActiveQuestion();
         renderNavigatorGrid();
         updateProgressIndicators();
@@ -1174,27 +1355,35 @@
         const total = questions.length;
         const answeredCount = userAnswers.filter(ans => ans !== null).length;
         const percent = Math.round(((currentQ + 1) / total) * 100);
-        document.getElementById("progress-text").textContent = `Item ${currentQ + 1} / ${total}`;
+        document.getElementById("progress-text").textContent = `Overall ${currentQ + 1} / ${total}`;
         document.getElementById("answered-count").textContent = `Answered: ${answeredCount}/${total}`;
         document.getElementById("progress-percent").textContent = `${percent}%`;
         document.getElementById("progress-fill").style.width = `${percent}%`;
-        document.getElementById("quick-jump-label").textContent = `Quick Jump (${total} Questions)`;
+
+        const currentSub = questions[currentQ]?.subjectLabel || "Questions";
+        const subCount = getSubjectIndices(currentSub).length;
+        document.getElementById("quick-jump-label").textContent = `${currentSub} (${subCount} Questions)`;
     }
 
     function renderNavigatorGrid() {
         const gridContainer = document.getElementById("jump-box-grid");
         gridContainer.innerHTML = "";
 
-        questions.forEach((q, index) => {
+        const currentSub = questions[currentQ]?.subjectLabel;
+        const indicesInSubject = getSubjectIndices(currentSub);
+
+        indicesInSubject.forEach((globalIdx, localPos) => {
+            const q = questions[globalIdx];
             const item = document.createElement("div");
             item.className = `jump-item`;
-            if (index === currentQ) item.classList.add("active");
-            if (userAnswers[index] !== null) item.classList.add("answered");
-            if (flaggedQuestions.has(index)) item.classList.add("flagged");
+            if (globalIdx === currentQ) item.classList.add("active");
+            if (userAnswers[globalIdx] !== null) item.classList.add("answered");
+            if (flaggedQuestions.has(globalIdx)) item.classList.add("flagged");
 
-            item.textContent = index + 1;
+            item.textContent = localPos + 1;
             item.onclick = () => {
-                currentQ = index;
+                currentQ = globalIdx;
+                renderSubjectSwitcher();
                 renderActiveQuestion();
                 renderNavigatorGrid();
                 updateProgressIndicators();
@@ -1251,11 +1440,13 @@
 
     function executeUIRenderOnSubmit(stats) {
         clearInterval(timerInterval);
+        document.getElementById("next-subject-banner").classList.add("hidden");
+        document.getElementById("subject-switcher-bar").classList.add("hidden");
         document.getElementById("quiz-box").classList.add("hidden");
         document.getElementById("result-box").classList.remove("hidden");
 
-        const subjectTitle = Array.isArray(config.subjects) && config.subjects.length
-            ? config.subjects.join(" + ")
+        const subjectTitle = activeSubjectsList.length
+            ? activeSubjectsList.join(" + ")
             : config.subject;
 
         const percentage = questions.length ? Math.round((stats.correct / questions.length) * 100) : 0;
@@ -1280,9 +1471,7 @@
 
     function renderSubjectScores() {
         const subjectMap = {};
-        const selectedList = Array.isArray(config.subjects) && config.subjects.length
-            ? config.subjects
-            : [config.subject];
+        const selectedList = activeSubjectsList.length ? activeSubjectsList : [config.subject];
 
         selectedList.forEach(sub => {
             subjectMap[sub] = { total: 0, correct: 0, wrong: 0, unanswered: 0 };
@@ -1370,6 +1559,7 @@
             const userAnswer = userAnswers[idx];
             const isCorrect = userAnswer === q.correct;
             const isUnanswered = userAnswer === null;
+            const subNum = getSubjectQuestionNumber(idx);
 
             const card = document.createElement("div");
             const cardStateClass = isUnanswered ? "is-unanswered" : isCorrect ? "is-correct" : "is-wrong";
@@ -1379,14 +1569,14 @@
             const statusText = isUnanswered ? "✓ Marked: Unanswered" : isCorrect ? "✓ Marked: Correct" : "✕ Marked: Incorrect";
             const userChoiceText = isUnanswered ? "No answer selected" : `${OPTION_LETTERS[userAnswer]}. ${q.options[userAnswer]}`;
             const correctChoiceText = `${OPTION_LETTERS[q.correct]}. ${q.options[q.correct]}`;
-            const metaText = `${q.subjectLabel ? q.subjectLabel + ' • ' : ''}${q.topic}${q.year ? ' • ' + q.year : ''}`;
+            const metaText = `${q.subjectLabel} • ${q.topic}${q.year ? ' • ' + q.year : ''}`;
 
             card.innerHTML = `
                 <div class="review-meta-row">
                     <span class="choice-badge ${statusClass}">${statusText}</span>
                     <span style="font-size:0.7rem; color:var(--gray); font-weight:700;">${metaText}</span>
                 </div>
-                <div style="font-size:0.9rem; font-weight:700; margin-bottom:8px; line-height:1.4;">Q${idx + 1}. ${q.q}</div>
+                <div style="font-size:0.9rem; font-weight:700; margin-bottom:8px; line-height:1.4;">${q.subjectLabel} Q${subNum.indexInSubject}. ${q.q}</div>
                 <div class="answer-compare-grid">
                     <div class="answer-box ${isUnanswered ? '' : (isCorrect ? 'correct-box' : 'wrong-box')}">
                         <small>Your Response</small>
@@ -1458,7 +1648,7 @@
         const blob = new Blob([csv], { type: 'text/csv' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        const fileSlug = (Array.isArray(config.subjects) ? config.subjects.join("-") : config.subject)
+        const fileSlug = (activeSubjectsList.length ? activeSubjectsList.join("-") : config.subject)
             .toLowerCase().replace(/[^a-z0-9]+/g, "-");
         link.download = `${fileSlug}-results.csv`;
         link.click();
