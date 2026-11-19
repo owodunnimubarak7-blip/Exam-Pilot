@@ -1567,7 +1567,23 @@ function getConfiguration() {
 
 /* 14. START EXAMINATION */
 
+function ensureStartButtonActive() {
+
+  const startButton = document.getElementById("startButton");
+  if (!startButton) return;
+
+  startButton.disabled = false;
+  startButton.removeAttribute("disabled");
+  startButton.setAttribute("aria-disabled", "false");
+  startButton.style.opacity = "1";
+  startButton.style.pointerEvents = "auto";
+  startButton.textContent = "🚀 START EXAMINATION";
+
+}
+
 function startExam() {
+
+  ensureStartButtonActive();
 
   const configuration = getConfiguration();
 
@@ -1578,6 +1594,7 @@ function startExam() {
       !configuration.subjects.length ||
       !configuration.questions) {
 
+    ensureStartButtonActive();
     notify("Please select at least 1 subject and complete your settings.", true);
 
     return;
@@ -1591,21 +1608,17 @@ function startExam() {
       JSON.stringify(configuration)
     );
 
-    startButton.disabled = true;
-
-    startButton.textContent = "PREPARING EXAMINATION...";
-
+    ensureStartButtonActive();
     window.location.href = "exam.html";
 
   } catch (error) {
 
-    startButton.disabled = false;
-
-    startButton.textContent = "🚀 START EXAMINATION";
-
+    ensureStartButtonActive();
     notify("Unable to save your settings. Try again.", true);
 
   }
+
+  setTimeout(ensureStartButtonActive, 0);
 
 }
 
@@ -1638,6 +1651,18 @@ function initialise() {
 
   document.getElementById("duration").disabled =
     selectedMode !== "timed";
+
+  ensureStartButtonActive();
+
+  const startButton = document.getElementById("startButton");
+  if (startButton) {
+    new MutationObserver(ensureStartButtonActive).observe(startButton, {
+      attributes: true,
+      attributeFilter: ["disabled", "aria-disabled", "style"]
+    });
+  }
+
+  window.addEventListener("pageshow", ensureStartButtonActive);
 
 }
 
