@@ -1,0 +1,1160 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#030b29">
+
+<title>Study Library | Exam Pilot</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+:root {
+  --bg: #030b29;
+  --panel: #091a40;
+  --panel2: #102650;
+  --text: #f4f7ff;
+  --muted: #9aaccb;
+  --green: #00ed8b;
+  --blue: #4388ff;
+  --border: rgba(255,255,255,.09);
+  --shadow: 0 15px 45px rgba(0,0,0,.18);
+}
+
+body.light {
+  --bg: #f3f6fc;
+  --panel: #ffffff;
+  --panel2: #edf2fb;
+  --text: #102044;
+  --muted: #66748f;
+  --green: #00a96b;
+  --blue: #2563eb;
+  --border: rgba(15,35,75,.12);
+  --shadow: 0 12px 35px rgba(20,40,80,.08);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Manrope', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background .25s, color .25s;
+}
+
+button, input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* TOP NAVIGATION */
+
+.topbar {
+  height: 75px;
+  padding: 0 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 19px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.brand-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: var(--green);
+  color: #03152c;
+  font-size: 19px;
+}
+
+.brand span {
+  color: var(--green);
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-btn {
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--border);
+  background: var(--panel2);
+  color: var(--text);
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 17px;
+}
+
+.icon-btn:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.menu-btn {
+  display: none;
+}
+
+/* NAVIGATION DRAWER */
+
+.nav-drawer {
+  position: fixed;
+  top: 75px;
+  right: 0;
+  width: 290px;
+  max-width: 85%;
+  height: calc(100vh - 75px);
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  padding: 25px;
+  z-index: 99;
+  transform: translateX(110%);
+  transition: transform .3s ease;
+  box-shadow: var(--shadow);
+}
+
+.nav-drawer.open {
+  transform: translateX(0);
+}
+
+.nav-drawer h3 {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 18px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  background: var(--panel2);
+  color: var(--green);
+}
+
+.drawer-overlay {
+  position: fixed;
+  inset: 75px 0 0;
+  background: rgba(0,0,0,.45);
+  z-index: 98;
+  display: none;
+}
+
+.drawer-overlay.show {
+  display: block;
+}
+
+/* MAIN CONTENT */
+
+.container {
+  width: 88%;
+  max-width: 1250px;
+  margin: auto;
+}
+
+.hero {
+  padding: 65px 0 45px;
+}
+
+.hero-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+.hero h1 {
+  font-size: clamp(32px, 5vw, 55px);
+  line-height: 1.15;
+  font-weight: 800;
+  max-width: 750px;
+}
+
+.hero h1 span {
+  color: var(--green);
+}
+
+.hero p {
+  color: var(--muted);
+  max-width: 650px;
+  font-size: 15px;
+  line-height: 1.8;
+  margin-top: 18px;
+}
+
+/* SEARCH */
+
+.search-area {
+  max-width: 700px;
+  margin-top: 30px;
+  position: relative;
+}
+
+.search-area i {
+  position: absolute;
+  left: 19px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+}
+
+.search-area input {
+  width: 100%;
+  height: 58px;
+  padding: 0 20px 0 52px;
+  border-radius: 15px;
+  outline: none;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.search-area input:focus {
+  border-color: var(--green);
+}
+
+/* SECTION HEADINGS */
+
+.section {
+  padding: 25px 0 40px;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 22px;
+}
+
+.section-heading h2 {
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.section-heading p {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* CATEGORY CARDS */
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.category-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 25px;
+  min-height: 230px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: .25s;
+  box-shadow: var(--shadow);
+}
+
+.category-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--green);
+}
+
+.category-icon {
+  width: 55px;
+  height: 55px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  font-size: 23px;
+  margin-bottom: 20px;
+}
+
+.icon-green {
+  background: rgba(0,237,139,.13);
+  color: var(--green);
+}
+
+.icon-blue {
+  background: rgba(67,136,255,.15);
+  color: var(--blue);
+}
+
+.icon-purple {
+  background: rgba(170,115,255,.15);
+  color: #ad83ff;
+}
+
+.category-card h3 {
+  font-size: 17px;
+  margin-bottom: 9px;
+}
+
+.category-card p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.category-action {
+  margin-top: 22px;
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.category-action i {
+  margin-left: 6px;
+  transition: transform .2s;
+}
+
+.category-card:hover .category-action i {
+  transform: translateX(5px);
+}
+
+/* MATERIALS */
+
+.material-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 17px;
+}
+
+.material-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 17px;
+  padding: 20px;
+  transition: .2s;
+}
+
+.material-card:hover {
+  border-color: var(--green);
+  transform: translateY(-3px);
+}
+
+.material-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 17px;
+}
+
+.pdf-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  background: rgba(255,70,70,.12);
+  color: #ff7777;
+  border-radius: 12px;
+  font-size: 18px;
+}
+
+.favourite-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 18px;
+  padding: 5px;
+}
+
+.favourite-btn.saved {
+  color: #ffca52;
+}
+
+.material-card h3 {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.material-card p {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.material-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-top: 17px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.material-tag {
+  font-size: 10px;
+  color: var(--green);
+  background: rgba(0,237,139,.09);
+  padding: 6px 9px;
+  border-radius: 20px;
+  font-weight: 800;
+}
+
+.open-material {
+  background: var(--green);
+  color: #03152c;
+  border: none;
+  border-radius: 9px;
+  padding: 9px 13px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--muted);
+  background: var(--panel);
+  border: 1px dashed var(--border);
+  border-radius: 15px;
+}
+
+.empty-state i {
+  font-size: 30px;
+  margin-bottom: 12px;
+}
+
+/* FOOTER */
+
+footer {
+  border-top: 1px solid var(--border);
+  margin-top: 45px;
+  padding: 30px 6%;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+footer strong {
+  color: var(--green);
+}
+
+/* RESPONSIVE */
+
+@media(max-width: 900px) {
+  .category-grid,
+  .material-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media(max-width: 600px) {
+  .topbar {
+    padding: 0 5%;
+    height: 67px;
+  }
+
+  .brand {
+    font-size: 15px;
+  }
+
+  .brand-icon {
+    width: 37px;
+    height: 37px;
+  }
+
+  .menu-btn {
+    display: grid;
+  }
+
+  .container {
+    width: 90%;
+  }
+
+  .hero {
+    padding: 45px 0 30px;
+  }
+
+  .hero p {
+    font-size: 13px;
+  }
+
+  .category-grid,
+  .material-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .category-card {
+    min-height: 205px;
+  }
+
+  .section-heading h2 {
+    font-size: 18px;
+  }
+
+  .nav-drawer {
+    top: 67px;
+    height: calc(100vh - 67px);
+  }
+
+  .drawer-overlay {
+    top: 67px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- TOP NAVIGATION -->
+<header class="topbar">
+
+  <a href="index.html" class="brand">
+    <div class="brand-icon">
+      <i class="fas fa-graduation-cap"></i>
+    </div>
+    <div>EXAM <span>PILOT</span></div>
+  </a>
+
+  <div class="top-actions">
+
+    <button class="icon-btn" id="themeToggle"
+      aria-label="Toggle light and dark mode"
+      title="Toggle theme">
+      <i class="fas fa-sun"></i>
+    </button>
+
+    <button class="icon-btn menu-btn" id="menuToggle"
+      aria-label="Open navigation menu"
+      aria-expanded="false"
+      title="Open menu">
+      <i class="fas fa-bars"></i>
+    </button>
+
+  </div>
+</header>
+
+<!-- NAVIGATION DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+
+<aside class="nav-drawer" id="navDrawer">
+
+  <h3>Navigation</h3>
+
+  <a href="index.html" class="nav-link">
+    <i class="fas fa-house"></i>
+    Home
+  </a>
+
+  <a href="practice.html" class="nav-link">
+    <i class="fas fa-pen-to-square"></i>
+    Practice Centre
+  </a>
+
+  <a href="study-library.html" class="nav-link active">
+    <i class="fas fa-book-open"></i>
+    Study Library
+  </a>
+
+  <a href="study-notes.html" class="nav-link">
+    <i class="fas fa-book"></i>
+    Study Notes
+  </a>
+
+  <a href="cbt.html" class="nav-link">
+    <i class="fas fa-laptop"></i>
+    CBT Examination
+  </a>
+
+  <div style="height:1px;background:var(--border);margin:20px 0;"></div>
+
+  <a href="#categories" class="nav-link">
+    <i class="fas fa-layer-group"></i>
+    Library Categories
+  </a>
+
+  <a href="#recentMaterials" class="nav-link">
+    <i class="fas fa-clock"></i>
+    Recently Added
+  </a>
+
+  <a href="#favourites" class="nav-link">
+    <i class="fas fa-star"></i>
+    My Favourites
+  </a>
+
+</aside>
+
+<main class="container">
+
+  <!-- HERO -->
+  <section class="hero">
+
+    <div class="hero-label">
+      <i class="fas fa-book-open"></i>
+      YOUR DIGITAL LEARNING SPACE
+    </div>
+
+    <h1>
+      Welcome to the<br>
+      <span>Exam Pilot Study Library.</span>
+    </h1>
+
+    <p>
+      Access recommended JAMB textbooks, comprehensive study notes
+      and official examination syllabuses — all in one organised
+      learning environment.
+    </p>
+
+    <div class="search-area">
+      <i class="fas fa-search"></i>
+      <input
+        type="search"
+        id="globalSearch"
+        placeholder="Search books, notes, syllabuses and materials..."
+        autocomplete="off">
+    </div>
+
+  </section>
+
+  <!-- MAIN CATEGORIES -->
+  <section class="section" id="categories">
+
+    <div class="section-heading">
+      <div>
+        <h2>Explore the Library</h2>
+        <p>Choose what you want to study today.</p>
+      </div>
+    </div>
+
+    <div class="category-grid">
+
+      <!-- RECOMMENDED TEXTS -->
+      <a href="study-library.html?category=recommended-texts"
+         class="category-card">
+
+        <div>
+          <div class="category-icon icon-green">
+            <i class="fas fa-book"></i>
+          </div>
+
+          <h3>Recommended Texts</h3>
+
+          <p>
+            Explore recommended reading materials and prescribed
+            texts for your JAMB examination preparation.
+          </p>
+        </div>
+
+        <div class="category-action">
+          EXPLORE TEXTS <i class="fas fa-arrow-right"></i>
+        </div>
+
+      </a>
+
+      <!-- STUDY NOTES -->
+      <a href="study-notes.html" class="category-card">
+
+        <div>
+          <div class="category-icon icon-blue">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+
+          <h3>Study Notes</h3>
+
+          <p>
+            Access organised subject notes, explanations,
+            important concepts and learning materials.
+          </p>
+        </div>
+
+        <div class="category-action">
+          BROWSE STUDY NOTES <i class="fas fa-arrow-right"></i>
+        </div>
+
+      </a>
+
+      <!-- JAMB SYLLABUS -->
+      <a href="study-library.html?category=syllabus"
+         class="category-card">
+
+        <div>
+          <div class="category-icon icon-purple">
+            <i class="fas fa-clipboard-list"></i>
+          </div>
+
+          <h3>JAMB Syllabus</h3>
+
+          <p>
+            Find examination syllabuses, topics and learning
+            objectives to guide your preparation.
+          </p>
+        </div>
+
+        <div class="category-action">
+          VIEW SYLLABUSES <i class="fas fa-arrow-right"></i>
+        </div>
+
+      </a>
+
+    </div>
+  </section>
+
+  <!-- RECENT MATERIALS -->
+  <section class="section" id="recentMaterials">
+
+    <div class="section-heading">
+      <div>
+        <h2 id="materialsHeading">Recently Added Materials</h2>
+        <p>Discover available resources in your library.</p>
+      </div>
+    </div>
+
+    <div class="material-grid" id="materialsGrid">
+
+      <div class="empty-state">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Loading library materials...</p>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- FAVOURITES -->
+  <section class="section" id="favourites">
+
+    <div class="section-heading">
+      <div>
+        <h2>My Favourites</h2>
+        <p>Your personally saved learning materials.</p>
+      </div>
+    </div>
+
+    <div class="material-grid" id="favouritesGrid">
+
+      <div class="empty-state">
+        <i class="far fa-star"></i>
+        <p>You have not saved any materials yet.</p>
+      </div>
+
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  <strong>EXAM PILOT</strong><br>
+  Your companion for smarter examination preparation.<br>
+  Learn. Practise. Improve. Succeed.
+</footer>
+
+<script>
+/* =====================================
+   THEME TOGGLE
+===================================== */
+
+const themeToggle = document.getElementById("themeToggle");
+const body = document.body;
+
+function applyTheme(theme) {
+  body.classList.toggle("light", theme === "light");
+
+  themeToggle.innerHTML = theme === "light"
+    ? '<i class="fas fa-moon"></i>'
+    : '<i class="fas fa-sun"></i>';
+
+  localStorage.setItem("examPilotTheme", theme);
+}
+
+const savedTheme = localStorage.getItem("examPilotTheme") || "dark";
+applyTheme(savedTheme);
+
+themeToggle.addEventListener("click", () => {
+  const newTheme = body.classList.contains("light")
+    ? "dark"
+    : "light";
+
+  applyTheme(newTheme);
+});
+
+
+/* =====================================
+   NAVIGATION MENU TOGGLE
+===================================== */
+
+const menuToggle = document.getElementById("menuToggle");
+const navDrawer = document.getElementById("navDrawer");
+const drawerOverlay = document.getElementById("drawerOverlay");
+
+function openMenu() {
+  navDrawer.classList.add("open");
+  drawerOverlay.classList.add("show");
+  menuToggle.setAttribute("aria-expanded", "true");
+  menuToggle.innerHTML = '<i class="fas fa-times"></i>';
+}
+
+function closeMenu() {
+  navDrawer.classList.remove("open");
+  drawerOverlay.classList.remove("show");
+  menuToggle.setAttribute("aria-expanded", "false");
+  menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+}
+
+menuToggle.addEventListener("click", () => {
+  if (navDrawer.classList.contains("open")) {
+    closeMenu();
+  } else {
+    openMenu();
+  }
+});
+
+drawerOverlay.addEventListener("click", closeMenu);
+
+document.querySelectorAll(".nav-link").forEach(link => {
+  link.addEventListener("click", closeMenu);
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") closeMenu();
+});
+
+
+/* =====================================
+   LIBRARY CATALOGUE
+===================================== */
+
+let allMaterials = [];
+
+const materialsGrid = document.getElementById("materialsGrid");
+const favouritesGrid = document.getElementById("favouritesGrid");
+const globalSearch = document.getElementById("globalSearch");
+
+function getFavourites() {
+  try {
+    return JSON.parse(
+      localStorage.getItem("examPilotFavourites") || "[]"
+    );
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveFavourites(items) {
+  localStorage.setItem(
+    "examPilotFavourites",
+    JSON.stringify(items)
+  );
+}
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+function normaliseCategory(category) {
+  const value = String(category || "").toLowerCase();
+
+  if (value.includes("recommended")) return "recommended-texts";
+  if (value.includes("syllabus")) return "syllabus";
+  if (value.includes("note")) return "study-notes";
+
+  return value;
+}
+
+function getMaterialId(material) {
+  return String(
+    material.id || material.file || material.pdf || material.title || ""
+  );
+}
+
+function getMaterialFile(material) {
+  return material.file || material.pdf || material.url || "";
+}
+
+function openMaterial(material) {
+  const id = getMaterialId(material);
+
+  if (!id) {
+    alert("This material does not have a valid ID.");
+    return;
+  }
+
+  window.location.href =
+    "reader.html?id=" + encodeURIComponent(id);
+}
+
+
+/* =====================================
+   MATERIAL CARD
+===================================== */
+
+function createMaterialCard(material) {
+  const id = getMaterialId(material);
+  const favourites = getFavourites();
+  const isSaved = favourites.includes(id);
+
+  const title = escapeHTML(material.title || "Untitled Material");
+  const subject = escapeHTML(material.subject || "General");
+  const description = escapeHTML(
+    material.description || "Open this material to begin reading."
+  );
+
+  const category = normaliseCategory(material.category);
+  const categoryLabel = escapeHTML(
+    category.replaceAll("-", " ")
+  );
+
+  return `
+    <article class="material-card">
+
+      <div class="material-top">
+        <div class="pdf-icon">
+          <i class="fas fa-file-pdf"></i>
+        </div>
+
+        <button
+          class="favourite-btn ${isSaved ? "saved" : ""}"
+          onclick="toggleFavourite('${encodeURIComponent(id)}')"
+          aria-label="Save favourite">
+
+          <i class="${isSaved ? "fas" : "far"} fa-star"></i>
+        </button>
+      </div>
+
+      <h3>${title}</h3>
+
+      <p>${description}</p>
+
+      <p style="margin-top:8px;">
+        <i class="fas fa-book-open"></i>
+        ${subject}
+      </p>
+
+      <div class="material-meta">
+        <span class="material-tag">${categoryLabel}</span>
+
+        <button
+          class="open-material"
+          onclick="openMaterialById('${encodeURIComponent(id)}')">
+
+          READ NOW <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+
+    </article>
+  `;
+}
+
+
+/* =====================================
+   DISPLAY MATERIALS
+===================================== */
+
+function renderMaterials(materials, container) {
+  if (!materials.length) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-folder-open"></i>
+        <p>No materials found.</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = materials
+    .map(createMaterialCard)
+    .join("");
+}
+
+function renderFavourites() {
+  const favouriteIds = getFavourites();
+
+  const savedMaterials = allMaterials.filter(material =>
+    favouriteIds.includes(getMaterialId(material))
+  );
+
+  renderMaterials(savedMaterials, favouritesGrid);
+}
+
+function toggleFavourite(encodedId) {
+  const id = decodeURIComponent(encodedId);
+  let favourites = getFavourites();
+
+  if (favourites.includes(id)) {
+    favourites = favourites.filter(item => item !== id);
+  } else {
+    favourites.push(id);
+  }
+
+  saveFavourites(favourites);
+
+  renderSearchResults();
+  renderFavourites();
+}
+
+function openMaterialById(encodedId) {
+  const id = decodeURIComponent(encodedId);
+
+  const material = allMaterials.find(item =>
+    getMaterialId(item) === id
+  );
+
+  if (material) openMaterial(material);
+}
+
+
+/* =====================================
+   SEARCH AND CATEGORY FILTERING
+===================================== */
+
+function renderSearchResults() {
+  const search = globalSearch.value.trim().toLowerCase();
+
+  const params = new URLSearchParams(window.location.search);
+  const category = normaliseCategory(
+    params.get("category") || ""
+  );
+
+  let results = allMaterials.filter(material => {
+    const searchable = [
+      material.title,
+      material.subject,
+      material.category,
+      material.description,
+      ...(Array.isArray(material.tags) ? material.tags : [])
+    ].join(" ").toLowerCase();
+
+    const matchesSearch = !search || searchable.includes(search);
+
+    const matchesCategory =
+      !category ||
+      normaliseCategory(material.category) === category;
+
+    return matchesSearch && matchesCategory;
+  });
+
+  results = results.slice(0, 12);
+
+  renderMaterials(results, materialsGrid);
+  renderFavourites();
+
+  const heading = document.getElementById("materialsHeading");
+
+  if (category) {
+    heading.textContent =
+      category.replaceAll("-", " ").replace(/\b\w/g, c => c.toUpperCase());
+  } else if (search) {
+    heading.textContent = "Search Results";
+  } else {
+    heading.textContent = "Recently Added Materials";
+  }
+}
+
+globalSearch.addEventListener("input", renderSearchResults);
+
+
+/* =====================================
+   LOAD CATALOGUE
+===================================== */
+
+async function loadCatalogue() {
+  try {
+    const response = await fetch("catalog.json", {
+      cache: "no-cache"
+    });
+
+    if (!response.ok) {
+      throw new Error("Could not load catalog.json");
+    }
+
+    const data = await response.json();
+
+    allMaterials = Array.isArray(data)
+      ? data
+      : (Array.isArray(data.materials) ? data.materials : []);
+
+    renderSearchResults();
+
+  } catch (error) {
+    console.error("Library catalogue error:", error);
+
+    materialsGrid.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-triangle-exclamation"></i>
+        <p>
+          The library catalogue could not be loaded.
+          Please check that catalog.json exists in your repository.
+        </p>
+      </div>
+    `;
+
+    renderFavourites();
+  }
+}
+
+loadCatalogue();
+</script>
+
+</body>
+</html>
