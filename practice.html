@@ -648,7 +648,7 @@ select option {
       <div class="number">02</div>
       <div>
         <h3>Select Subject</h3>
-        <small>Choose one subject for this practice session.</small>
+        <small>Choose 1 to 4 subjects to combine for this practice session.</small>
       </div>
     </div>
 
@@ -747,8 +747,8 @@ select option {
     </div>
 
     <p class="subject-note">
-      Note: Subject availability depends on the selected examination.
-      This list is the initial subject catalogue and can be expanded.
+      Note: You can combine 1, 2, 3, or up to 4 subjects at a time.
+      Subject availability depends on the selected examination.
     </p>
 
   </section>
@@ -1009,8 +1009,9 @@ select option {
 
 /* 1. APPLICATION STATE */
 
+const MAX_SUBJECTS = 4;
 let selectedExam = "JAMB";
-let selectedSubject = "English Language";
+let selectedSubjects = ["English Language"];
 let selectedMode = "practice";
 
 
@@ -1346,39 +1347,52 @@ function renderSubjects() {
 
   });
 
-  if (!available.includes(selectedSubject)) {
-    selectedSubject = available[0];
+  // Keep only subjects available in the newly selected exam
+  selectedSubjects = selectedSubjects.filter(sub => available.includes(sub));
+
+  if (!selectedSubjects.length) {
+    selectedSubjects = [available[0]];
   }
 
-  const matching = [...container.children].find(
-    button => button.dataset.subject === selectedSubject
-  );
-
-  if (matching) {
-    matching.classList.add("selected");
-  }
+  [...container.children].forEach(button => {
+    if (selectedSubjects.includes(button.dataset.subject)) {
+      button.classList.add("selected");
+    }
+  });
 
   renderTopics();
 
 }
 
 
-/* 8. SUBJECT SELECTION */
+/* 8. SUBJECT SELECTION (1 TO 4 SUBJECTS) */
 
 function chooseSubject(button) {
 
-  document.querySelectorAll(".subject-option")
-    .forEach(item => item.classList.remove("selected"));
+  const subjectName = button.dataset.subject;
+  const exists = selectedSubjects.includes(subjectName);
 
-  button.classList.add("selected");
-
-  selectedSubject = button.dataset.subject;
+  if (exists) {
+    if (selectedSubjects.length === 1) {
+      notify("At least 1 subject must remain selected.", true);
+      return;
+    }
+    selectedSubjects = selectedSubjects.filter(s => s !== subjectName);
+    button.classList.remove("selected");
+    notify(subjectName + " removed (" + selectedSubjects.length + "/" + MAX_SUBJECTS + ").");
+  } else {
+    if (selectedSubjects.length >= MAX_SUBJECTS) {
+      notify("You can combine up to " + MAX_SUBJECTS + " subjects at a time.", true);
+      return;
+    }
+    selectedSubjects.push(subjectName);
+    button.classList.add("selected");
+    notify(subjectName + " added (" + selectedSubjects.length + "/" + MAX_SUBJECTS + ").");
+  }
 
   renderTopics();
 
   updateSummary();
-
-  notify(selectedSubject + " selected.");
 
 }
 
@@ -1391,7 +1405,8 @@ function renderTopics() {
 
   const help = document.getElementById("topicHelp");
 
-  const topics = TOPICS[selectedSubject] || [];
+  const primarySubject = selectedSubjects[0];
+  const topics = selectedSubjects.length === 1 ? (TOPICS[primarySubject] || []) : [];
 
   select.innerHTML = "";
 
@@ -1415,9 +1430,13 @@ function renderTopics() {
 
   });
 
-  help.textContent = topics.length
-    ? topics.length + " topic categories available for " + selectedSubject + "."
-    : "Topic categories will be added for this subject.";
+  if (selectedSubjects.length > 1) {
+    help.textContent = "Combined subject mode (" + selectedSubjects.join(", ") + ") uses All Topics across selected subjects.";
+  } else {
+    help.textContent = topics.length
+      ? topics.length + " topic categories available for " + primarySubject + "."
+      : "Topic categories will be added for this subject.";
+  }
 
 }
 
@@ -1464,10 +1483,12 @@ function updateSummary() {
     selectedExam === "JAMB" ? "JAMB / UTME" : selectedExam;
 
   document.getElementById("sumSubject").textContent =
-    selectedSubject;
+    selectedSubjects.join(" + ");
 
   document.getElementById("sumTopic").textContent =
-    topic.selectedOptions[0].textContent;
+    selectedSubjects.length > 1
+      ? "All Topics"
+      : topic.selectedOptions[0].textContent;
 
   document.getElementById("sumMode").textContent =
     selectedMode === "practice"
@@ -1515,9 +1536,11 @@ function getConfiguration() {
 
     exam: selectedExam,
 
-    subject: selectedSubject,
+    subject: selectedSubjects[0],
 
-    topic: document.getElementById("topic").value,
+    subjects: [...selectedSubjects],
+
+    topic: selectedSubjects.length > 1 ? "all" : document.getElementById("topic").value,
 
     mode: selectedMode,
 
@@ -1535,7 +1558,7 @@ function getConfiguration() {
 
     createdAt: new Date().toISOString(),
 
-    version: 1
+    version: 2
 
   };
 
@@ -1551,10 +1574,11 @@ function startExam() {
   const startButton = document.getElementById("startButton");
 
   if (!configuration.exam ||
-      !configuration.subject ||
+      !Array.isArray(configuration.subjects) ||
+      !configuration.subjects.length ||
       !configuration.questions) {
 
-    notify("Please complete your examination settings.", true);
+    notify("Please select at least 1 subject and complete your settings.", true);
 
     return;
 
@@ -1603,7 +1627,7 @@ function initialise() {
       );
 
     if (match) {
-      selectedSubject = match;
+      selectedSubjects = [match];
     }
 
   }
