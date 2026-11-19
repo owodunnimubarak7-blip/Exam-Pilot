@@ -1,1 +1,1210 @@
-t
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#030b29">
+
+<title>Study Notes | Exam Pilot</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+:root {
+  --bg: #030b29;
+  --panel: #091a40;
+  --panel2: #102650;
+  --text: #f4f7ff;
+  --muted: #9aaccb;
+  --green: #00ed8b;
+  --blue: #4388ff;
+  --border: rgba(255,255,255,.09);
+  --shadow: 0 15px 45px rgba(0,0,0,.18);
+}
+
+body.light {
+  --bg: #f3f6fc;
+  --panel: #ffffff;
+  --panel2: #edf2fb;
+  --text: #102044;
+  --muted: #66748f;
+  --green: #00a96b;
+  --blue: #2563eb;
+  --border: rgba(15,35,75,.12);
+  --shadow: 0 12px 35px rgba(20,40,80,.08);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Manrope', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background .25s, color .25s;
+}
+
+button, input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* TOPBAR */
+
+.topbar {
+  height: 75px;
+  padding: 0 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.brand-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: var(--green);
+  color: #03152c;
+}
+
+.brand span {
+  color: var(--green);
+}
+
+.top-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.icon-btn {
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--border);
+  background: var(--panel2);
+  color: var(--text);
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 17px;
+}
+
+.icon-btn:hover {
+  color: var(--green);
+  border-color: var(--green);
+}
+
+.menu-btn {
+  display: none;
+}
+
+/* NAVIGATION DRAWER */
+
+.nav-drawer {
+  position: fixed;
+  top: 75px;
+  right: 0;
+  width: 290px;
+  max-width: 85%;
+  height: calc(100vh - 75px);
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  padding: 25px;
+  z-index: 99;
+  transform: translateX(110%);
+  transition: transform .3s ease;
+  box-shadow: var(--shadow);
+}
+
+.nav-drawer.open {
+  transform: translateX(0);
+}
+
+.nav-drawer h3 {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 18px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  background: var(--panel2);
+  color: var(--green);
+}
+
+.drawer-overlay {
+  position: fixed;
+  inset: 75px 0 0;
+  background: rgba(0,0,0,.45);
+  z-index: 98;
+  display: none;
+}
+
+.drawer-overlay.show {
+  display: block;
+}
+
+/* MAIN */
+
+.container {
+  width: 88%;
+  max-width: 1250px;
+  margin: auto;
+}
+
+.hero {
+  padding: 55px 0 35px;
+}
+
+.back-link {
+  display: inline-flex;
+  gap: 9px;
+  align-items: center;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 27px;
+}
+
+.back-link:hover {
+  color: var(--green);
+}
+
+.eyebrow {
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+}
+
+.hero h1 {
+  font-size: clamp(30px, 5vw, 48px);
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+.hero h1 span {
+  color: var(--green);
+}
+
+.hero p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.8;
+  max-width: 700px;
+  margin-top: 15px;
+}
+
+/* SEARCH */
+
+.search-box {
+  position: relative;
+  margin-top: 25px;
+  max-width: 650px;
+}
+
+.search-box i {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+}
+
+.search-box input {
+  width: 100%;
+  height: 55px;
+  padding: 0 18px 0 48px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--text);
+  outline: none;
+}
+
+.search-box input:focus {
+  border-color: var(--green);
+}
+
+/* SECTION */
+
+.section {
+  padding: 25px 0 40px;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.section-heading h2 {
+  font-size: 21px;
+}
+
+.section-heading p {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* SUBJECT GRID */
+
+.subject-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.subject-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 19px;
+  text-align: left;
+  color: var(--text);
+  min-height: 135px;
+  transition: .2s;
+}
+
+.subject-card:hover,
+.subject-card.selected {
+  border-color: var(--green);
+  transform: translateY(-3px);
+}
+
+.subject-card.selected {
+  background: var(--panel2);
+}
+
+.subject-icon {
+  width: 39px;
+  height: 39px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: rgba(0,237,139,.12);
+  color: var(--green);
+  margin-bottom: 13px;
+  font-size: 16px;
+}
+
+.subject-card h3 {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.subject-card p {
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 5px;
+}
+
+/* SELECTED SUBJECT */
+
+.selected-panel {
+  display: none;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 19px;
+  padding: 25px;
+  margin-top: 30px;
+}
+
+.selected-panel.show {
+  display: block;
+}
+
+.selected-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.selected-title {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.selected-title .subject-icon {
+  margin: 0;
+  width: 48px;
+  height: 48px;
+  font-size: 20px;
+}
+
+.selected-title h2 {
+  font-size: 18px;
+}
+
+.selected-title p {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.clear-btn {
+  background: var(--panel2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 9px 13px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* NOTES */
+
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.note-card {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 17px;
+  transition: .2s;
+}
+
+.note-card:hover {
+  border-color: var(--green);
+  transform: translateY(-3px);
+}
+
+.note-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.pdf-icon {
+  width: 39px;
+  height: 39px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  color: #ff7777;
+  background: rgba(255,70,70,.12);
+}
+
+.favourite-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 17px;
+  padding: 5px;
+}
+
+.favourite-btn.saved {
+  color: #ffca52;
+}
+
+.note-card h3 {
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.note-card p {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.note-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+  padding-top: 13px;
+  margin-top: 15px;
+}
+
+.note-tag {
+  font-size: 10px;
+  color: var(--green);
+  font-weight: 800;
+}
+
+.read-btn {
+  border: none;
+  background: var(--green);
+  color: #03152c;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  background: var(--panel2);
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+  padding: 35px 20px;
+  text-align: center;
+  color: var(--muted);
+  line-height: 1.8;
+  font-size: 12px;
+}
+
+.empty-state i {
+  display: block;
+  font-size: 27px;
+  margin-bottom: 12px;
+}
+
+/* FOOTER */
+
+footer {
+  border-top: 1px solid var(--border);
+  margin-top: 45px;
+  padding: 30px 6%;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+footer strong {
+  color: var(--green);
+}
+
+/* RESPONSIVE */
+
+@media(max-width: 950px) {
+  .subject-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .notes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media(max-width: 600px) {
+  .topbar {
+    height: 67px;
+    padding: 0 5%;
+  }
+
+  .brand {
+    font-size: 15px;
+  }
+
+  .brand-icon {
+    width: 37px;
+    height: 37px;
+  }
+
+  .menu-btn {
+    display: grid;
+  }
+
+  .container {
+    width: 90%;
+  }
+
+  .hero {
+    padding: 38px 0 25px;
+  }
+
+  .hero p {
+    font-size: 12px;
+  }
+
+  .subject-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 11px;
+  }
+
+  .subject-card {
+    min-height: 125px;
+    padding: 14px;
+  }
+
+  .subject-card h3 {
+    font-size: 12px;
+  }
+
+  .notes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .selected-panel {
+    padding: 16px;
+  }
+
+  .nav-drawer {
+    top: 67px;
+    height: calc(100vh - 67px);
+  }
+
+  .drawer-overlay {
+    top: 67px;
+  }
+
+  .section-heading h2 {
+    font-size: 18px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+  <a href="index.html" class="brand">
+    <div class="brand-icon">
+      <i class="fas fa-graduation-cap"></i>
+    </div>
+    <div>EXAM <span>PILOT</span></div>
+  </a>
+
+  <div class="top-actions">
+
+    <button class="icon-btn" id="themeToggle"
+      aria-label="Toggle theme" title="Toggle theme">
+      <i class="fas fa-sun"></i>
+    </button>
+
+    <button class="icon-btn menu-btn" id="menuToggle"
+      aria-label="Open menu" aria-expanded="false">
+      <i class="fas fa-bars"></i>
+    </button>
+
+  </div>
+</header>
+
+<div class="drawer-overlay" id="drawerOverlay"></div>
+
+<aside class="nav-drawer" id="navDrawer">
+
+  <h3>Navigation</h3>
+
+  <a href="index.html" class="nav-link">
+    <i class="fas fa-house"></i> Home
+  </a>
+
+  <a href="practice.html" class="nav-link">
+    <i class="fas fa-pen-to-square"></i> Practice Centre
+  </a>
+
+  <a href="study-library.html" class="nav-link">
+    <i class="fas fa-book-open"></i> Study Library
+  </a>
+
+  <a href="study-notes.html" class="nav-link active">
+    <i class="fas fa-book"></i> Study Notes
+  </a>
+
+  <a href="cbt.html" class="nav-link">
+    <i class="fas fa-laptop"></i> CBT Examination
+  </a>
+
+</aside>
+
+<main class="container">
+
+  <section class="hero">
+
+    <a href="study-library.html" class="back-link">
+      <i class="fas fa-arrow-left"></i>
+      Back to Study Library
+    </a>
+
+    <div class="eyebrow">
+      <i class="fas fa-graduation-cap"></i>
+      EXAM PILOT LEARNING CENTRE
+    </div>
+
+    <h1>
+      Explore Study Notes<br>
+      <span>By Subject.</span>
+    </h1>
+
+    <p>
+      Select any JAMB subject to explore its study notes,
+      learning materials and topic-based resources.
+      Your learning journey starts here.
+    </p>
+
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input
+        type="search"
+        id="subjectSearch"
+        placeholder="Search for a subject..."
+        autocomplete="off">
+    </div>
+
+  </section>
+
+  <section class="section" id="subjectsSection">
+
+    <div class="section-heading">
+      <div>
+        <h2>Browse by Subject</h2>
+        <p id="subjectCount">Explore available JAMB subjects.</p>
+      </div>
+    </div>
+
+    <div class="subject-grid" id="subjectGrid"></div>
+
+  </section>
+
+  <section class="selected-panel" id="selectedPanel">
+
+    <div class="selected-header">
+
+      <div class="selected-title">
+
+        <div class="subject-icon">
+          <i class="fas fa-book-open"></i>
+        </div>
+
+        <div>
+          <h2 id="selectedSubjectName">Subject</h2>
+          <p id="selectedSubjectDescription">
+            Available study materials
+          </p>
+        </div>
+
+      </div>
+
+      <button class="clear-btn" id="clearSubject">
+        <i class="fas fa-arrow-left"></i> All Subjects
+      </button>
+
+    </div>
+
+    <div class="search-box" style="margin:0 0 20px;">
+      <i class="fas fa-search"></i>
+      <input
+        type="search"
+        id="noteSearch"
+        placeholder="Search notes in this subject..."
+        autocomplete="off">
+    </div>
+
+    <div class="notes-grid" id="notesGrid">
+
+      <div class="empty-state">
+        <i class="fas fa-spinner fa-spin"></i>
+        Loading study materials...
+      </div>
+
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  <strong>EXAM PILOT</strong><br>
+  Learn. Practise. Improve. Succeed.
+</footer>
+
+<script>
+
+/* =====================================
+   THEME MANAGEMENT
+===================================== */
+
+const themeToggle = document.getElementById("themeToggle");
+
+function applyTheme(theme) {
+  document.body.classList.toggle("light", theme === "light");
+
+  themeToggle.innerHTML = theme === "light"
+    ? '<i class="fas fa-moon"></i>'
+    : '<i class="fas fa-sun"></i>';
+
+  localStorage.setItem("examPilotTheme", theme);
+}
+
+applyTheme(localStorage.getItem("examPilotTheme") || "dark");
+
+themeToggle.addEventListener("click", () => {
+  applyTheme(
+    document.body.classList.contains("light") ? "dark" : "light"
+  );
+});
+
+
+/* =====================================
+   NAVIGATION MENU
+===================================== */
+
+const menuToggle = document.getElementById("menuToggle");
+const navDrawer = document.getElementById("navDrawer");
+const drawerOverlay = document.getElementById("drawerOverlay");
+
+function closeMenu() {
+  navDrawer.classList.remove("open");
+  drawerOverlay.classList.remove("show");
+  menuToggle.setAttribute("aria-expanded", "false");
+  menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+}
+
+menuToggle.addEventListener("click", () => {
+  const isOpen = navDrawer.classList.contains("open");
+
+  if (isOpen) {
+    closeMenu();
+  } else {
+    navDrawer.classList.add("open");
+    drawerOverlay.classList.add("show");
+    menuToggle.setAttribute("aria-expanded", "true");
+    menuToggle.innerHTML = '<i class="fas fa-times"></i>';
+  }
+});
+
+drawerOverlay.addEventListener("click", closeMenu);
+
+document.querySelectorAll(".nav-link").forEach(link => {
+  link.addEventListener("click", closeMenu);
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") closeMenu();
+});
+
+
+/* =====================================
+   JAMB SUBJECT DATABASE
+===================================== */
+
+const subjects = [
+  { name: "Use of English", icon: "fa-language" },
+  { name: "Mathematics", icon: "fa-calculator" },
+  { name: "Physics", icon: "fa-atom" },
+  { name: "Chemistry", icon: "fa-flask" },
+  { name: "Biology", icon: "fa-dna" },
+  { name: "Agricultural Science", icon: "fa-seedling" },
+  { name: "Economics", icon: "fa-chart-line" },
+  { name: "Government", icon: "fa-landmark" },
+  { name: "Literature in English", icon: "fa-book-open" },
+  { name: "Commerce", icon: "fa-store" },
+  { name: "Accounting", icon: "fa-file-invoice-dollar" },
+  { name: "Geography", icon: "fa-earth-africa" },
+  { name: "Christian Religious Studies", icon: "fa-cross" },
+  { name: "Islamic Religious Studies", icon: "fa-moon" },
+  { name: "History", icon: "fa-monument" },
+  { name: "Civic Education", icon: "fa-people-group" },
+  { name: "Computer Studies", icon: "fa-computer" },
+  { name: "Fine Arts", icon: "fa-palette" },
+  { name: "French", icon: "fa-language" },
+  { name: "Hausa", icon: "fa-comments" },
+  { name: "Igbo", icon: "fa-comments" },
+  { name: "Yoruba", icon: "fa-comments" },
+  { name: "Arabic", icon: "fa-language" },
+  { name: "Home Economics", icon: "fa-house" },
+  { name: "Technical Drawing", icon: "fa-ruler-combined" },
+  { name: "Music", icon: "fa-music" },
+  { name: "Insurance", icon: "fa-shield-halved" },
+  { name: "Office Practice", icon: "fa-briefcase" }
+];
+
+let allMaterials = [];
+let selectedSubject = "";
+
+
+/* =====================================
+   SAFE HELPERS
+===================================== */
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+function normalise(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function getMaterialId(material) {
+  return String(
+    material.id ||
+    material.file ||
+    material.pdf ||
+    material.title ||
+    ""
+  );
+}
+
+function getFavourites() {
+  try {
+    return JSON.parse(
+      localStorage.getItem("examPilotFavourites") || "[]"
+    );
+  } catch {
+    return [];
+  }
+}
+
+function saveFavourites(items) {
+  localStorage.setItem(
+    "examPilotFavourites",
+    JSON.stringify(items)
+  );
+}
+
+
+/* =====================================
+   SUBJECT GRID
+===================================== */
+
+const subjectGrid = document.getElementById("subjectGrid");
+const subjectSearch = document.getElementById("subjectSearch");
+
+function renderSubjects() {
+  const query = normalise(subjectSearch.value);
+
+  const filtered = subjects.filter(subject =>
+    normalise(subject.name).includes(query)
+  );
+
+  document.getElementById("subjectCount").textContent =
+    `${filtered.length} subject${filtered.length === 1 ? "" : "s"} displayed.`;
+
+  if (!filtered.length) {
+    subjectGrid.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-search"></i>
+        No matching subject found.
+      </div>
+    `;
+    return;
+  }
+
+  subjectGrid.innerHTML = filtered.map(subject => `
+    <button
+      class="subject-card ${
+        normalise(selectedSubject) === normalise(subject.name)
+          ? "selected"
+          : ""
+      }"
+      data-subject="${escapeHTML(subject.name)}">
+
+      <div class="subject-icon">
+        <i class="fas ${subject.icon}"></i>
+      </div>
+
+      <h3>${escapeHTML(subject.name)}</h3>
+
+      <p>Explore study materials</p>
+
+    </button>
+  `).join("");
+
+  subjectGrid.querySelectorAll(".subject-card").forEach(card => {
+    card.addEventListener("click", () => {
+      selectSubject(card.dataset.subject);
+    });
+  });
+}
+
+subjectSearch.addEventListener("input", renderSubjects);
+
+
+/* =====================================
+   SUBJECT SELECTION
+===================================== */
+
+const selectedPanel = document.getElementById("selectedPanel");
+const selectedSubjectName = document.getElementById("selectedSubjectName");
+const selectedSubjectDescription = document.getElementById("selectedSubjectDescription");
+const notesGrid = document.getElementById("notesGrid");
+const noteSearch = document.getElementById("noteSearch");
+
+function selectSubject(subjectName) {
+  selectedSubject = subjectName;
+
+  selectedSubjectName.textContent = subjectName;
+  selectedSubjectDescription.textContent =
+    "Study notes and learning materials for " + subjectName;
+
+  selectedPanel.classList.add("show");
+
+  noteSearch.value = "";
+
+  renderSubjects();
+  renderNotes();
+
+  selectedPanel.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
+
+document.getElementById("clearSubject").addEventListener("click", () => {
+  selectedSubject = "";
+  selectedPanel.classList.remove("show");
+  renderSubjects();
+
+  document.getElementById("subjectsSection").scrollIntoView({
+    behavior: "smooth"
+  });
+});
+
+noteSearch.addEventListener("input", renderNotes);
+
+
+/* =====================================
+   MATERIAL FILTERING
+===================================== */
+
+function getStudyNotes() {
+  return allMaterials.filter(material => {
+    const category = normalise(material.category);
+
+    return category === "study notes" ||
+           category === "notes";
+  });
+}
+
+function renderNotes() {
+  if (!selectedSubject) return;
+
+  const query = normalise(noteSearch.value);
+
+  const notes = getStudyNotes().filter(material => {
+    const sameSubject =
+      normalise(material.subject) === normalise(selectedSubject);
+
+    const searchable = normalise([
+      material.title,
+      material.description,
+      ...(Array.isArray(material.tags) ? material.tags : [])
+    ].join(" "));
+
+    return sameSubject && (!query || searchable.includes(query));
+  });
+
+  if (!notes.length) {
+    const catalogueReady = allMaterials.length > 0;
+
+    notesGrid.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-folder-open"></i>
+        ${
+          catalogueReady
+            ? "No study notes have been added for this subject yet."
+            : "The library catalogue is not available yet. Study materials will appear here when catalog.json is added."
+        }
+      </div>
+    `;
+    return;
+  }
+
+  notesGrid.innerHTML = notes.map(material => {
+    const id = getMaterialId(material);
+    const saved = getFavourites().includes(id);
+
+    return `
+      <article class="note-card">
+
+        <div class="note-top">
+          <div class="pdf-icon">
+            <i class="fas fa-file-pdf"></i>
+          </div>
+
+          <button
+            class="favourite-btn ${saved ? "saved" : ""}"
+            data-favourite="${encodeURIComponent(id)}"
+            aria-label="Toggle favourite">
+
+            <i class="${saved ? "fas" : "far"} fa-star"></i>
+          </button>
+        </div>
+
+        <h3>${escapeHTML(material.title || "Untitled Study Note")}</h3>
+
+        <p>${escapeHTML(material.description || "Study material for " + selectedSubject)}</p>
+
+        <div class="note-footer">
+          <span class="note-tag">
+            ${escapeHTML(selectedSubject)}
+          </span>
+
+          <button
+            class="read-btn"
+            data-open="${encodeURIComponent(id)}">
+
+            READ NOTE <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+
+      </article>
+    `;
+  }).join("");
+
+  notesGrid.querySelectorAll("[data-favourite]").forEach(button => {
+    button.addEventListener("click", () => {
+      toggleFavourite(button.dataset.favourite);
+    });
+  });
+
+  notesGrid.querySelectorAll("[data-open]").forEach(button => {
+    button.addEventListener("click", () => {
+      openMaterial(button.dataset.open);
+    });
+  });
+}
+
+
+/* =====================================
+   FAVOURITES
+===================================== */
+
+function toggleFavourite(encodedId) {
+  const id = decodeURIComponent(encodedId);
+
+  let favourites = getFavourites();
+
+  if (favourites.includes(id)) {
+    favourites = favourites.filter(item => item !== id);
+  } else {
+    favourites.push(id);
+  }
+
+  saveFavourites(favourites);
+  renderNotes();
+}
+
+
+/* =====================================
+   OPEN PDF READER
+===================================== */
+
+function openMaterial(encodedId) {
+  const id = decodeURIComponent(encodedId);
+
+  const material = allMaterials.find(item =>
+    getMaterialId(item) === id
+  );
+
+  if (!material) {
+    alert("This study material could not be found.");
+    return;
+  }
+
+  window.location.href =
+    "reader.html?id=" + encodeURIComponent(id);
+}
+
+
+/* =====================================
+   LOAD CENTRAL CATALOGUE
+===================================== */
+
+async function loadCatalogue() {
+  try {
+    const response = await fetch("catalog.json", {
+      cache: "no-cache"
+    });
+
+    if (!response.ok) {
+      throw new Error("Catalogue not found.");
+    }
+
+    const data = await response.json();
+
+    allMaterials = Array.isArray(data)
+      ? data
+      : Array.isArray(data.materials)
+        ? data.materials
+        : [];
+
+    renderSubjects();
+
+    if (selectedSubject) renderNotes();
+
+  } catch (error) {
+    console.warn("Study notes catalogue:", error);
+
+    allMaterials = [];
+    renderSubjects();
+  }
+}
+
+
+/* =====================================
+   INITIALISE PAGE
+===================================== */
+
+renderSubjects();
+loadCatalogue();
+
+</script>
+
+</body>
+</html>
