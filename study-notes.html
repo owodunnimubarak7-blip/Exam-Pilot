@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -405,6 +404,30 @@ a {
   font-weight: 700;
 }
 
+.clear-btn:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.status-banner {
+  display: none;
+  margin-bottom: 16px;
+  padding: 12px 15px;
+  border-radius: 11px;
+  background: rgba(67, 136, 255, .12);
+  border: 1px solid rgba(67, 136, 255, .3);
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.status-banner.show {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 /* NOTES */
 
 .notes-grid {
@@ -419,6 +442,8 @@ a {
   border-radius: 14px;
   padding: 17px;
   transition: .2s;
+  display: flex;
+  flex-direction: column;
 }
 
 .note-card:hover {
@@ -443,6 +468,31 @@ a {
   background: rgba(255,70,70,.12);
 }
 
+.note-top-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-pill {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.status-pill.ready {
+  background: rgba(0, 237, 139, .14);
+  color: var(--green);
+}
+
+.status-pill.placeholder {
+  background: rgba(255, 202, 82, .15);
+  color: #ffca52;
+}
+
 .favourite-btn {
   background: transparent;
   border: none;
@@ -465,6 +515,7 @@ a {
   color: var(--muted);
   font-size: 11px;
   line-height: 1.6;
+  flex: 1;
 }
 
 .note-footer {
@@ -693,6 +744,7 @@ footer strong {
         type="search"
         id="subjectSearch"
         placeholder="Search for a subject..."
+        aria-label="Search for a subject"
         autocomplete="off">
     </div>
 
@@ -736,12 +788,17 @@ footer strong {
 
     </div>
 
+    <div class="status-banner" id="statusBanner">
+      <span id="statusBannerText"></span>
+    </div>
+
     <div class="search-box" style="margin:0 0 20px;">
       <i class="fas fa-search"></i>
       <input
         type="search"
         id="noteSearch"
         placeholder="Search notes in this subject..."
+        aria-label="Search notes in this subject"
         autocomplete="off">
     </div>
 
@@ -833,7 +890,7 @@ document.addEventListener("keydown", event => {
    JAMB SUBJECT DATABASE
 ===================================== */
 
-const subjects = [
+const defaultSubjects = [
   { name: "Use of English", icon: "fa-language" },
   { name: "Mathematics", icon: "fa-calculator" },
   { name: "Physics", icon: "fa-atom" },
@@ -864,7 +921,9 @@ const subjects = [
   { name: "Office Practice", icon: "fa-briefcase" }
 ];
 
+let subjects = [...defaultSubjects];
 let allMaterials = [];
+let catalogueLoaded = false;
 let selectedSubject = "";
 
 
@@ -917,6 +976,36 @@ function saveFavourites(items) {
   );
 }
 
+function showStatusMessage(message) {
+  const banner = document.getElementById("statusBanner");
+  const text = document.getElementById("statusBannerText");
+  text.textContent = message;
+  banner.classList.add("show");
+}
+
+function hideStatusMessage() {
+  const banner = document.getElementById("statusBanner");
+  banner.classList.remove("show");
+}
+
+
+/* =====================================
+   MATERIAL FILTERING & COUNTS
+===================================== */
+
+function getStudyNotes() {
+  return allMaterials.filter(material => {
+    const category = normalise(material.category);
+    return category === "study notes" || category === "notes";
+  });
+}
+
+function getSubjectNoteCount(subjectName) {
+  return getStudyNotes().filter(
+    material => normalise(material.subject) === normalise(subjectName)
+  ).length;
+}
+
 
 /* =====================================
    SUBJECT GRID
@@ -945,25 +1034,34 @@ function renderSubjects() {
     return;
   }
 
-  subjectGrid.innerHTML = filtered.map(subject => `
-    <button
-      class="subject-card ${
-        normalise(selectedSubject) === normalise(subject.name)
-          ? "selected"
-          : ""
-      }"
-      data-subject="${escapeHTML(subject.name)}">
+  subjectGrid.innerHTML = filtered.map(subject => {
+    const count = getSubjectNoteCount(subject.name);
+    const metaText = !catalogueLoaded
+      ? "Explore study materials"
+      : count === 0
+        ? "No study notes yet"
+        : `${count} study note${count === 1 ? "" : "s"} available`;
 
-      <div class="subject-icon">
-        <i class="fas ${subject.icon}"></i>
-      </div>
+    return `
+      <button
+        class="subject-card ${
+          normalise(selectedSubject) === normalise(subject.name)
+            ? "selected"
+            : ""
+        }"
+        data-subject="${escapeHTML(subject.name)}">
 
-      <h3>${escapeHTML(subject.name)}</h3>
+        <div class="subject-icon">
+          <i class="fas ${subject.icon}"></i>
+        </div>
 
-      <p>Explore study materials</p>
+        <h3>${escapeHTML(subject.name)}</h3>
 
-    </button>
-  `).join("");
+        <p>${escapeHTML(metaText)}</p>
+
+      </button>
+    `;
+  }).join("");
 
   subjectGrid.querySelectorAll(".subject-card").forEach(card => {
     card.addEventListener("click", () => {
@@ -985,8 +1083,9 @@ const selectedSubjectDescription = document.getElementById("selectedSubjectDescr
 const notesGrid = document.getElementById("notesGrid");
 const noteSearch = document.getElementById("noteSearch");
 
-function selectSubject(subjectName) {
+function selectSubject(subjectName, shouldScroll = true) {
   selectedSubject = subjectName;
+  hideStatusMessage();
 
   selectedSubjectName.textContent = subjectName;
   selectedSubjectDescription.textContent =
@@ -999,14 +1098,17 @@ function selectSubject(subjectName) {
   renderSubjects();
   renderNotes();
 
-  selectedPanel.scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
+  if (shouldScroll) {
+    selectedPanel.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
 }
 
 document.getElementById("clearSubject").addEventListener("click", () => {
   selectedSubject = "";
+  hideStatusMessage();
   selectedPanel.classList.remove("show");
   renderSubjects();
 
@@ -1019,17 +1121,8 @@ noteSearch.addEventListener("input", renderNotes);
 
 
 /* =====================================
-   MATERIAL FILTERING
+   NOTES RENDERING
 ===================================== */
-
-function getStudyNotes() {
-  return allMaterials.filter(material => {
-    const category = normalise(material.category);
-
-    return category === "study notes" ||
-           category === "notes";
-  });
-}
 
 function renderNotes() {
   if (!selectedSubject) return;
@@ -1043,6 +1136,7 @@ function renderNotes() {
     const searchable = normalise([
       material.title,
       material.description,
+      material.year,
       ...(Array.isArray(material.tags) ? material.tags : [])
     ].join(" "));
 
@@ -1050,15 +1144,13 @@ function renderNotes() {
   });
 
   if (!notes.length) {
-    const catalogueReady = allMaterials.length > 0;
-
     notesGrid.innerHTML = `
       <div class="empty-state">
         <i class="fas fa-folder-open"></i>
         ${
-          catalogueReady
-            ? "No study notes have been added for this subject yet."
-            : "The library catalogue is not available yet. Study materials will appear here when catalog.json is added."
+          catalogueLoaded
+            ? "No matching study notes found for this subject."
+            : "The library catalogue could not be loaded. Please check that catalog.json is available."
         }
       </div>
     `;
@@ -1068,6 +1160,7 @@ function renderNotes() {
   notesGrid.innerHTML = notes.map(material => {
     const id = getMaterialId(material);
     const saved = getFavourites().includes(id);
+    const isPlaceholder = normalise(material.status) === "placeholder";
 
     return `
       <article class="note-card">
@@ -1077,13 +1170,19 @@ function renderNotes() {
             <i class="fas fa-file-pdf"></i>
           </div>
 
-          <button
-            class="favourite-btn ${saved ? "saved" : ""}"
-            data-favourite="${encodeURIComponent(id)}"
-            aria-label="Toggle favourite">
+          <div class="note-top-right">
+            <span class="status-pill ${isPlaceholder ? "placeholder" : "ready"}">
+              ${isPlaceholder ? "Coming Soon" : "Ready"}
+            </span>
 
-            <i class="${saved ? "fas" : "far"} fa-star"></i>
-          </button>
+            <button
+              class="favourite-btn ${saved ? "saved" : ""}"
+              data-favourite="${encodeURIComponent(id)}"
+              aria-label="Toggle favourite">
+
+              <i class="${saved ? "fas" : "far"} fa-star"></i>
+            </button>
+          </div>
         </div>
 
         <h3>${escapeHTML(material.title || "Untitled Study Note")}</h3>
@@ -1092,7 +1191,7 @@ function renderNotes() {
 
         <div class="note-footer">
           <span class="note-tag">
-            ${escapeHTML(selectedSubject)}
+            ${escapeHTML(selectedSubject)}${material.year ? " • " + escapeHTML(material.year) : ""}
           </span>
 
           <button
@@ -1153,7 +1252,7 @@ function openMaterial(encodedId) {
   );
 
   if (!material) {
-    alert("This study material could not be found.");
+    showStatusMessage("This study material could not be found in catalog.json.");
     return;
   }
 
@@ -1165,6 +1264,19 @@ function openMaterial(encodedId) {
 /* =====================================
    LOAD CENTRAL CATALOGUE
 ===================================== */
+
+function mergeSubjectsFromCatalog(catalogSubjects) {
+  if (!Array.isArray(catalogSubjects) || !catalogSubjects.length) return;
+
+  const iconMap = new Map(
+    defaultSubjects.map(item => [normalise(item.name), item.icon])
+  );
+
+  subjects = catalogSubjects.map(name => ({
+    name: String(name),
+    icon: iconMap.get(normalise(name)) || "fa-book"
+  }));
+}
 
 async function loadCatalogue() {
   try {
@@ -1178,19 +1290,37 @@ async function loadCatalogue() {
 
     const data = await response.json();
 
+    if (!Array.isArray(data) && Array.isArray(data.subjects)) {
+      mergeSubjectsFromCatalog(data.subjects);
+    }
+
     allMaterials = Array.isArray(data)
       ? data
       : Array.isArray(data.materials)
         ? data.materials
         : [];
 
+    catalogueLoaded = true;
     renderSubjects();
+
+    const params = new URLSearchParams(window.location.search);
+    const querySubject = params.get("subject");
+    if (querySubject && !selectedSubject) {
+      const matched = subjects.find(
+        s => normalise(s.name) === normalise(querySubject)
+      );
+      if (matched) {
+        selectSubject(matched.name, false);
+        return;
+      }
+    }
 
     if (selectedSubject) renderNotes();
 
   } catch (error) {
     console.warn("Study notes catalogue:", error);
 
+    catalogueLoaded = false;
     allMaterials = [];
     renderSubjects();
   }
