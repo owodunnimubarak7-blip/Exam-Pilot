@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,15 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#030b29">
 
-<title>PDF Reader | Exam Pilot</title>
+<title>Note Reader | Exam Pilot</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
 <style>
 :root {
@@ -24,19 +21,21 @@
   --text: #f4f7ff;
   --muted: #9aaccb;
   --green: #00ed8b;
-  --border: rgba(255,255,255,.10);
-  --reader-bg: #17243c;
+  --blue: #4388ff;
+  --border: rgba(255,255,255,.09);
+  --shadow: 0 15px 45px rgba(0,0,0,.18);
 }
 
 body.light {
-  --bg: #edf1f8;
+  --bg: #f3f6fc;
   --panel: #ffffff;
-  --panel2: #f0f4fa;
+  --panel2: #edf2fb;
   --text: #102044;
   --muted: #66748f;
   --green: #00a96b;
-  --border: rgba(15,35,75,.13);
-  --reader-bg: #dce3ee;
+  --blue: #2563eb;
+  --border: rgba(15,35,75,.12);
+  --shadow: 0 12px 35px rgba(20,40,80,.08);
 }
 
 * {
@@ -46,54 +45,57 @@ body.light {
 }
 
 body {
-  font-family: Manrope, sans-serif;
+  font-family: 'Manrope', sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
-  transition: background .2s, color .2s;
+  transition: background .25s, color .25s;
+}
+
+button, input {
+  font: inherit;
 }
 
 button {
-  font: inherit;
   cursor: pointer;
 }
 
-button:disabled {
-  opacity: .35;
-  cursor: not-allowed;
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
+/* TOPBAR */
+
 .topbar {
-  height: 68px;
-  padding: 0 4%;
+  height: 75px;
+  padding: 0 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background: var(--panel);
   border-bottom: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: 100;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  font-size: 19px;
   font-weight: 800;
-  font-size: 16px;
-  white-space: nowrap;
 }
 
 .brand-icon {
-  width: 38px;
-  height: 38px;
-  background: var(--green);
-  color: #03152c;
-  border-radius: 11px;
+  width: 42px;
+  height: 42px;
   display: grid;
   place-items: center;
+  border-radius: 13px;
+  background: var(--green);
+  color: #03152c;
 }
 
 .brand span {
@@ -102,255 +104,326 @@ button:disabled {
 
 .top-actions {
   display: flex;
-  gap: 8px;
+  gap: 12px;
 }
 
-.tool-btn {
-  min-width: 40px;
-  height: 40px;
+.icon-btn {
+  width: 42px;
+  height: 42px;
   border: 1px solid var(--border);
-  border-radius: 10px;
   background: var(--panel2);
   color: var(--text);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  padding: 0 11px;
-  font-size: 13px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 17px;
 }
 
-.tool-btn:hover:not(:disabled) {
+.icon-btn:hover {
+  color: var(--green);
   border-color: var(--green);
+}
+
+.menu-btn {
+  display: none;
+}
+
+/* NAVIGATION DRAWER */
+
+.nav-drawer {
+  position: fixed;
+  top: 75px;
+  right: 0;
+  width: 290px;
+  max-width: 85%;
+  height: calc(100vh - 75px);
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  padding: 25px;
+  z-index: 99;
+  transform: translateX(110%);
+  transition: transform .3s ease;
+  box-shadow: var(--shadow);
+}
+
+.nav-drawer.open {
+  transform: translateX(0);
+}
+
+.nav-drawer h3 {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 18px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  background: var(--panel2);
   color: var(--green);
 }
 
-.back-btn {
-  color: var(--muted);
+.drawer-overlay {
+  position: fixed;
+  inset: 75px 0 0;
+  background: rgba(0,0,0,.45);
+  z-index: 98;
+  display: none;
 }
 
-.document-info {
-  padding: 18px 4%;
-  background: var(--panel);
-  border-bottom: 1px solid var(--border);
+.drawer-overlay.show {
+  display: block;
 }
 
-.document-info h1 {
-  font-size: 17px;
-  line-height: 1.5;
+/* MAIN */
+
+.container {
+  width: 88%;
+  max-width: 1250px;
+  margin: auto;
+  padding-top: 35px;
 }
 
-.document-info p {
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 5px;
-}
-
-.toolbar {
-  padding: 12px 4%;
-  background: var(--panel);
-  border-bottom: 1px solid var(--border);
+.back-row {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 18px;
   flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.back-link {
+  display: inline-flex;
   gap: 9px;
-  position: sticky;
-  top: 68px;
-  z-index: 15;
-}
-
-.toolbar-group {
-  display: flex;
   align-items: center;
-  gap: 5px;
-  padding-right: 10px;
-  border-right: 1px solid var(--border);
-}
-
-.toolbar-group:last-child {
-  border: none;
-  padding: 0;
-}
-
-.page-input {
-  width: 52px;
-  height: 35px;
-  background: var(--panel2);
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  text-align: center;
-  outline: none;
-}
-
-.page-total {
-  font-size: 12px;
   color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
 }
 
-.zoom-value {
-  min-width: 48px;
-  text-align: center;
+.back-link:hover {
+  color: var(--green);
+}
+
+.reader-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 19px;
+  padding: 25px;
+  box-shadow: var(--shadow);
+}
+
+.reader-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.eyebrow {
+  color: var(--green);
   font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.reader-top h1 {
+  font-size: clamp(22px, 3.5vw, 32px);
+  line-height: 1.25;
   font-weight: 800;
 }
 
-.reader-area {
-  min-height: calc(100vh - 210px);
-  padding: 25px 12px 45px;
-  background: var(--reader-bg);
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  overflow: auto;
-}
-
-.page-container {
-  max-width: 100%;
-  min-height: 300px;
-  position: relative;
-  display: flex;
-  justify-content: center;
-}
-
-#pdfCanvas {
-  display: block;
-  max-width: 100%;
-  height: auto;
-  background: white;
-  box-shadow: 0 8px 35px rgba(0,0,0,.25);
-}
-
-.loading {
-  text-align: center;
-  padding: 70px 20px;
+.reader-top p {
   color: var(--muted);
-  max-width: 450px;
-  margin: auto;
+  font-size: 13px;
+  line-height: 1.7;
+  margin-top: 8px;
+  max-width: 720px;
 }
 
-.loading i {
-  font-size: 36px;
-  color: var(--green);
-  margin-bottom: 18px;
-}
-
-.loading h2 {
-  font-size: 17px;
-  margin-bottom: 8px;
-  color: var(--text);
-}
-
-.loading p {
-  font-size: 12px;
-  line-height: 1.8;
-}
-
-.progress-track {
-  height: 5px;
-  background: var(--panel2);
-  border-radius: 20px;
-  overflow: hidden;
-  margin-top: 20px;
-}
-
-.progress-fill {
-  height: 100%;
-  width: 0%;
-  background: var(--green);
-  transition: width .2s;
-}
-
-.status-message {
-  font-size: 11px;
-  margin-top: 12px;
-  color: var(--muted);
-}
-
-.reader-footer {
-  background: var(--panel);
-  border-top: 1px solid var(--border);
-  padding: 15px 4%;
+.reader-actions {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 10px;
   flex-wrap: wrap;
 }
 
-.reader-footer span {
-  font-size: 11px;
-  color: var(--muted);
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--panel2);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
 }
 
-.reader-footer strong {
+.action-btn:hover {
+  border-color: var(--green);
   color: var(--green);
 }
 
-#message {
-  color: #ff7777;
+.action-btn.primary {
+  background: var(--green);
+  color: #03152c;
+  border-color: var(--green);
+  font-weight: 800;
+}
+
+.action-btn.primary:hover {
+  color: #03152c;
+  opacity: .92;
+}
+
+.favourite-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--panel2);
+  color: var(--muted);
+  font-size: 17px;
+  display: grid;
+  place-items: center;
+}
+
+.favourite-btn.saved {
+  color: #ffca52;
+  border-color: rgba(255, 202, 82, .45);
+}
+
+.tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.tag-chip {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+
+.viewer-wrap {
+  margin-top: 22px;
+}
+
+.pdf-frame {
+  width: 100%;
+  height: 75vh;
+  min-height: 480px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--panel2);
+}
+
+.notice-box {
+  background: var(--panel2);
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+  padding: 40px 24px;
+  text-align: center;
+  color: var(--muted);
+  line-height: 1.8;
+  font-size: 13px;
+}
+
+.notice-box i {
+  display: block;
+  font-size: 30px;
+  color: var(--green);
+  margin-bottom: 14px;
+}
+
+.notice-box h2 {
+  color: var(--text);
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+/* FOOTER */
+
+footer {
+  border-top: 1px solid var(--border);
+  margin-top: 45px;
+  padding: 30px 6%;
+  text-align: center;
+  color: var(--muted);
   font-size: 12px;
-  line-height: 1.7;
-  margin-top: 12px;
+  line-height: 1.8;
 }
 
-.hidden {
-  display: none !important;
+footer strong {
+  color: var(--green);
 }
 
-body.fullscreen .topbar,
-body.fullscreen .document-info,
-body.fullscreen .reader-footer {
-  display: none;
-}
-
-body.fullscreen .toolbar {
-  top: 0;
-}
+/* RESPONSIVE */
 
 @media(max-width: 600px) {
   .topbar {
-    padding: 0 3%;
+    height: 67px;
+    padding: 0 5%;
   }
 
   .brand {
-    font-size: 13px;
+    font-size: 15px;
   }
 
-  .top-actions .tool-btn {
-    min-width: 36px;
-    height: 36px;
-    padding: 0 8px;
+  .brand-icon {
+    width: 37px;
+    height: 37px;
   }
 
-  .toolbar {
-    top: 68px;
-    padding: 10px 5px;
-    gap: 6px;
+  .menu-btn {
+    display: grid;
   }
 
-  .toolbar-group {
-    padding-right: 5px;
+  .container {
+    width: 90%;
+    padding-top: 24px;
   }
 
-  .toolbar .tool-btn {
-    min-width: 34px;
-    height: 34px;
-    padding: 0 8px;
-    font-size: 11px;
+  .reader-card {
+    padding: 16px;
   }
 
-  .reader-area {
-    padding: 12px 5px 30px;
+  .pdf-frame {
+    height: 62vh;
+    min-height: 360px;
   }
 
-  .document-info {
-    padding: 13px 4%;
+  .nav-drawer {
+    top: 67px;
+    height: calc(100vh - 67px);
   }
 
-  .document-info h1 {
-    font-size: 14px;
+  .drawer-overlay {
+    top: 67px;
   }
 }
 </style>
@@ -358,11 +431,9 @@ body.fullscreen .toolbar {
 
 <body>
 
-<!-- HEADER -->
-
 <header class="topbar">
 
-  <a href="study-library.html" class="brand">
+  <a href="index.html" class="brand">
     <div class="brand-icon">
       <i class="fas fa-graduation-cap"></i>
     </div>
@@ -371,194 +442,139 @@ body.fullscreen .toolbar {
 
   <div class="top-actions">
 
-    <button class="tool-btn back-btn" id="backBtn">
-      <i class="fas fa-arrow-left"></i>
-      <span>Library</span>
-    </button>
-
-    <button class="tool-btn" id="themeBtn"
-      title="Toggle reading theme">
+    <button class="icon-btn" id="themeToggle"
+      aria-label="Toggle theme" title="Toggle theme">
       <i class="fas fa-sun"></i>
     </button>
 
-  </div>
+    <button class="icon-btn menu-btn" id="menuToggle"
+      aria-label="Open menu" aria-expanded="false">
+      <i class="fas fa-bars"></i>
+    </button>
 
+  </div>
 </header>
 
-<!-- DOCUMENT INFORMATION -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
 
-<section class="document-info">
+<aside class="nav-drawer" id="navDrawer">
 
-  <h1 id="documentTitle">Loading document...</h1>
+  <h3>Navigation</h3>
 
-  <p id="documentDetails">
-    Exam Pilot Integrated PDF Reader
-  </p>
+  <a href="index.html" class="nav-link">
+    <i class="fas fa-house"></i> Home
+  </a>
 
-</section>
+  <a href="practice.html" class="nav-link">
+    <i class="fas fa-pen-to-square"></i> Practice Centre
+  </a>
 
-<!-- READER TOOLBAR -->
+  <a href="study-library.html" class="nav-link">
+    <i class="fas fa-book-open"></i> Study Library
+  </a>
 
-<section class="toolbar">
+  <a href="study-notes.html" class="nav-link active">
+    <i class="fas fa-book"></i> Study Notes
+  </a>
 
-  <div class="toolbar-group">
+  <a href="cbt.html" class="nav-link">
+    <i class="fas fa-laptop"></i> CBT Examination
+  </a>
 
-    <button class="tool-btn" id="previousBtn"
-      title="Previous page" disabled>
-      <i class="fas fa-chevron-left"></i>
-    </button>
+</aside>
 
-    <input type="number" id="pageInput"
-      class="page-input" min="1" value="1"
-      aria-label="Page number">
+<main class="container">
 
-    <span class="page-total">
-      / <span id="totalPages">--</span>
-    </span>
-
-    <button class="tool-btn" id="nextBtn"
-      title="Next page" disabled>
-      <i class="fas fa-chevron-right"></i>
-    </button>
-
+  <div class="back-row">
+    <a href="study-notes.html" class="back-link" id="backToSubjectLink">
+      <i class="fas fa-arrow-left"></i>
+      Back to Study Notes
+    </a>
   </div>
 
-  <div class="toolbar-group">
-
-    <button class="tool-btn" id="zoomOut"
-      title="Zoom out" disabled>
-      <i class="fas fa-minus"></i>
-    </button>
-
-    <span class="zoom-value" id="zoomValue">100%</span>
-
-    <button class="tool-btn" id="zoomIn"
-      title="Zoom in" disabled>
-      <i class="fas fa-plus"></i>
-    </button>
-
-  </div>
-
-  <div class="toolbar-group">
-
-    <button class="tool-btn" id="fitBtn"
-      title="Fit page to screen" disabled>
-      <i class="fas fa-expand"></i>
-      Fit
-    </button>
-
-    <button class="tool-btn" id="fullscreenBtn"
-      title="Full screen">
-      <i class="fas fa-maximize"></i>
-    </button>
-
-  </div>
-
-</section>
-
-<!-- READER -->
-
-<main class="reader-area" id="readerArea">
-
-  <div class="loading" id="loading">
-
-    <i class="fas fa-spinner fa-spin"></i>
-
-    <h2>Preparing your reading experience</h2>
-
-    <p id="loadingText">
-      Retrieving your document from the Exam Pilot library...
-    </p>
-
-    <div class="progress-track">
-      <div class="progress-fill" id="progressFill"></div>
+  <section class="reader-card" id="readerCard">
+    <div class="notice-box">
+      <i class="fas fa-spinner fa-spin"></i>
+      Loading study material...
     </div>
-
-    <p id="message"></p>
-
-  </div>
-
-  <div class="page-container hidden" id="pageContainer">
-    <canvas id="pdfCanvas"></canvas>
-  </div>
+  </section>
 
 </main>
 
-<!-- FOOTER -->
-
-<footer class="reader-footer">
-
-  <span>
-    <strong>EXAM PILOT</strong> Integrated Reader
-  </span>
-
-  <span id="readingProgress">
-    Reading progress: 0%
-  </span>
-
+<footer>
+  <strong>EXAM PILOT</strong><br>
+  Learn. Practise. Improve. Succeed.
 </footer>
 
 <script>
 
-/* ======================================
-   CONFIGURATION
-====================================== */
+/* =====================================
+   THEME MANAGEMENT
+===================================== */
 
-const CATALOG_URL = "catalog.json";
+const themeToggle = document.getElementById("themeToggle");
 
-const params = new URLSearchParams(location.search);
-const materialId = params.get("id");
+function applyTheme(theme) {
+  document.body.classList.toggle("light", theme === "light");
 
-const canvas = document.getElementById("pdfCanvas");
-const context = canvas.getContext("2d");
+  themeToggle.innerHTML = theme === "light"
+    ? '<i class="fas fa-moon"></i>'
+    : '<i class="fas fa-sun"></i>';
 
-const loading = document.getElementById("loading");
-const loadingText = document.getElementById("loadingText");
-const message = document.getElementById("message");
-const progressFill = document.getElementById("progressFill");
-
-const pageInput = document.getElementById("pageInput");
-const totalPages = document.getElementById("totalPages");
-
-let pdfDocument = null;
-let currentPage = 1;
-let zoom = 1;
-let rendering = false;
-let pendingPage = null;
-let resizeTimer = null;
-let renderToken = 0;
-let documentRecord = null;
-
-
-/* ======================================
-   PDF.JS WORKER
-====================================== */
-
-if (window.pdfjsLib) {
-  pdfjsLib.GlobalWorkerOptions.workerSrc =
-    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  localStorage.setItem("examPilotTheme", theme);
 }
 
+applyTheme(localStorage.getItem("examPilotTheme") || "dark");
 
-/* ======================================
-   BASIC HELPERS
-====================================== */
+themeToggle.addEventListener("click", () => {
+  applyTheme(
+    document.body.classList.contains("light") ? "dark" : "light"
+  );
+});
 
-function showError(text) {
-  loading.classList.remove("hidden");
-  document.getElementById("pageContainer").classList.add("hidden");
 
-  loading.innerHTML = `
-    <i class="fas fa-circle-exclamation"
-       style="color:#ff7777"></i>
-    <h2>Unable to open document</h2>
-    <p>${escapeHTML(text)}</p>
-    <button onclick="location.href='study-library.html'"
-      style="margin-top:20px;padding:12px 18px;border:0;border-radius:9px;background:var(--green);font-weight:800;">
-      Return to Study Library
-    </button>
-  `;
+/* =====================================
+   NAVIGATION MENU
+===================================== */
+
+const menuToggle = document.getElementById("menuToggle");
+const navDrawer = document.getElementById("navDrawer");
+const drawerOverlay = document.getElementById("drawerOverlay");
+
+function closeMenu() {
+  navDrawer.classList.remove("open");
+  drawerOverlay.classList.remove("show");
+  menuToggle.setAttribute("aria-expanded", "false");
+  menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
 }
+
+menuToggle.addEventListener("click", () => {
+  const isOpen = navDrawer.classList.contains("open");
+
+  if (isOpen) {
+    closeMenu();
+  } else {
+    navDrawer.classList.add("open");
+    drawerOverlay.classList.add("show");
+    menuToggle.setAttribute("aria-expanded", "true");
+    menuToggle.innerHTML = '<i class="fas fa-times"></i>';
+  }
+});
+
+drawerOverlay.addEventListener("click", closeMenu);
+
+document.querySelectorAll(".nav-link").forEach(link => {
+  link.addEventListener("click", closeMenu);
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") closeMenu();
+});
+
+
+/* =====================================
+   SAFE & FAVOURITE HELPERS
+===================================== */
 
 function escapeHTML(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -570,447 +586,224 @@ function escapeHTML(value) {
   })[char]);
 }
 
-function getProgressKey() {
-  return "examPilotProgress_" + materialId;
-}
-
-function updateProgress() {
-  if (!pdfDocument) return;
-
-  const percentage = Math.round(
-    (currentPage / pdfDocument.numPages) * 100
+function getMaterialId(material) {
+  return String(
+    material.id ||
+    material.file ||
+    material.pdf ||
+    material.title ||
+    ""
   );
-
-  document.getElementById("readingProgress").textContent =
-    "Reading progress: " + percentage + "%";
-
-  localStorage.setItem(getProgressKey(), currentPage);
 }
 
-
-/* ======================================
-   LOAD CATALOGUE
-====================================== */
-
-async function loadDocument() {
-
-  if (!materialId) {
-    showError("No document ID was provided. Please open a document from the Study Library.");
-    return;
-  }
-
-  if (!window.pdfjsLib) {
-    showError("PDF.js could not load. Please check your internet connection and try again.");
-    return;
-  }
-
+function getFavourites() {
   try {
-
-    loadingText.textContent = "Loading the library catalogue...";
-
-    const response = await fetch(CATALOG_URL, {
-      cache: "no-cache"
-    });
-
-    if (!response.ok) {
-      throw new Error("catalog.json could not be found.");
-    }
-
-    const catalogue = await response.json();
-
-    const materials = Array.isArray(catalogue)
-      ? catalogue
-      : catalogue.materials;
-
-    if (!Array.isArray(materials)) {
-      throw new Error("The catalogue has an invalid format.");
-    }
-
-    documentRecord = materials.find(item =>
-      String(item.id) === materialId
+    return JSON.parse(
+      localStorage.getItem("examPilotFavourites") || "[]"
     );
-
-    if (!documentRecord) {
-      throw new Error("This document does not exist in the catalogue.");
-    }
-
-    if (documentRecord.status === "placeholder") {
-      throw new Error("This document has not been uploaded yet.");
-    }
-
-    const filename = documentRecord.file;
-
-    if (
-      typeof filename !== "string" ||
-      !filename.toLowerCase().endsWith(".pdf") ||
-      filename.includes("/") ||
-      filename.includes("\\") ||
-      filename.includes("..")
-    ) {
-      throw new Error("The PDF filename is invalid. Use a PDF filename in your repository root.");
-    }
-
-    document.getElementById("documentTitle").textContent =
-      documentRecord.title || "Study Material";
-
-    document.getElementById("documentDetails").textContent =
-      (documentRecord.subject || "General") +
-      " • " +
-      (documentRecord.category || "Learning Material");
-
-    await loadPDF(filename);
-
-  } catch (error) {
-
-    console.error(error);
-    showError(error.message);
-
+  } catch {
+    return [];
   }
 }
 
+function saveFavourites(items) {
+  localStorage.setItem(
+    "examPilotFavourites",
+    JSON.stringify(items)
+  );
+}
 
-/* ======================================
-   LOAD PDF
-====================================== */
 
-async function loadPDF(filename) {
+/* =====================================
+   RENDER READER
+===================================== */
 
-  loadingText.textContent = "Downloading your PDF...";
+const readerCard = document.getElementById("readerCard");
+const backToSubjectLink = document.getElementById("backToSubjectLink");
 
-  const pdfURL = new URL(
-    encodeURIComponent(filename),
-    window.location.href
-  ).href;
+function renderNotFound(message) {
+  readerCard.innerHTML = `
+    <div class="notice-box">
+      <i class="fas fa-circle-exclamation"></i>
+      <h2>Study Material Unavailable</h2>
+      <p>${escapeHTML(message)}</p>
+      <div style="margin-top: 18px;">
+        <a href="study-notes.html" class="action-btn primary">
+          <i class="fas fa-arrow-left"></i> Browse All Study Notes
+        </a>
+      </div>
+    </div>
+  `;
+}
 
-  const loadingTask = pdfjsLib.getDocument({
-    url: pdfURL
+async function renderMaterial(material, forceShowViewer = false) {
+  const id = getMaterialId(material);
+  const filePath = material.file || material.pdf || "";
+  const isPlaceholder = String(material.status || "").toLowerCase() === "placeholder";
+  const saved = getFavourites().includes(id);
+  const tags = Array.isArray(material.tags) ? material.tags : [];
+
+  document.title = `${material.title || "Note Reader"} | Exam Pilot`;
+
+  if (material.subject) {
+    backToSubjectLink.href =
+      `study-notes.html?subject=${encodeURIComponent(material.subject)}`;
+    backToSubjectLink.innerHTML =
+      `<i class="fas fa-arrow-left"></i> Back to ${escapeHTML(material.subject)} Notes`;
+  }
+
+  let fileExists = false;
+  if (filePath && (!isPlaceholder || forceShowViewer)) {
+    try {
+      const headRes = await fetch(filePath, { method: "HEAD" });
+      fileExists = headRes.ok;
+    } catch {
+      fileExists = false;
+    }
+  }
+
+  const viewerMarkup = filePath && (!isPlaceholder || forceShowViewer) && fileExists
+    ? `
+      <div class="viewer-wrap">
+        <iframe
+          class="pdf-frame"
+          src="${escapeHTML(filePath)}"
+          title="${escapeHTML(material.title || "Study Note PDF")}">
+        </iframe>
+      </div>
+    `
+    : `
+      <div class="viewer-wrap">
+        <div class="notice-box">
+          <i class="fas ${isPlaceholder ? "fa-clock" : "fa-file-pdf"}"></i>
+          <h2>${isPlaceholder ? "Study Note Coming Soon" : "PDF File Not Found Yet"}</h2>
+          <p>
+            ${
+              isPlaceholder
+                ? `This note is currently marked as a placeholder in <strong>catalog.json</strong> (${escapeHTML(filePath || "no file path")}).`
+                : `Could not locate <strong>${escapeHTML(filePath || "the PDF file")}</strong> on the server.`
+            }
+          </p>
+          ${
+            isPlaceholder && filePath && !forceShowViewer
+              ? `
+                <div style="margin-top: 16px;">
+                  <button type="button" class="action-btn" id="tryLoadAnyway">
+                    <i class="fas fa-eye"></i> Try Opening File Anyway
+                  </button>
+                </div>
+              `
+              : ""
+          }
+        </div>
+      </div>
+    `;
+
+  readerCard.innerHTML = `
+    <div class="reader-top">
+      <div>
+        <div class="eyebrow">
+          <i class="fas fa-book-open"></i>
+          ${escapeHTML(material.subject || "Study Material")}${material.year ? " • " + escapeHTML(material.year) : ""}
+        </div>
+        <h1>${escapeHTML(material.title || "Untitled Study Note")}</h1>
+        <p>${escapeHTML(material.description || "Study material from Exam Pilot.")}</p>
+      </div>
+
+      <div class="reader-actions">
+        <button
+          type="button"
+          class="favourite-btn ${saved ? "saved" : ""}"
+          id="readerFavBtn"
+          aria-label="Toggle favourite">
+          <i class="${saved ? "fas" : "far"} fa-star"></i>
+        </button>
+
+        ${
+          filePath
+            ? `
+              <a
+                href="${escapeHTML(filePath)}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="action-btn primary">
+                <i class="fas fa-up-right-from-square"></i> Open PDF
+              </a>
+            `
+            : ""
+        }
+      </div>
+    </div>
+
+    ${
+      tags.length
+        ? `
+          <div class="tags-row">
+            ${tags.map(tag => `<span class="tag-chip">#${escapeHTML(tag)}</span>`).join("")}
+          </div>
+        `
+        : ""
+    }
+
+    ${viewerMarkup}
+  `;
+
+  document.getElementById("readerFavBtn").addEventListener("click", () => {
+    let favs = getFavourites();
+    if (favs.includes(id)) {
+      favs = favs.filter(item => item !== id);
+    } else {
+      favs.push(id);
+    }
+    saveFavourites(favs);
+    renderMaterial(material, forceShowViewer);
   });
 
-  loadingTask.onProgress = data => {
-    if (data.total > 0) {
-      const percentage = Math.round(
-        (data.loaded / data.total) * 100
-      );
-
-      progressFill.style.width = percentage + "%";
-
-      loadingText.textContent =
-        "Downloading document... " + percentage + "%";
-    }
-  };
-
-  pdfDocument = await loadingTask.promise;
-
-  totalPages.textContent = pdfDocument.numPages;
-  pageInput.max = pdfDocument.numPages;
-
-  document.getElementById("previousBtn").disabled = false;
-  document.getElementById("nextBtn").disabled = false;
-  document.getElementById("zoomIn").disabled = false;
-  document.getElementById("zoomOut").disabled = false;
-  document.getElementById("fitBtn").disabled = false;
-
-  const savedPage = Number(
-    localStorage.getItem(getProgressKey())
-  );
-
-  currentPage = savedPage >= 1 && savedPage <= pdfDocument.numPages
-    ? savedPage
-    : 1;
-
-  pageInput.value = currentPage;
-
-  loading.classList.add("hidden");
-  document.getElementById("pageContainer").classList.remove("hidden");
-
-  await renderPage(currentPage);
-
+  const tryLoadBtn = document.getElementById("tryLoadAnyway");
+  if (tryLoadBtn) {
+    tryLoadBtn.addEventListener("click", () => {
+      renderMaterial(material, true);
+    });
+  }
 }
 
+async function initReader() {
+  const params = new URLSearchParams(window.location.search);
+  const targetId = params.get("id");
 
-/* ======================================
-   RENDER PDF PAGE
-====================================== */
-
-async function renderPage(pageNumber) {
-
-  if (!pdfDocument) return;
-
-  if (rendering) {
-    pendingPage = pageNumber;
+  if (!targetId) {
+    renderNotFound("No note ID was provided in the URL.");
     return;
   }
 
-  rendering = true;
-
-  const token = ++renderToken;
-
   try {
+    const response = await fetch("catalog.json", { cache: "no-cache" });
+    if (!response.ok) {
+      throw new Error("Failed to load catalog.json");
+    }
 
-    const page = await pdfDocument.getPage(pageNumber);
+    const data = await response.json();
+    const materials = Array.isArray(data)
+      ? data
+      : Array.isArray(data.materials)
+        ? data.materials
+        : [];
 
-    const viewport = page.getViewport({
-      scale: zoom
-    });
+    const material = materials.find(item => getMaterialId(item) === targetId);
 
-    const readerWidth = Math.max(
-      200,
-      document.getElementById("readerArea").clientWidth - 24
-    );
+    if (!material) {
+      renderNotFound(`No study material matched ID "${targetId}".`);
+      return;
+    }
 
-    const actualScale = Math.min(
-      2,
-      window.devicePixelRatio || 1
-    );
-
-    canvas.width = Math.floor(viewport.width * actualScale);
-    canvas.height = Math.floor(viewport.height * actualScale);
-
-    canvas.style.width = viewport.width + "px";
-    canvas.style.height = viewport.height + "px";
-
-    const task = page.render({
-      canvasContext: context,
-      viewport: viewport,
-      transform: actualScale !== 1
-        ? [actualScale, 0, 0, actualScale, 0, 0]
-        : null
-    });
-
-    await task.promise;
-
-    if (token !== renderToken) return;
-
-    currentPage = pageNumber;
-    pageInput.value = currentPage;
-
-    document.getElementById("previousBtn").disabled =
-      currentPage <= 1;
-
-    document.getElementById("nextBtn").disabled =
-      currentPage >= pdfDocument.numPages;
-
-    updateProgress();
-
+    await renderMaterial(material, false);
   } catch (error) {
-
-    console.error("Page rendering error:", error);
-
-  } finally {
-
-    rendering = false;
-
-    if (pendingPage !== null) {
-      const nextPage = pendingPage;
-      pendingPage = null;
-      renderPage(nextPage);
-    }
-
+    console.warn("Reader error:", error);
+    renderNotFound("Could not load catalog.json. Make sure you are running this site on a local or web server.");
   }
-
 }
 
-
-/* ======================================
-   PAGE NAVIGATION
-====================================== */
-
-document.getElementById("previousBtn").addEventListener("click", () => {
-  if (currentPage > 1) {
-    renderPage(currentPage - 1);
-  }
-});
-
-document.getElementById("nextBtn").addEventListener("click", () => {
-  if (pdfDocument && currentPage < pdfDocument.numPages) {
-    renderPage(currentPage + 1);
-  }
-});
-
-pageInput.addEventListener("change", () => {
-
-  if (!pdfDocument) return;
-
-  let page = Number(pageInput.value);
-
-  if (!Number.isInteger(page)) {
-    page = currentPage;
-  }
-
-  page = Math.max(1, Math.min(page, pdfDocument.numPages));
-
-  renderPage(page);
-
-});
-
-document.addEventListener("keydown", event => {
-
-  if (event.target.matches("input")) return;
-
-  if (event.key === "ArrowRight" && pdfDocument) {
-    if (currentPage < pdfDocument.numPages) {
-      renderPage(currentPage + 1);
-    }
-  }
-
-  if (event.key === "ArrowLeft" && pdfDocument) {
-    if (currentPage > 1) {
-      renderPage(currentPage - 1);
-    }
-  }
-
-});
-
-
-/* ======================================
-   ZOOM
-====================================== */
-
-function updateZoom() {
-  document.getElementById("zoomValue").textContent =
-    Math.round(zoom * 100) + "%";
-}
-
-document.getElementById("zoomIn").addEventListener("click", () => {
-
-  if (zoom < 2.5) {
-    zoom = Math.min(2.5, zoom + 0.15);
-    updateZoom();
-    renderPage(currentPage);
-  }
-
-});
-
-document.getElementById("zoomOut").addEventListener("click", () => {
-
-  if (zoom > 0.5) {
-    zoom = Math.max(0.5, zoom - 0.15);
-    updateZoom();
-    renderPage(currentPage);
-  }
-
-});
-
-document.getElementById("fitBtn").addEventListener("click", async () => {
-
-  if (!pdfDocument) return;
-
-  const page = await pdfDocument.getPage(currentPage);
-  const original = page.getViewport({ scale: 1 });
-
-  const availableWidth =
-    document.getElementById("readerArea").clientWidth - 30;
-
-  zoom = Math.min(2, availableWidth / original.width);
-
-  updateZoom();
-  renderPage(currentPage);
-
-});
-
-
-/* ======================================
-   FULLSCREEN
-====================================== */
-
-document.getElementById("fullscreenBtn").addEventListener("click", async () => {
-
-  try {
-
-    if (!document.fullscreenElement) {
-      await document.documentElement.requestFullscreen();
-    } else {
-      await document.exitFullscreen();
-    }
-
-  } catch (error) {
-    console.warn("Fullscreen unavailable:", error);
-  }
-
-});
-
-document.addEventListener("fullscreenchange", () => {
-
-  document.body.classList.toggle(
-    "fullscreen",
-    Boolean(document.fullscreenElement)
-  );
-
-  if (pdfDocument) {
-    setTimeout(() => renderPage(currentPage), 150);
-  }
-
-});
-
-
-/* ======================================
-   THEME
-====================================== */
-
-const themeBtn = document.getElementById("themeBtn");
-
-function applyTheme(theme) {
-
-  document.body.classList.toggle("light", theme === "light");
-
-  themeBtn.innerHTML = theme === "light"
-    ? '<i class="fas fa-moon"></i>'
-    : '<i class="fas fa-sun"></i>';
-
-  localStorage.setItem("examPilotTheme", theme);
-
-}
-
-applyTheme(localStorage.getItem("examPilotTheme") || "dark");
-
-themeBtn.addEventListener("click", () => {
-
-  const newTheme = document.body.classList.contains("light")
-    ? "dark"
-    : "light";
-
-  applyTheme(newTheme);
-
-});
-
-
-/* ======================================
-   RETURN TO LIBRARY
-====================================== */
-
-document.getElementById("backBtn").addEventListener("click", () => {
-
-  if (documentRecord?.category === "study-notes") {
-    window.location.href = "study-notes.html";
-  } else {
-    window.location.href = "study-library.html";
-  }
-
-});
-
-
-/* ======================================
-   RESIZE HANDLING
-====================================== */
-
-window.addEventListener("resize", () => {
-
-  if (!pdfDocument) return;
-
-  clearTimeout(resizeTimer);
-
-  resizeTimer = setTimeout(() => {
-    renderPage(currentPage);
-  }, 250);
-
-});
-
-
-/* ======================================
-   START READER
-====================================== */
-
-loadDocument();
+initReader();
 
 </script>
 
