@@ -5,35 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#030b29">
 
-<title>Note Reader | Exam Pilot</title>
+<title>Study Reader | Exam Pilot</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
 <style>
 :root {
   --bg: #030b29;
   --panel: #091a40;
   --panel2: #102650;
+  --panel3: #061230;
   --text: #f4f7ff;
   --muted: #9aaccb;
   --green: #00ed8b;
   --blue: #4388ff;
+  --gold: #ffca52;
   --border: rgba(255,255,255,.09);
-  --shadow: 0 15px 45px rgba(0,0,0,.18);
+  --shadow: 0 15px 45px rgba(0,0,0,.22);
 }
 
 body.light {
   --bg: #f3f6fc;
   --panel: #ffffff;
   --panel2: #edf2fb;
+  --panel3: #e3ebf9;
   --text: #102044;
   --muted: #66748f;
   --green: #00a96b;
   --blue: #2563eb;
+  --gold: #d97706;
   --border: rgba(15,35,75,.12);
   --shadow: 0 12px 35px rgba(20,40,80,.08);
 }
@@ -52,7 +57,7 @@ body {
   transition: background .25s, color .25s;
 }
 
-button, input {
+button, input, textarea {
   font: inherit;
 }
 
@@ -104,7 +109,22 @@ a {
 
 .top-actions {
   display: flex;
-  gap: 12px;
+  align-items: center;
+  gap: 10px;
+}
+
+.study-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 42px;
+  padding: 0 13px;
+  border-radius: 12px;
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--green);
 }
 
 .icon-btn {
@@ -126,6 +146,24 @@ a {
 
 .menu-btn {
   display: none;
+}
+
+/* READING PROGRESS BAR */
+
+.progress-track {
+  position: sticky;
+  top: 75px;
+  width: 100%;
+  height: 3px;
+  background: transparent;
+  z-index: 99;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--green), var(--blue));
+  transition: width .25s ease;
 }
 
 /* NAVIGATION DRAWER */
@@ -187,21 +225,22 @@ a {
   display: block;
 }
 
-/* MAIN */
+/* MAIN CONTAINER */
 
 .container {
-  width: 88%;
-  max-width: 1250px;
+  width: 90%;
+  max-width: 1280px;
   margin: auto;
-  padding-top: 35px;
+  padding-top: 28px;
 }
 
-.back-row {
+.breadcrumb-bar {
   display: flex;
   align-items: center;
-  gap: 18px;
+  justify-content: space-between;
+  gap: 14px;
   flex-wrap: wrap;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .back-link {
@@ -217,88 +256,117 @@ a {
   color: var(--green);
 }
 
-.reader-card {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 19px;
-  padding: 25px;
-  box-shadow: var(--shadow);
+.quick-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.reader-top {
+.pill-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.pill-link:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+/* HEADER HERO CARD */
+
+.reader-header-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px 26px;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+
+.header-grid {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 18px;
+  gap: 20px;
   flex-wrap: wrap;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--border);
 }
 
 .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   color: var(--green);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.4px;
   text-transform: uppercase;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
-.reader-top h1 {
-  font-size: clamp(22px, 3.5vw, 32px);
+.reader-header-card h1 {
+  font-size: clamp(22px, 3.4vw, 32px);
   line-height: 1.25;
   font-weight: 800;
 }
 
-.reader-top p {
+.reader-header-card p {
   color: var(--muted);
   font-size: 13px;
-  line-height: 1.7;
+  line-height: 1.75;
   margin-top: 8px;
-  max-width: 720px;
+  max-width: 760px;
 }
 
-.reader-actions {
+.header-actions {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
 }
 
-.action-btn {
+.btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 10px 14px;
-  border-radius: 10px;
+  border-radius: 11px;
   border: 1px solid var(--border);
   background: var(--panel2);
   color: var(--text);
   font-size: 12px;
   font-weight: 700;
+  transition: .2s;
 }
 
-.action-btn:hover {
+.btn:hover {
   border-color: var(--green);
   color: var(--green);
 }
 
-.action-btn.primary {
+.btn.primary {
   background: var(--green);
   color: #03152c;
   border-color: var(--green);
   font-weight: 800;
 }
 
-.action-btn.primary:hover {
+.btn.primary:hover {
   color: #03152c;
   opacity: .92;
 }
 
-.favourite-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
+.fav-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
   border: 1px solid var(--border);
   background: var(--panel2);
   color: var(--muted);
@@ -307,16 +375,26 @@ a {
   place-items: center;
 }
 
-.favourite-btn.saved {
-  color: #ffca52;
+.fav-btn.saved {
+  color: var(--gold);
   border-color: rgba(255, 202, 82, .45);
+}
+
+.meta-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
 }
 
 .tags-row {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 16px;
 }
 
 .tag-chip {
@@ -325,32 +403,336 @@ a {
   color: var(--muted);
   font-size: 11px;
   font-weight: 700;
-  padding: 5px 10px;
+  padding: 5px 11px;
   border-radius: 999px;
 }
 
-.viewer-wrap {
-  margin-top: 22px;
+.progress-badge {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--green);
 }
 
-.pdf-frame {
+/* WORKSPACE GRID (PDF STAGE + STUDY SCRATCHPAD) */
+
+.workspace {
+  display: grid;
+  grid-template-columns: 1fr 330px;
+  gap: 20px;
+  align-items: start;
+}
+
+.workspace.notes-hidden {
+  grid-template-columns: 1fr;
+}
+
+.workspace.notes-hidden .scratchpad-card {
+  display: none;
+}
+
+/* PDF VIEWER STAGE */
+
+.stage-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.stage-card.fullscreen-mode {
+  position: fixed;
+  inset: 0;
+  z-index: 250;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.reader-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  background: var(--panel2);
+  border-bottom: 1px solid var(--border);
+}
+
+.tool-group {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.tool-btn {
+  height: 36px;
+  padding: 0 11px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tool-btn:hover:not(:disabled) {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.tool-btn:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.page-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.page-jump input {
+  width: 52px;
+  height: 36px;
+  text-align: center;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  font-weight: 800;
+  outline: none;
+}
+
+.page-jump input:focus {
+  border-color: var(--green);
+}
+
+.zoom-label {
+  min-width: 48px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.canvas-viewport {
+  background: var(--panel3);
+  min-height: 560px;
+  max-height: 78vh;
+  overflow: auto;
+  padding: 22px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.stage-card.fullscreen-mode .canvas-viewport {
+  max-height: none;
+  flex: 1;
+}
+
+#pdfCanvas {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, .35);
+}
+
+.bottom-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--panel2);
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* SCRATCHPAD SIDEBAR */
+
+.scratchpad-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 95px;
+}
+
+.scratchpad-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.scratchpad-head h2 {
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scratchpad-head h2 i {
+  color: var(--green);
+}
+
+.save-indicator {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.scratchpad-sub {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.scratchpad-area {
   width: 100%;
-  height: 75vh;
-  min-height: 480px;
+  min-height: 290px;
+  resize: vertical;
+  padding: 13px;
+  border-radius: 13px;
+  border: 1px solid var(--border);
+  background: var(--panel2);
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.7;
+  outline: none;
+}
+
+.scratchpad-area:focus {
+  border-color: var(--green);
+}
+
+.scratchpad-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.scratchpad-actions .tool-btn {
+  flex: 1;
+  justify-content: center;
+}
+
+/* RELATED LEARNING MATERIALS */
+
+.related-section {
+  margin-top: 30px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+.related-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.related-head h2 {
+  font-size: 18px;
+}
+
+.related-head p {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.related-card {
+  background: var(--panel2);
   border: 1px solid var(--border);
   border-radius: 14px;
-  background: var(--panel2);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  transition: .2s;
 }
+
+.related-card:hover {
+  border-color: var(--green);
+  transform: translateY(-2px);
+}
+
+.related-cat {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  color: var(--green);
+  margin-bottom: 8px;
+}
+
+.related-card h3 {
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 7px;
+}
+
+.related-card p {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+  flex: 1;
+}
+
+.related-footer {
+  margin-top: 14px;
+  padding-top: 11px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--green);
+}
+
+/* NOTICE / EMPTY BOX */
 
 .notice-box {
   background: var(--panel2);
   border: 1px dashed var(--border);
-  border-radius: 14px;
-  padding: 40px 24px;
+  border-radius: 16px;
+  padding: 42px 24px;
   text-align: center;
   color: var(--muted);
   line-height: 1.8;
   font-size: 13px;
+  width: 100%;
 }
 
 .notice-box i {
@@ -384,10 +766,28 @@ footer strong {
 
 /* RESPONSIVE */
 
+@media(max-width: 980px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .scratchpad-card {
+    position: static;
+  }
+
+  .related-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media(max-width: 600px) {
   .topbar {
     height: 67px;
     padding: 0 5%;
+  }
+
+  .progress-track {
+    top: 67px;
   }
 
   .brand {
@@ -403,18 +803,27 @@ footer strong {
     display: grid;
   }
 
+  .study-timer span {
+    display: none;
+  }
+
   .container {
-    width: 90%;
-    padding-top: 24px;
+    width: 92%;
+    padding-top: 20px;
   }
 
-  .reader-card {
-    padding: 16px;
+  .reader-header-card {
+    padding: 18px;
   }
 
-  .pdf-frame {
-    height: 62vh;
-    min-height: 360px;
+  .canvas-viewport {
+    min-height: 400px;
+    max-height: 68vh;
+    padding: 14px 8px;
+  }
+
+  .related-grid {
+    grid-template-columns: 1fr;
   }
 
   .nav-drawer {
@@ -442,6 +851,12 @@ footer strong {
 
   <div class="top-actions">
 
+    <div class="study-timer" title="Active study session timer">
+      <i class="fas fa-stopwatch"></i>
+      <span>Session</span>
+      <strong id="sessionClock">00:00</strong>
+    </div>
+
     <button class="icon-btn" id="themeToggle"
       aria-label="Toggle theme" title="Toggle theme">
       <i class="fas fa-sun"></i>
@@ -454,6 +869,10 @@ footer strong {
 
   </div>
 </header>
+
+<div class="progress-track">
+  <div class="progress-fill" id="progressFill"></div>
+</div>
 
 <div class="drawer-overlay" id="drawerOverlay"></div>
 
@@ -483,21 +902,31 @@ footer strong {
 
 </aside>
 
-<main class="container">
+<main class="container" id="mainContainer">
 
-  <div class="back-row">
-    <a href="study-notes.html" class="back-link" id="backToSubjectLink">
+  <div class="breadcrumb-bar">
+    <a href="study-notes.html" class="back-link" id="backLink">
       <i class="fas fa-arrow-left"></i>
       Back to Study Notes
     </a>
+
+    <div class="quick-links">
+      <a href="practice.html" class="pill-link">
+        <i class="fas fa-pen-to-square"></i> Practise Questions
+      </a>
+      <a href="cbt.html" class="pill-link">
+        <i class="fas fa-laptop"></i> Take CBT Mock
+      </a>
+    </div>
   </div>
 
-  <section class="reader-card" id="readerCard">
+  <div id="appRoot">
     <div class="notice-box">
       <i class="fas fa-spinner fa-spin"></i>
-      Loading study material...
+      <h2>Preparing Study Reader...</h2>
+      <p>Loading material details and document viewer.</p>
     </div>
-  </section>
+  </div>
 
 </main>
 
@@ -507,6 +936,16 @@ footer strong {
 </footer>
 
 <script>
+
+/* =====================================
+   PDF.JS WORKER CONFIG
+===================================== */
+
+if (window.pdfjsLib) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+}
+
 
 /* =====================================
    THEME MANAGEMENT
@@ -550,7 +989,6 @@ function closeMenu() {
 
 menuToggle.addEventListener("click", () => {
   const isOpen = navDrawer.classList.contains("open");
-
   if (isOpen) {
     closeMenu();
   } else {
@@ -567,13 +1005,25 @@ document.querySelectorAll(".nav-link").forEach(link => {
   link.addEventListener("click", closeMenu);
 });
 
-document.addEventListener("keydown", event => {
-  if (event.key === "Escape") closeMenu();
-});
+
+/* =====================================
+   STUDY SESSION TIMER
+===================================== */
+
+let elapsedSeconds = 0;
+const sessionClock = document.getElementById("sessionClock");
+
+setInterval(() => {
+  if (document.hidden) return;
+  elapsedSeconds += 1;
+  const mins = String(Math.floor(elapsedSeconds / 60)).padStart(2, "0");
+  const secs = String(elapsedSeconds % 60).padStart(2, "0");
+  sessionClock.textContent = `${mins}:${secs}`;
+}, 1000);
 
 
 /* =====================================
-   SAFE & FAVOURITE HELPERS
+   SAFE & STORAGE HELPERS
 ===================================== */
 
 function escapeHTML(value) {
@@ -584,6 +1034,14 @@ function escapeHTML(value) {
     '"': "&quot;",
     "'": "&#39;"
   })[char]);
+}
+
+function normalise(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
 }
 
 function getMaterialId(material) {
@@ -598,212 +1056,534 @@ function getMaterialId(material) {
 
 function getFavourites() {
   try {
-    return JSON.parse(
-      localStorage.getItem("examPilotFavourites") || "[]"
-    );
+    return JSON.parse(localStorage.getItem("examPilotFavourites") || "[]");
   } catch {
     return [];
   }
 }
 
 function saveFavourites(items) {
-  localStorage.setItem(
-    "examPilotFavourites",
-    JSON.stringify(items)
-  );
+  localStorage.setItem("examPilotFavourites", JSON.stringify(items));
+}
+
+function getSavedPage(id) {
+  const val = parseInt(localStorage.getItem(`examPilotPage_${id}`) || "1", 10);
+  return Number.isFinite(val) && val > 0 ? val : 1;
+}
+
+function setSavedPage(id, page) {
+  localStorage.setItem(`examPilotPage_${id}`, String(page));
+}
+
+function getScratchpad(id) {
+  return localStorage.getItem(`examPilotNotes_${id}`) || "";
+}
+
+function saveScratchpad(id, text) {
+  localStorage.setItem(`examPilotNotes_${id}`, text);
 }
 
 
 /* =====================================
-   RENDER READER
+   PDF.JS READER STATE
 ===================================== */
 
-const readerCard = document.getElementById("readerCard");
-const backToSubjectLink = document.getElementById("backToSubjectLink");
+let pdfDoc = null;
+let currentPage = 1;
+let totalPages = 1;
+let zoomScale = 1.15;
+let renderTask = null;
+let pendingPage = null;
 
-function renderNotFound(message) {
-  readerCard.innerHTML = `
+async function renderPdfPage(num, materialId) {
+  if (!pdfDoc) return;
+
+  const canvas = document.getElementById("pdfCanvas");
+  const viewportEl = document.getElementById("canvasViewport");
+  if (!canvas || !viewportEl) return;
+
+  if (renderTask) {
+    pendingPage = num;
+    return;
+  }
+
+  currentPage = Math.min(Math.max(1, num), totalPages);
+  setSavedPage(materialId, currentPage);
+
+  const page = await pdfDoc.getPage(currentPage);
+  const unscaledViewport = page.getViewport({ scale: 1 });
+  const containerWidth = Math.max(280, viewportEl.clientWidth - 32);
+  const baseScale = containerWidth / unscaledViewport.width;
+  const effectiveScale = Math.min(2.6, Math.max(0.55, baseScale * zoomScale));
+
+  const dpr = window.devicePixelRatio || 1;
+  const viewport = page.getViewport({ scale: effectiveScale });
+
+  canvas.width = Math.floor(viewport.width * dpr);
+  canvas.height = Math.floor(viewport.height * dpr);
+  canvas.style.width = `${Math.floor(viewport.width)}px`;
+  canvas.style.height = `${Math.floor(viewport.height)}px`;
+
+  const ctx = canvas.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  renderTask = page.render({
+    canvasContext: ctx,
+    viewport
+  });
+
+  try {
+    await renderTask.promise;
+  } finally {
+    renderTask = null;
+  }
+
+  updatePagerUI();
+
+  if (pendingPage !== null) {
+    const next = pendingPage;
+    pendingPage = null;
+    renderPdfPage(next, materialId);
+  }
+}
+
+function updatePagerUI() {
+  const pageInput = document.getElementById("pageInput");
+  const pageTotalEl = document.getElementById("pageTotal");
+  const prevBtn = document.getElementById("prevPageBtn");
+  const nextBtn = document.getElementById("nextPageBtn");
+  const bottomPrevBtn = document.getElementById("bottomPrevBtn");
+  const bottomNextBtn = document.getElementById("bottomNextBtn");
+  const zoomLabel = document.getElementById("zoomLabel");
+  const progressBadge = document.getElementById("progressBadge");
+  const progressFill = document.getElementById("progressFill");
+  const bottomStatus = document.getElementById("bottomStatus");
+
+  const pct = totalPages > 0 ? Math.round((currentPage / totalPages) * 100) : 0;
+
+  if (pageInput) pageInput.value = currentPage;
+  if (pageTotalEl) pageTotalEl.textContent = `/ ${totalPages}`;
+  if (zoomLabel) zoomLabel.textContent = `${Math.round(zoomScale * 100)}%`;
+  if (progressBadge) progressBadge.textContent = `Page ${currentPage} of ${totalPages} • ${pct}% read`;
+  if (progressFill) progressFill.style.width = `${pct}%`;
+  if (bottomStatus) bottomStatus.textContent = `Showing page ${currentPage} of ${totalPages}`;
+
+  const atStart = currentPage <= 1;
+  const atEnd = currentPage >= totalPages;
+
+  if (prevBtn) prevBtn.disabled = atStart;
+  if (bottomPrevBtn) bottomPrevBtn.disabled = atStart;
+  if (nextBtn) nextBtn.disabled = atEnd;
+  if (bottomNextBtn) bottomNextBtn.disabled = atEnd;
+}
+
+
+/* =====================================
+   BUILD PAGE & LOAD MATERIAL
+===================================== */
+
+const appRoot = document.getElementById("appRoot");
+const backLink = document.getElementById("backLink");
+
+function renderError(title, message) {
+  appRoot.innerHTML = `
     <div class="notice-box">
       <i class="fas fa-circle-exclamation"></i>
-      <h2>Study Material Unavailable</h2>
+      <h2>${escapeHTML(title)}</h2>
       <p>${escapeHTML(message)}</p>
-      <div style="margin-top: 18px;">
-        <a href="study-notes.html" class="action-btn primary">
-          <i class="fas fa-arrow-left"></i> Browse All Study Notes
+      <div style="margin-top: 20px;">
+        <a href="study-notes.html" class="btn primary">
+          <i class="fas fa-arrow-left"></i> Return to Study Notes
         </a>
       </div>
     </div>
   `;
 }
 
-async function renderMaterial(material, forceShowViewer = false) {
+function formatCategoryLabel(category) {
+  const c = normalise(category);
+  if (c === "syllabus") return "JAMB Syllabus";
+  if (c === "recommended texts") return "Recommended Text";
+  return "Study Note";
+}
+
+async function mountReader(material, allMaterials) {
   const id = getMaterialId(material);
   const filePath = material.file || material.pdf || "";
-  const isPlaceholder = String(material.status || "").toLowerCase() === "placeholder";
-  const saved = getFavourites().includes(id);
+  const isSaved = getFavourites().includes(id);
   const tags = Array.isArray(material.tags) ? material.tags : [];
 
-  document.title = `${material.title || "Note Reader"} | Exam Pilot`;
+  document.title = `${material.title || "Study Reader"} | Exam Pilot`;
 
   if (material.subject) {
-    backToSubjectLink.href =
-      `study-notes.html?subject=${encodeURIComponent(material.subject)}`;
-    backToSubjectLink.innerHTML =
-      `<i class="fas fa-arrow-left"></i> Back to ${escapeHTML(material.subject)} Notes`;
+    backLink.href = `study-notes.html?subject=${encodeURIComponent(material.subject)}`;
+    backLink.innerHTML = `<i class="fas fa-arrow-left"></i> Back to ${escapeHTML(material.subject)}`;
   }
 
-  let fileExists = false;
-  if (filePath && (!isPlaceholder || forceShowViewer)) {
-    try {
-      const headRes = await fetch(filePath, { method: "HEAD" });
-      fileExists = headRes.ok;
-    } catch {
-      fileExists = false;
-    }
-  }
+  const related = allMaterials.filter(item =>
+    getMaterialId(item) !== id &&
+    normalise(item.subject) === normalise(material.subject)
+  );
 
-  const viewerMarkup = filePath && (!isPlaceholder || forceShowViewer) && fileExists
-    ? `
-      <div class="viewer-wrap">
-        <iframe
-          class="pdf-frame"
-          src="${escapeHTML(filePath)}"
-          title="${escapeHTML(material.title || "Study Note PDF")}">
-        </iframe>
-      </div>
-    `
-    : `
-      <div class="viewer-wrap">
-        <div class="notice-box">
-          <i class="fas ${isPlaceholder ? "fa-clock" : "fa-file-pdf"}"></i>
-          <h2>${isPlaceholder ? "Study Note Coming Soon" : "PDF File Not Found Yet"}</h2>
-          <p>
-            ${
-              isPlaceholder
-                ? `This note is currently marked as a placeholder in <strong>catalog.json</strong> (${escapeHTML(filePath || "no file path")}).`
-                : `Could not locate <strong>${escapeHTML(filePath || "the PDF file")}</strong> on the server.`
-            }
-          </p>
+  appRoot.innerHTML = `
+    <section class="reader-header-card">
+      <div class="header-grid">
+        <div>
+          <div class="eyebrow">
+            <i class="fas fa-graduation-cap"></i>
+            ${escapeHTML(material.subject || "Exam Pilot")} • ${escapeHTML(formatCategoryLabel(material.category))}${material.year ? " • " + escapeHTML(material.year) : ""}
+          </div>
+          <h1>${escapeHTML(material.title || "Study Material")}</h1>
+          <p>${escapeHTML(material.description || "Exam Pilot study resource.")}</p>
+        </div>
+
+        <div class="header-actions">
+          <button
+            type="button"
+            class="fav-btn ${isSaved ? "saved" : ""}"
+            id="favBtn"
+            title="Save to favourites"
+            aria-label="Save to favourites">
+            <i class="${isSaved ? "fas" : "far"} fa-star"></i>
+          </button>
+
+          <button type="button" class="btn" id="toggleNotesBtn">
+            <i class="fas fa-note-sticky"></i> Study Notes Pad
+          </button>
+
           ${
-            isPlaceholder && filePath && !forceShowViewer
+            filePath
               ? `
-                <div style="margin-top: 16px;">
-                  <button type="button" class="action-btn" id="tryLoadAnyway">
-                    <i class="fas fa-eye"></i> Try Opening File Anyway
-                  </button>
-                </div>
+                <a href="${escapeHTML(filePath)}" target="_blank" rel="noopener noreferrer" class="btn">
+                  <i class="fas fa-up-right-from-square"></i> Raw PDF
+                </a>
+                <a href="${escapeHTML(filePath)}" download class="btn primary">
+                  <i class="fas fa-download"></i> Download
+                </a>
               `
               : ""
           }
         </div>
       </div>
-    `;
 
-  readerCard.innerHTML = `
-    <div class="reader-top">
-      <div>
-        <div class="eyebrow">
-          <i class="fas fa-book-open"></i>
-          ${escapeHTML(material.subject || "Study Material")}${material.year ? " • " + escapeHTML(material.year) : ""}
+      <div class="meta-strip">
+        <div class="tags-row">
+          ${tags.map(tag => `<span class="tag-chip">#${escapeHTML(tag)}</span>`).join("")}
         </div>
-        <h1>${escapeHTML(material.title || "Untitled Study Note")}</h1>
-        <p>${escapeHTML(material.description || "Study material from Exam Pilot.")}</p>
+        <div class="progress-badge" id="progressBadge">Preparing document...</div>
+      </div>
+    </section>
+
+    <section class="workspace" id="workspace">
+      <div class="stage-card" id="stageCard">
+        <div class="reader-toolbar">
+          <div class="tool-group">
+            <button type="button" class="tool-btn" id="prevPageBtn" title="Previous page">
+              <i class="fas fa-chevron-left"></i> Prev
+            </button>
+
+            <label class="page-jump" aria-label="Jump to page">
+              <input type="number" id="pageInput" min="1" value="1">
+              <span id="pageTotal">/ 1</span>
+            </label>
+
+            <button type="button" class="tool-btn" id="nextPageBtn" title="Next page">
+              Next <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+
+          <div class="tool-group">
+            <button type="button" class="tool-btn" id="zoomOutBtn" title="Zoom out">
+              <i class="fas fa-magnifying-glass-minus"></i>
+            </button>
+            <span class="zoom-label" id="zoomLabel">115%</span>
+            <button type="button" class="tool-btn" id="zoomInBtn" title="Zoom in">
+              <i class="fas fa-magnifying-glass-plus"></i>
+            </button>
+            <button type="button" class="tool-btn" id="zoomResetBtn" title="Reset zoom">
+              Fit
+            </button>
+            <button type="button" class="tool-btn" id="fullscreenBtn" title="Toggle fullscreen reading">
+              <i class="fas fa-expand"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="canvas-viewport" id="canvasViewport">
+          <div class="notice-box" id="pdfLoadingBox">
+            <i class="fas fa-spinner fa-spin"></i>
+            <h2>Loading PDF Document...</h2>
+            <p>Rendering pages for crisp reading.</p>
+          </div>
+          <canvas id="pdfCanvas" style="display:none;"></canvas>
+        </div>
+
+        <div class="bottom-pager">
+          <button type="button" class="tool-btn" id="bottomPrevBtn">
+            <i class="fas fa-arrow-left"></i> Previous Page
+          </button>
+          <span id="bottomStatus">Loading...</span>
+          <button type="button" class="tool-btn" id="bottomNextBtn">
+            Next Page <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
       </div>
 
-      <div class="reader-actions">
-        <button
-          type="button"
-          class="favourite-btn ${saved ? "saved" : ""}"
-          id="readerFavBtn"
-          aria-label="Toggle favourite">
-          <i class="${saved ? "fas" : "far"} fa-star"></i>
-        </button>
-
-        ${
-          filePath
-            ? `
-              <a
-                href="${escapeHTML(filePath)}"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="action-btn primary">
-                <i class="fas fa-up-right-from-square"></i> Open PDF
-              </a>
-            `
-            : ""
-        }
-      </div>
-    </div>
+      <aside class="scratchpad-card">
+        <div class="scratchpad-head">
+          <h2><i class="fas fa-pen-nib"></i> Study Scratchpad</h2>
+          <span class="save-indicator" id="saveIndicator">Saved</span>
+        </div>
+        <p class="scratchpad-sub">
+          Write key points, formulas, and revision summaries for <strong>${escapeHTML(material.subject || "this topic")}</strong>. Saved automatically on this device.
+        </p>
+        <textarea
+          class="scratchpad-area"
+          id="scratchpadArea"
+          placeholder="Type your key takeaways, definitions, or formulas here...">${escapeHTML(getScratchpad(id))}</textarea>
+        <div class="scratchpad-actions">
+          <button type="button" class="tool-btn" id="copyNotesBtn">
+            <i class="fas fa-copy"></i> Copy Notes
+          </button>
+          <button type="button" class="tool-btn" id="clearNotesBtn">
+            <i class="fas fa-trash"></i> Clear
+          </button>
+        </div>
+      </aside>
+    </section>
 
     ${
-      tags.length
+      related.length
         ? `
-          <div class="tags-row">
-            ${tags.map(tag => `<span class="tag-chip">#${escapeHTML(tag)}</span>`).join("")}
-          </div>
+          <section class="related-section">
+            <div class="related-head">
+              <div>
+                <h2>More ${escapeHTML(material.subject)} Learning Materials</h2>
+                <p>Explore the syllabus, recommended texts, and extra notes for this subject.</p>
+              </div>
+            </div>
+            <div class="related-grid">
+              ${related.map(item => `
+                <a href="reader.html?id=${encodeURIComponent(getMaterialId(item))}" class="related-card">
+                  <div class="related-cat">${escapeHTML(formatCategoryLabel(item.category))}</div>
+                  <h3>${escapeHTML(item.title)}</h3>
+                  <p>${escapeHTML(item.description || "")}</p>
+                  <div class="related-footer">
+                    <span>Open Material</span>
+                    <i class="fas fa-arrow-right"></i>
+                  </div>
+                </a>
+              `).join("")}
+            </div>
+          </section>
         `
         : ""
     }
-
-    ${viewerMarkup}
   `;
 
-  document.getElementById("readerFavBtn").addEventListener("click", () => {
+  /* Favourite button */
+  const favBtn = document.getElementById("favBtn");
+  favBtn.addEventListener("click", () => {
     let favs = getFavourites();
-    if (favs.includes(id)) {
-      favs = favs.filter(item => item !== id);
-    } else {
+    const nowSaved = !favs.includes(id);
+    if (nowSaved) {
       favs.push(id);
+    } else {
+      favs = favs.filter(x => x !== id);
     }
     saveFavourites(favs);
-    renderMaterial(material, forceShowViewer);
+    favBtn.classList.toggle("saved", nowSaved);
+    favBtn.innerHTML = `<i class="${nowSaved ? "fas" : "far"} fa-star"></i>`;
   });
 
-  const tryLoadBtn = document.getElementById("tryLoadAnyway");
-  if (tryLoadBtn) {
-    tryLoadBtn.addEventListener("click", () => {
-      renderMaterial(material, true);
-    });
-  }
-}
+  /* Scratchpad toggle & auto-save */
+  const workspace = document.getElementById("workspace");
+  document.getElementById("toggleNotesBtn").addEventListener("click", () => {
+    workspace.classList.toggle("notes-hidden");
+    if (pdfDoc) renderPdfPage(currentPage, id);
+  });
 
-async function initReader() {
-  const params = new URLSearchParams(window.location.search);
-  const targetId = params.get("id");
+  const scratchpadArea = document.getElementById("scratchpadArea");
+  const saveIndicator = document.getElementById("saveIndicator");
+  let saveTimer = null;
 
-  if (!targetId) {
-    renderNotFound("No note ID was provided in the URL.");
+  scratchpadArea.addEventListener("input", () => {
+    saveIndicator.textContent = "Saving...";
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      saveScratchpad(id, scratchpadArea.value);
+      saveIndicator.textContent = "Saved";
+    }, 300);
+  });
+
+  document.getElementById("copyNotesBtn").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(scratchpadArea.value);
+      saveIndicator.textContent = "Copied!";
+      setTimeout(() => { saveIndicator.textContent = "Saved"; }, 1500);
+    } catch {
+      scratchpadArea.select();
+    }
+  });
+
+  document.getElementById("clearNotesBtn").addEventListener("click", () => {
+    scratchpadArea.value = "";
+    saveScratchpad(id, "");
+    saveIndicator.textContent = "Cleared";
+  });
+
+  /* Fullscreen toggle */
+  const stageCard = document.getElementById("stageCard");
+  const fullscreenBtn = document.getElementById("fullscreenBtn");
+  fullscreenBtn.addEventListener("click", () => {
+    const isFull = stageCard.classList.toggle("fullscreen-mode");
+    fullscreenBtn.innerHTML = isFull
+      ? '<i class="fas fa-compress"></i>'
+      : '<i class="fas fa-expand"></i>';
+    if (pdfDoc) renderPdfPage(currentPage, id);
+  });
+
+  /* Load PDF via PDF.js */
+  if (!filePath) {
+    document.getElementById("canvasViewport").innerHTML = `
+      <div class="notice-box">
+        <i class="fas fa-file-circle-xmark"></i>
+        <h2>No PDF File Linked</h2>
+        <p>This entry does not have a PDF file configured in catalog.json yet.</p>
+      </div>
+    `;
     return;
   }
 
   try {
-    const response = await fetch("catalog.json", { cache: "no-cache" });
-    if (!response.ok) {
-      throw new Error("Failed to load catalog.json");
-    }
+    const loadingTask = pdfjsLib.getDocument(filePath);
+    pdfDoc = await loadingTask.promise;
+    totalPages = pdfDoc.numPages;
 
-    const data = await response.json();
+    document.getElementById("pdfLoadingBox").style.display = "none";
+    document.getElementById("pdfCanvas").style.display = "block";
+
+    const startPage = Math.min(getSavedPage(id), totalPages);
+    await renderPdfPage(startPage, id);
+
+    const goPrev = () => {
+      if (currentPage > 1) {
+        renderPdfPage(currentPage - 1, id);
+        document.getElementById("canvasViewport").scrollTop = 0;
+      }
+    };
+
+    const goNext = () => {
+      if (currentPage < totalPages) {
+        renderPdfPage(currentPage + 1, id);
+        document.getElementById("canvasViewport").scrollTop = 0;
+      }
+    };
+
+    document.getElementById("prevPageBtn").addEventListener("click", goPrev);
+    document.getElementById("bottomPrevBtn").addEventListener("click", goPrev);
+    document.getElementById("nextPageBtn").addEventListener("click", goNext);
+    document.getElementById("bottomNextBtn").addEventListener("click", goNext);
+
+    const pageInput = document.getElementById("pageInput");
+    pageInput.max = totalPages;
+    pageInput.addEventListener("change", () => {
+      const target = parseInt(pageInput.value, 10);
+      if (Number.isFinite(target)) {
+        renderPdfPage(target, id);
+      } else {
+        pageInput.value = currentPage;
+      }
+    });
+
+    document.getElementById("zoomInBtn").addEventListener("click", () => {
+      zoomScale = Math.min(2.2, +(zoomScale + 0.15).toFixed(2));
+      renderPdfPage(currentPage, id);
+    });
+
+    document.getElementById("zoomOutBtn").addEventListener("click", () => {
+      zoomScale = Math.max(0.65, +(zoomScale - 0.15).toFixed(2));
+      renderPdfPage(currentPage, id);
+    });
+
+    document.getElementById("zoomResetBtn").addEventListener("click", () => {
+      zoomScale = 1.0;
+      renderPdfPage(currentPage, id);
+    });
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") {
+        closeMenu();
+        if (stageCard.classList.contains("fullscreen-mode")) {
+          stageCard.classList.remove("fullscreen-mode");
+          fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+          renderPdfPage(currentPage, id);
+        }
+      }
+      if (document.activeElement === scratchpadArea || document.activeElement === pageInput) return;
+      if (e.key === "ArrowRight") goNext();
+      if (e.key === "ArrowLeft") goPrev();
+    });
+
+    window.addEventListener("resize", () => {
+      if (pdfDoc) renderPdfPage(currentPage, id);
+    });
+
+  } catch (err) {
+    console.warn("PDF load error:", err);
+    document.getElementById("progressBadge").textContent = "Document unavailable";
+    document.getElementById("canvasViewport").innerHTML = `
+      <div class="notice-box">
+        <i class="fas fa-file-pdf"></i>
+        <h2>Could Not Load PDF</h2>
+        <p>
+          Make sure <strong>${escapeHTML(filePath)}</strong> is uploaded in the same folder as this page.
+        </p>
+        <div style="margin-top: 16px;">
+          <a href="${escapeHTML(filePath)}" target="_blank" rel="noopener noreferrer" class="btn primary">
+            <i class="fas fa-up-right-from-square"></i> Try Opening Directly
+          </a>
+        </div>
+      </div>
+    `;
+  }
+}
+
+async function init() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+
+  if (!id) {
+    renderError("No Study Note Selected", "Choose any subject from Study Notes to open a document.");
+    return;
+  }
+
+  try {
+    const res = await fetch("catalog.json", { cache: "no-cache" });
+    if (!res.ok) throw new Error("Failed to fetch catalog.json");
+
+    const data = await res.json();
     const materials = Array.isArray(data)
       ? data
       : Array.isArray(data.materials)
         ? data.materials
         : [];
 
-    const material = materials.find(item => getMaterialId(item) === targetId);
+    const material = materials.find(item => getMaterialId(item) === id);
 
     if (!material) {
-      renderNotFound(`No study material matched ID "${targetId}".`);
+      renderError("Study Material Not Found", `No material with ID "${id}" exists in catalog.json.`);
       return;
     }
 
-    await renderMaterial(material, false);
-  } catch (error) {
-    console.warn("Reader error:", error);
-    renderNotFound("Could not load catalog.json. Make sure you are running this site on a local or web server.");
+    await mountReader(material, materials);
+  } catch (err) {
+    console.warn("Catalog error:", err);
+    renderError("Catalogue Unavailable", "Could not load catalog.json. Run this site on a local or web server.");
   }
 }
 
-initReader();
+init();
 
 </script>
 
