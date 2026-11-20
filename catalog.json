@@ -1,9 +1,7 @@
-
 {
-  "version": "1.0",
+  "version": "1.1",
   "project": "Exam Pilot",
   "description": "Central catalogue for Exam Pilot educational materials",
-
   "categories": [
     {
       "id": "recommended-texts",
@@ -21,7 +19,6 @@
       "description": "JAMB examination subjects, topics and objectives"
     }
   ],
-
   "subjects": [
     "Use of English",
     "Mathematics",
@@ -52,177 +49,402 @@
     "Insurance",
     "Office Practice"
   ],
-
   "materials": [
-
     {
       "id": "english-notes-001",
       "title": "JAMB Use of English Study Notes",
       "subject": "Use of English",
       "category": "study-notes",
-      "description": "Comprehensive English language study materials for JAMB candidates.",
-      "file": "english-notes.pdf",
+      "description": "Comprehensive English language study materials for JAMB candidates covering comprehension, lexis, structure, and oral forms.",
+      "file": "files/notes/english-notes.pdf",
       "type": "pdf",
       "tags": ["English", "Grammar", "Comprehension", "JAMB"],
       "year": "2027",
       "status": "placeholder"
     },
-
     {
       "id": "mathematics-notes-001",
       "title": "JAMB Mathematics Study Notes",
       "subject": "Mathematics",
       "category": "study-notes",
-      "description": "Mathematical concepts, formulas and worked examples.",
-      "file": "mathematics-notes.pdf",
+      "description": "Mathematical concepts, key formulas, theorems, and worked examples for UTME preparation.",
+      "file": "files/notes/mathematics-notes.pdf",
       "type": "pdf",
-      "tags": ["Mathematics", "Algebra", "Geometry", "JAMB"],
+      "tags": ["Mathematics", "Algebra", "Geometry", "Calculus", "JAMB"],
       "year": "2027",
       "status": "placeholder"
     },
-
     {
       "id": "physics-notes-001",
       "title": "JAMB Physics Study Notes",
       "subject": "Physics",
       "category": "study-notes",
-      "description": "Physics concepts, principles, equations and explanations.",
-      "file": "physics-notes.pdf",
+      "description": "Physics concepts, principles, equations, units, and step-by-step explanations.",
+      "file": "files/notes/physics-notes.pdf",
       "type": "pdf",
-      "tags": ["Physics", "Mechanics", "Electricity", "JAMB"],
+      "tags": ["Physics", "Mechanics", "Electricity", "Waves", "JAMB"],
       "year": "2027",
       "status": "placeholder"
     },
-
     {
       "id": "chemistry-notes-001",
       "title": "JAMB Chemistry Study Notes",
       "subject": "Chemistry",
       "category": "study-notes",
-      "description": "Chemistry concepts, reactions and important explanations.",
-      "file": "chemistry-notes.pdf",
+      "description": "Chemistry concepts, periodic trends, reactions, stoichiometry, and organic chemistry notes.",
+      "file": "files/notes/chemistry-notes.pdf",
       "type": "pdf",
-      "tags": ["Chemistry", "Organic Chemistry", "JAMB"],
+      "tags": ["Chemistry", "Organic Chemistry", "Stoichiometry", "JAMB"],
       "year": "2027",
       "status": "placeholder"
     },
-
     {
       "id": "biology-notes-001",
       "title": "JAMB Biology Study Notes",
       "subject": "Biology",
       "category": "study-notes",
-      "description": "Detailed Biology notes covering important examination topics.",
-      "file": "biology-notes.pdf",
+      "description": "Detailed Biology notes covering cell biology, genetics, physiology, and ecology.",
+      "file": "files/notes/biology-notes.pdf",
       "type": "pdf",
-      "tags": ["Biology", "Genetics", "Ecology", "JAMB"],
+      "tags": ["Biology", "Genetics", "Ecology", "Physiology", "JAMB"],
       "year": "2027",
       "status": "placeholder"
     },
-
     {
-      "id": "government-notes-001",
-      "title": "JAMB Government Study Notes",
-      "subject": "Government",
+      "id": "agricultural-science-notes-001",
+      "title": "JAMB Agricultural Science Study Notes",
+      "subject": "Agricultural Science",
       "category": "study-notes",
-      "description": "Government concepts, political systems and institutions.",
-      "file": "government-notes.pdf",
+      "description": "Crop production, soil science, animal husbandry, agricultural economics, and extension.",
+      "file": "files/notes/agricultural-science-notes.pdf",
       "type": "pdf",
-      "tags": ["Government", "Politics", "Constitution", "JAMB"],
+      "tags": ["Agricultural Science", "Soil", "Crops", "Livestock", "JAMB"],
       "year": "2027",
       "status": "placeholder"
     },
-
     {
       "id": "economics-notes-001",
       "title": "JAMB Economics Study Notes",
       "subject": "Economics",
       "category": "study-notes",
-      "description": "Microeconomics, macroeconomics and economic principles.",
-      "file": "economics-notes.pdf",
+      "description": "Microeconomics, macroeconomics, demand and supply, national income, and international trade.",
+      "file": "files/notes/economics-notes.pdf",
       "type": "pdf",
       "tags": ["Economics", "Utility", "Demand", "Supply", "JAMB"],
       "year": "2027",
       "status": "placeholder"
     },
-
+    {
+      "id": "government-notes-001",
+      "title": "JAMB Government Study Notes",
+      "subject": "Government",
+      "category": "study-notes",
+      "description": "Political concepts, systems of government, constitutional development, and public administration.",
+      "file": "files/notes/government-notes.pdf",
+      "type": "pdf",
+      "tags": ["Government", "Politics", "Constitution", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
     {
       "id": "literature-notes-001",
       "title": "JAMB Literature in English Study Notes",
       "subject": "Literature in English",
       "category": "study-notes",
-      "description": "Literary concepts, genres, techniques and examination preparation.",
-      "file": "literature-notes.pdf",
+      "description": "Literary terms, poetic devices, drama, prose analysis, and exam preparation notes.",
+      "file": "files/notes/literature-notes.pdf",
       "type": "pdf",
       "tags": ["Literature", "Drama", "Prose", "Poetry", "JAMB"],
       "year": "2027",
       "status": "placeholder"
     },
-
+    {
+      "id": "commerce-notes-001",
+      "title": "JAMB Commerce Study Notes",
+      "subject": "Commerce",
+      "category": "study-notes",
+      "description": "Trade, aids to trade, business units, banking, insurance, and marketing fundamentals.",
+      "file": "files/notes/commerce-notes.pdf",
+      "type": "pdf",
+      "tags": ["Commerce", "Trade", "Business", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+    {
+      "id": "accounting-notes-001",
+      "title": "JAMB Accounting Study Notes",
+      "subject": "Accounting",
+      "category": "study-notes",
+      "description": "Double-entry principles, trial balance, financial statements, partnerships, and costing.",
+      "file": "files/notes/accounting-notes.pdf",
+      "type": "pdf",
+      "tags": ["Accounting", "Bookkeeping", "Ledger", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+    {
+      "id": "geography-notes-001",
+      "title": "JAMB Geography Study Notes",
+      "subject": "Geography",
+      "category": "study-notes",
+      "description": "Map reading, physical geography, climatology, geomorphology, and regional geography of Nigeria.",
+      "file": "files/notes/geography-notes.pdf",
+      "type": "pdf",
+      "tags": ["Geography", "Map Reading", "Climate", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+    {
+      "id": "crs-notes-001",
+      "title": "JAMB Christian Religious Studies Study Notes",
+      "subject": "Christian Religious Studies",
+      "category": "study-notes",
+      "description": "Biblical narratives, prophets, the life and teachings of Jesus, and early church history.",
+      "file": "files/notes/crs-notes.pdf",
+      "type": "pdf",
+      "tags": ["CRS", "Bible", "Christianity", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+    {
+      "id": "irs-notes-001",
+      "title": "JAMB Islamic Religious Studies Study Notes",
+      "subject": "Islamic Religious Studies",
+      "category": "study-notes",
+      "description": "Quranic passages, Hadith, Tawhid, Fiqh, and Islamic history notes for UTME candidates.",
+      "file": "files/notes/irs-notes.pdf",
+      "type": "pdf",
+      "tags": ["IRS", "Quran", "Hadith", "Islam", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+    {
+      "id": "history-notes-001",
+      "title": "JAMB History Study Notes",
+      "subject": "History",
+      "category": "study-notes",
+      "description": "Nigerian history, West African states, colonial administration, nationalism, and post-independence events.",
+      "file": "files/notes/history-notes.pdf",
+      "type": "pdf",
+      "tags": ["History", "Nigeria", "West Africa", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+    {
+      "id": "civic-education-notes-001",
+      "title": "JAMB Civic Education Study Notes",
+      "subject": "Civic Education",
+      "category": "study-notes",
+      "description": "Citizenship, human rights, democracy, rule of law, cultism, and national development.",
+      "file": "files/notes/civic-education-notes.pdf",
+      "type": "pdf",
+      "tags": ["Civic Education", "Citizenship", "Rights", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+    {
+      "id": "computer-studies-notes-001",
+      "title": "JAMB Computer Studies Study Notes",
+      "subject": "Computer Studies",
+      "category": "study-notes",
+      "description": "Computer hardware, software, operating systems, number bases, logic gates, and networking.",
+      "file": "files/notes/computer-studies-notes.pdf",
+      "type": "pdf",
+      "tags": ["Computer Studies", "ICT", "Networking", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+    {
+      "id": "fine-arts-notes-001",
+      "title": "JAMB Fine Arts Study Notes",
+      "subject": "Fine Arts",
+      "category": "study-notes",
+      "description": "Principles and elements of art, drawing, painting, sculpture, and traditional Nigerian art.",
+      "file": "files/notes/fine-arts-notes.pdf",
+      "type": "pdf",
+      "tags": ["Fine Arts", "Design", "Nigerian Art", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+    {
+      "id": "french-notes-001",
+      "title": "JAMB French Study Notes",
+      "subject": "French",
+      "category": "study-notes",
+      "description": "French grammar, verb conjugation, vocabulary, comprehension, and oral expressions.",
+      "file": "files/notes/french-notes.pdf",
+      "type": "pdf",
+      "tags": ["French", "Grammar", "Vocabulary", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+    {
+      "id": "hausa-notes-001",
+      "title": "JAMB Hausa Study Notes",
+      "subject": "Hausa",
+      "category": "study-notes",
+      "description": "Hausa language structure, orthography, oral literature, proverbs, and composition.",
+      "file": "files/notes/hausa-notes.pdf",
+      "type": "pdf",
+      "tags": ["Hausa", "Language", "Literature", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+    {
+      "id": "igbo-notes-001",
+      "title": "JAMB Igbo Study Notes",
+      "subject": "Igbo",
+      "category": "study-notes",
+      "description": "Standard Igbo orthography, grammar, idioms, proverbs, and literary studies.",
+      "file": "files/notes/igbo-notes.pdf",
+      "type": "pdf",
+      "tags": ["Igbo", "Language", "Proverbs", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+    {
+      "id": "yoruba-notes-001",
+      "title": "JAMB Yoruba Study Notes",
+      "subject": "Yoruba",
+      "category": "study-notes",
+      "description": "Yoruba orthography, tonal marks, grammar, oral traditions, and literature notes.",
+      "file": "files/notes/yoruba-notes.pdf",
+      "type": "pdf",
+      "tags": ["Yoruba", "Language", "Culture", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+    {
+      "id": "arabic-notes-001",
+      "title": "JAMB Arabic Study Notes",
+      "subject": "Arabic",
+      "category": "study-notes",
+      "description": "Arabic grammar (Nahw), morphology (Sarf), comprehension, translation, and literature.",
+      "file": "files/notes/arabic-notes.pdf",
+      "type": "pdf",
+      "tags": ["Arabic", "Grammar", "Translation", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+    {
+      "id": "home-economics-notes-001",
+      "title": "JAMB Home Economics Study Notes",
+      "subject": "Home Economics",
+      "category": "study-notes",
+      "description": "Nutrition, food management, clothing and textiles, family living, and consumer education.",
+      "file": "files/notes/home-economics-notes.pdf",
+      "type": "pdf",
+      "tags": ["Home Economics", "Nutrition", "Textiles", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+    {
+      "id": "technical-drawing-notes-001",
+      "title": "JAMB Technical Drawing Study Notes",
+      "subject": "Technical Drawing",
+      "category": "study-notes",
+      "description": "Plane and solid geometry, orthographic projection, isometric drawing, and building drawing.",
+      "file": "files/notes/technical-drawing-notes.pdf",
+      "type": "pdf",
+      "tags": ["Technical Drawing", "Geometry", "Projection", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+    {
+      "id": "music-notes-001",
+      "title": "JAMB Music Study Notes",
+      "subject": "Music",
+      "category": "study-notes",
+      "description": "Music theory, notation, scales, intervals, harmony, and history of music.",
+      "file": "files/notes/music-notes.pdf",
+      "type": "pdf",
+      "tags": ["Music", "Theory", "Notation", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+    {
+      "id": "insurance-notes-001",
+      "title": "JAMB Insurance Study Notes",
+      "subject": "Insurance",
+      "category": "study-notes",
+      "description": "Principles of insurance, indemnity, insurable interest, life and general insurance policies.",
+      "file": "files/notes/insurance-notes.pdf",
+      "type": "pdf",
+      "tags": ["Insurance", "Risk", "Indemnity", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
+    {
+      "id": "office-practice-notes-001",
+      "title": "JAMB Office Practice Study Notes",
+      "subject": "Office Practice",
+      "category": "study-notes",
+      "description": "Office functions, filing, correspondence, business machines, communication, and records management.",
+      "file": "files/notes/office-practice-notes.pdf",
+      "type": "pdf",
+      "tags": ["Office Practice", "Administration", "Records", "JAMB"],
+      "year": "2027",
+      "status": "placeholder"
+    },
     {
       "id": "jamb-syllabus-english",
       "title": "JAMB Use of English Syllabus",
       "subject": "Use of English",
       "category": "syllabus",
       "description": "JAMB Use of English examination syllabus.",
-      "file": "english-syllabus.pdf",
+      "file": "files/syllabus/english-syllabus.pdf",
       "type": "pdf",
       "tags": ["English", "Syllabus", "JAMB"],
       "year": "2027",
       "status": "placeholder"
     },
-
     {
       "id": "jamb-syllabus-mathematics",
       "title": "JAMB Mathematics Syllabus",
       "subject": "Mathematics",
       "category": "syllabus",
       "description": "JAMB Mathematics examination syllabus.",
-      "file": "mathematics-syllabus.pdf",
+      "file": "files/syllabus/mathematics-syllabus.pdf",
       "type": "pdf",
       "tags": ["Mathematics", "Syllabus", "JAMB"],
       "year": "2027",
       "status": "placeholder"
     },
-
     {
       "id": "jamb-syllabus-physics",
       "title": "JAMB Physics Syllabus",
       "subject": "Physics",
       "category": "syllabus",
       "description": "JAMB Physics examination syllabus.",
-      "file": "physics-syllabus.pdf",
+      "file": "files/syllabus/physics-syllabus.pdf",
       "type": "pdf",
       "tags": ["Physics", "Syllabus", "JAMB"],
       "year": "2027",
       "status": "placeholder"
     },
-
     {
       "id": "jamb-syllabus-chemistry",
       "title": "JAMB Chemistry Syllabus",
       "subject": "Chemistry",
       "category": "syllabus",
       "description": "JAMB Chemistry examination syllabus.",
-      "file": "chemistry-syllabus.pdf",
+      "file": "files/syllabus/chemistry-syllabus.pdf",
       "type": "pdf",
       "tags": ["Chemistry", "Syllabus", "JAMB"],
       "year": "2027",
       "status": "placeholder"
     },
-
     {
       "id": "recommended-literature-texts",
       "title": "JAMB Recommended Literature Texts",
       "subject": "Literature in English",
       "category": "recommended-texts",
       "description": "Recommended literature reading materials for JAMB candidates.",
-      "file": "literature-recommended-texts.pdf",
+      "file": "files/recommended-texts/literature-recommended-texts.pdf",
       "type": "pdf",
       "tags": ["Literature", "Recommended Texts", "JAMB"],
       "year": "2027",
       "status": "placeholder"
     }
-
   ]
 }
